@@ -1,5 +1,5 @@
 # 第一阶段：构建前端应用
-FROM registry.cn-hangzhou.aliyuncs.com/docker.io/library/node:16-alpine AS builder
+FROM node:16.18.0-alpine AS builder
 
 # 设置工作目录
 WORKDIR /app
@@ -17,7 +17,7 @@ COPY . .
 RUN npm run build
 
 # 第二阶段：使用Nginx部署静态文件（生产环境）
-FROM registry.cn-hangzhou.aliyuncs.com/docker.io/library/nginx:alpine
+FROM nginx:1.25.0-alpine
 
 # 复制构建产物到Nginx静态目录
 COPY --from=builder /app/dist /usr/share/nginx/html
