@@ -8,6 +8,16 @@ const routes = [
     component: () => import('../views/HomeView.vue')
   },
   {
+    path: '/login',
+    name: 'login',
+    component: () => import('../views/LoginView.vue')
+  },
+  {
+    path: '/register',
+    name: 'register',
+    component: () => import('../views/RegisterView.vue')
+  },
+  {
     path: '/article/:id',
     name: 'article-detail',
     component: () => import('../views/ArticleDetailView.vue')
@@ -21,6 +31,11 @@ const routes = [
     path: '/user',
     name: 'user-center',
     component: () => import('../views/UserCenterView.vue')
+  },
+  {
+    path: '/payment',
+    name: 'payment',
+    component: () => import('../views/PaymentView.vue')
   },
   {
     path: '/about',

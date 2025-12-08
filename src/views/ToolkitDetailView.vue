@@ -23,8 +23,8 @@
           <span class="current-price">¥{{ toolkit.price }}</span>
           <span v-if="toolkit.original_price" class="original-price">¥{{ toolkit.original_price }}</span>
         </div>
-        <button class="buy-now-btn">立即购买</button>
-        <button class="add-cart-btn">加入购物车</button>
+        <Button variant="primary" size="large" @click="buyNow" class="buy-now-btn">立即购买</Button>
+        <Button variant="secondary" size="large" @click="addToCart" class="add-cart-btn">加入购物车</Button>
       </div>
     </div>
     
@@ -87,6 +87,7 @@
 import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useContentStore } from '../stores'
+import Button from '../components/Button.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -172,8 +173,16 @@ onMounted(() => {
 
 // 购买按钮点击事件
 const buyNow = () => {
-  // 实际项目中这里会跳转到支付页面
-  alert('购买功能开发中...')
+  // 跳转到支付页面
+  router.push({
+    name: 'payment',
+    query: {
+      product_type: 'toolkit',
+      product_id: toolkit.value.id,
+      product_name: toolkit.value.title,
+      price: toolkit.value.price
+    }
+  })
 }
 
 // 加入购物车
@@ -184,30 +193,81 @@ const addToCart = () => {
 </script>
 
 <style scoped>
-.toolkit-detail {
-  max-width: 100%;
+/* 主题装饰 */
+.theme-decoration {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  margin-bottom: 20px;
+}
+
+.decoration-icon {
+  font-size: 32px;
+  animation: float 3s ease-in-out infinite;
+  filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1));
+  transform: rotate(-10deg);
+}
+
+.decoration-icon:nth-child(2) {
+  font-size: 36px;
+  animation-delay: 0.5s;
+  transform: rotate(0deg);
+}
+
+.decoration-icon:nth-child(3) {
+  font-size: 30px;
+  animation-delay: 1s;
+  transform: rotate(10deg);
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
 }
 
 /* 工具包头部信息 */
 .toolkit-header {
   margin-bottom: 40px;
-  padding-bottom: 20px;
-  border-bottom: 1px solid #eee;
+  padding-bottom: 25px;
+  border-bottom: 2px solid var(--border-color);
+  background-color: var(--bg-primary);
+  padding: 25px;
+  border-radius: 16px;
+  box-shadow: var(--shadow-medium);
+  position: relative;
+  overflow: hidden;
+}
+
+.toolkit-header::before {
+  content: "🎁";
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  font-size: 40px;
+  opacity: 0.1;
+  transform: rotate(15deg);
 }
 
 .toolkit-category {
   font-size: 14px;
-  color: #FF9800;
-  font-weight: 500;
-  margin-bottom: 10px;
+  color: var(--accent-color);
+  font-weight: 600;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: var(--bg-secondary);
+  padding: 6px 12px;
+  border-radius: 15px;
+  width: fit-content;
 }
 
 .toolkit-title {
   font-size: 32px;
   font-weight: 700;
-  margin-bottom: 15px;
+  margin-bottom: 20px;
   line-height: 1.3;
-  color: #333;
+  color: var(--text-primary);
 }
 
 .toolkit-meta {
@@ -215,22 +275,27 @@ const addToCart = () => {
   gap: 20px;
   margin-bottom: 20px;
   font-size: 14px;
-  color: #999;
+  color: var(--text-light);
+  flex-wrap: wrap;
 }
 
 .meta-item {
   display: flex;
   align-items: center;
   gap: 8px;
+  background-color: var(--bg-secondary);
+  padding: 4px 12px;
+  border-radius: 12px;
 }
 
 .toolkit-summary {
   font-size: 16px;
-  line-height: 1.6;
-  color: #666;
-  background-color: #fff3e0;
-  padding: 15px;
-  border-radius: 8px;
+  line-height: 1.7;
+  color: var(--text-secondary);
+  background-color: var(--bg-secondary);
+  padding: 18px;
+  border-radius: 12px;
+  border-left: 4px solid var(--accent-color);
   margin-bottom: 30px;
 }
 
@@ -239,6 +304,7 @@ const addToCart = () => {
   display: flex;
   align-items: center;
   gap: 20px;
+  flex-wrap: wrap;
 }
 
 .price-info {
@@ -250,45 +316,13 @@ const addToCart = () => {
 .current-price {
   font-size: 32px;
   font-weight: 700;
-  color: #F44336;
+  color: var(--accent-color);
 }
 
 .original-price {
   font-size: 16px;
-  color: #999;
+  color: var(--text-light);
   text-decoration: line-through;
-}
-
-.buy-now-btn {
-  background-color: #F44336;
-  color: white;
-  border: none;
-  padding: 12px 30px;
-  border-radius: 6px;
-  font-size: 16px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.buy-now-btn:hover {
-  background-color: #D32F2F;
-}
-
-.add-cart-btn {
-  background-color: #FF9800;
-  color: white;
-  border: none;
-  padding: 12px 30px;
-  border-radius: 6px;
-  font-size: 16px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.add-cart-btn:hover {
-  background-color: #F57C00;
 }
 
 /* 工具包详情内容 */
@@ -296,42 +330,74 @@ const addToCart = () => {
   margin-bottom: 40px;
   font-size: 16px;
   line-height: 1.8;
-  color: #333;
+  color: var(--text-primary);
+  background-color: var(--bg-primary);
+  padding: 30px;
+  border-radius: 16px;
+  box-shadow: var(--shadow-medium);
 }
 
 .toolkit-content h2 {
   font-size: 24px;
   font-weight: 600;
-  margin: 30px 0 15px;
-  color: #333;
+  margin: 35px 0 20px;
+  color: var(--text-primary);
+  padding-bottom: 8px;
+  border-bottom: 2px solid var(--border-color);
+}
+
+.toolkit-content h2:first-child {
+  margin-top: 0;
 }
 
 .toolkit-content p {
-  margin-bottom: 20px;
+  margin-bottom: 25px;
+  text-align: justify;
 }
 
 .toolkit-content ul, .toolkit-content ol {
-  margin-left: 20px;
-  margin-bottom: 20px;
+  margin-left: 25px;
+  margin-bottom: 25px;
+  padding-left: 10px;
 }
 
 .toolkit-content li {
-  margin-bottom: 10px;
+  margin-bottom: 12px;
+  padding-left: 8px;
+}
+
+.toolkit-content ul li::marker {
+  color: var(--accent-color);
+  font-size: 18px;
+}
+
+.toolkit-content ol li::marker {
+  color: var(--accent-color);
+  font-weight: 600;
 }
 
 /* 工具包包含内容 */
 .toolkit-includes {
   margin-bottom: 40px;
-  padding: 20px;
-  background-color: #f8f9fa;
-  border-radius: 8px;
+  padding: 25px;
+  background-color: var(--bg-primary);
+  border-radius: 16px;
+  box-shadow: var(--shadow-medium);
 }
 
 .section-title {
-  font-size: 20px;
+  font-size: 22px;
   font-weight: 600;
   margin-bottom: 20px;
-  color: #333;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.section-icon {
+  font-size: 24px;
+  color: var(--accent-color);
 }
 
 .includes-list {
@@ -342,13 +408,24 @@ const addToCart = () => {
   display: flex;
   align-items: flex-start;
   gap: 10px;
-  margin-bottom: 10px;
+  margin-bottom: 15px;
   font-size: 15px;
-  color: #333;
+  color: var(--text-secondary);
+  padding: 12px;
+  background-color: var(--bg-secondary);
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.include-item:hover {
+  transform: translateX(5px);
+  background-color: var(--bg-accent);
 }
 
 .include-item .icon {
   margin-top: 5px;
+  color: var(--accent-color);
+  font-size: 18px;
 }
 
 /* 用户评价 */
@@ -358,42 +435,53 @@ const addToCart = () => {
 
 .reviews-list {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 25px;
 }
 
 .review-item {
-  padding: 20px;
-  background-color: white;
-  border: 1px solid #eee;
-  border-radius: 8px;
+  padding: 25px;
+  background-color: var(--bg-primary);
+  border-radius: 16px;
+  box-shadow: var(--shadow-medium);
+  transition: all 0.3s ease;
+  border-left: 4px solid var(--accent-color);
+}
+
+.review-item:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-large);
 }
 
 .review-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 10px;
+  margin-bottom: 15px;
   font-size: 14px;
 }
 
 .reviewer-name {
-  font-weight: 500;
-  color: #333;
+  font-weight: 600;
+  color: var(--text-primary);
 }
 
 .review-rating {
-  color: #FFC107;
+  color: var(--accent-color);
+  font-size: 16px;
 }
 
 .review-date {
-  color: #999;
+  color: var(--text-light);
 }
 
 .review-content {
   font-size: 14px;
-  line-height: 1.6;
-  color: #666;
+  line-height: 1.7;
+  color: var(--text-secondary);
+  background-color: var(--bg-secondary);
+  padding: 15px;
+  border-radius: 8px;
 }
 
 /* 相关推荐 */
@@ -402,73 +490,126 @@ const addToCart = () => {
 }
 
 .related-title {
-  font-size: 20px;
+  font-size: 22px;
   font-weight: 600;
-  margin-bottom: 20px;
-  color: #333;
+  margin-bottom: 25px;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.related-icon {
+  font-size: 24px;
+  color: var(--accent-color);
 }
 
 .related-list {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 25px;
 }
 
 .related-item {
-  padding: 20px;
-  background-color: #fff3e0;
-  border-radius: 8px;
+  padding: 25px;
+  background-color: var(--bg-primary);
+  border-radius: 16px;
   transition: all 0.3s ease;
+  box-shadow: var(--shadow-medium);
+  border-left: 4px solid var(--accent-color);
 }
 
 .related-item:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  transform: translateY(-8px);
+  box-shadow: var(--shadow-large);
 }
 
 .related-link {
   text-decoration: none;
   color: inherit;
+  display: block;
 }
 
 .related-item-title {
   font-size: 16px;
   font-weight: 600;
-  margin-bottom: 10px;
-  color: #333;
+  margin-bottom: 12px;
+  color: var(--text-primary);
+  line-height: 1.4;
 }
 
 .related-item-summary {
   font-size: 14px;
   line-height: 1.5;
-  color: #666;
+  color: var(--text-secondary);
   margin-bottom: 15px;
   overflow: hidden;
   text-overflow: ellipsis;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
+  background-color: var(--bg-secondary);
+  padding: 10px;
+  border-radius: 6px;
 }
 
 .related-item-price {
   font-size: 18px;
   font-weight: 600;
-  color: #F44336;
+  color: var(--accent-color);
+  background-color: var(--bg-secondary);
+  padding: 6px 12px;
+  border-radius: 12px;
+  display: inline-block;
 }
 
 /* 响应式设计 */
+@media (max-width: 992px) {
+  .toolkit-title {
+    font-size: 28px;
+  }
+  
+  .toolkit-content {
+    padding: 25px;
+  }
+  
+  .toolkit-content h2 {
+    font-size: 22px;
+  }
+  
+  .reviews-list {
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+  }
+  
+  .related-list {
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+  }
+  
+  .theme-decoration {
+    gap: 20px;
+  }
+  
+  .decoration-icon {
+    font-size: 28px;
+  }
+}
+
 @media (max-width: 768px) {
+  .toolkit-header {
+    padding: 20px;
+  }
+  
   .toolkit-title {
     font-size: 24px;
   }
   
   .toolkit-meta {
-    flex-wrap: wrap;
     gap: 10px;
   }
   
   .toolkit-price-section {
-    flex-wrap: wrap;
     gap: 15px;
   }
   
@@ -477,6 +618,7 @@ const addToCart = () => {
   }
   
   .toolkit-content {
+    padding: 20px;
     font-size: 15px;
   }
   
@@ -484,14 +626,68 @@ const addToCart = () => {
     font-size: 20px;
   }
   
+  .toolkit-includes {
+    padding: 20px;
+  }
+  
+  .section-title {
+    font-size: 20px;
+  }
+  
   .reviews-list {
     grid-template-columns: 1fr;
-    gap: 15px;
+    gap: 18px;
+  }
+  
+  .review-item {
+    padding: 20px;
+  }
+  
+  .related-title {
+    font-size: 20px;
   }
   
   .related-list {
     grid-template-columns: 1fr;
+    gap: 18px;
+  }
+  
+  .related-item {
+    padding: 20px;
+  }
+  
+  .theme-decoration {
     gap: 15px;
+  }
+  
+  .decoration-icon {
+    font-size: 24px;
+  }
+}
+
+@media (max-width: 480px) {
+  .toolkit-title {
+    font-size: 20px;
+  }
+  
+  .toolkit-summary {
+    font-size: 14px;
+  }
+  
+  .toolkit-content {
+    font-size: 14px;
+  }
+  
+  .toolkit-content h2 {
+    font-size: 18px;
+  }
+  
+  .section-title {
+    font-size: 18px;
+  }
+  
+  .related-item-title {
+    font-size: 15px;
   }
 }
 </style>

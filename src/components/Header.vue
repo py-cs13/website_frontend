@@ -29,8 +29,8 @@
             </router-link>
           </template>
           <template v-else>
-            <button class="login-btn" @click="showLoginModal = true">登录</button>
-            <button class="register-btn" @click="showRegisterModal = true">注册</button>
+            <router-link to="/login" class="login-btn">登录</router-link>
+            <router-link to="/register" class="register-btn">注册</router-link>
           </template>
           
           <!-- 移动端菜单按钮 -->
@@ -50,6 +50,8 @@
           <li><router-link to="/" @click="showMobileMenu = false">文章</router-link></li>
           <li><router-link to="/" @click="showMobileMenu = false">工具包</router-link></li>
           <li><router-link to="/about" @click="showMobileMenu = false">关于我们</router-link></li>
+          <li><router-link to="/login" @click="showMobileMenu = false">登录</router-link></li>
+          <li><router-link to="/register" @click="showMobileMenu = false">注册</router-link></li>
         </ul>
       </div>
     </div>
@@ -62,8 +64,6 @@ import { useUserStore } from '../stores'
 
 const userStore = useUserStore()
 const showMobileMenu = ref(false)
-const showLoginModal = ref(false)
-const showRegisterModal = ref(false)
 </script>
 
 <style scoped>
@@ -286,4 +286,5 @@ const showRegisterModal = ref(false)
     font-size: 13px;
   }
 }
+
 </style>

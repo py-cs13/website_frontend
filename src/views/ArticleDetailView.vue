@@ -1,58 +1,101 @@
 <template>
   <div class="article-detail">
-    <!-- 文章头部信息 -->
-    <div class="article-header">
-      <div class="article-category">{{ article.category }}</div>
-      <h1 class="article-title">{{ article.title }}</h1>
-      <div class="article-meta">
-        <span class="meta-item">
-          <i class="icon">📅</i> {{ article.created_at }}
-        </span>
-        <span class="meta-item">
-          <i class="icon">👁️</i> {{ article.views }} 阅读
-        </span>
-        <span class="meta-item">
-          <i class="icon">❤️</i> {{ article.likes }} 点赞
-        </span>
+    <!-- 加载状态 -->
+    <div v-if="loading" class="loading-container">
+      <div class="loading-spinner">
+        <div class="spinner"></div>
+        <p>正在加载文章...</p>
       </div>
-      <div class="article-summary">{{ article.summary }}</div>
     </div>
     
-    <!-- 文章正文 -->
-    <div class="article-content">
-      <!-- 使用 v-html 渲染富文本内容 -->
-      <div v-html="article.content"></div>
-    </div>
-    
-    <!-- 文章操作区 -->
-    <div class="article-actions">
-      <button class="action-btn like-btn" @click="toggleLike">
-        <i class="icon">❤️</i> {{ article.liked ? '已点赞' : '点赞' }}
-      </button>
-      <button class="action-btn share-btn" @click="shareArticle">
-        <i class="icon">📤</i> 分享
-      </button>
-      <button class="action-btn collect-btn" @click="toggleCollect">
-        <i class="icon">⭐</i> {{ article.collected ? '已收藏' : '收藏' }}
-      </button>
-    </div>
-    
-    <!-- 相关推荐 -->
-    <div class="related-content">
-      <h3 class="related-title">相关推荐</h3>
-      <div class="related-list">
-        <div 
-          v-for="item in relatedArticles" 
-          :key="item.id" 
-          class="related-item"
+    <template v-else>
+      <!-- 母婴主题装饰 -->
+      <div class="theme-decoration">
+        <div class="decoration-icon">👶</div>
+        <div class="decoration-icon">📚</div>
+        <div class="decoration-icon">🎀</div>
+      </div>
+      
+      <!-- 文章头部信息 -->
+      <div class="article-header">
+        <div class="article-category">
+          <span class="category-icon">{{ getCategoryIcon(article.category) }}</span>
+          {{ article.category }}
+        </div>
+        <h1 class="article-title">{{ article.title }}</h1>
+        <div class="article-meta">
+          <span class="meta-item">
+            <i class="icon">📅</i> {{ article.created_at }}
+          </span>
+          <span class="meta-item">
+            <i class="icon">👁️</i> {{ article.views }} 阅读
+          </span>
+          <span class="meta-item">
+            <i class="icon">❤️</i> {{ article.likes }} 点赞
+          </span>
+        </div>
+        <div class="article-summary">{{ article.summary }}</div>
+      </div>
+      
+      <!-- 文章正文 -->
+      <div class="article-content">
+        <!-- 使用 v-html 渲染富文本内容 -->
+        <div v-html="article.content"></div>
+      </div>
+      
+      <!-- 文章操作区 -->
+      <div class="article-actions">
+        <Button 
+          variant="secondary" 
+          size="medium" 
+          @click="toggleLike"
+          :class="{ 'active': article.liked, 'like-btn': true }"
         >
-          <router-link :to="`/article/${item.id}`" class="related-link">
-            <h4 class="related-item-title">{{ item.title }}</h4>
-            <p class="related-item-summary">{{ item.summary }}</p>
-          </router-link>
+          <i class="icon">❤️</i> {{ article.liked ? '已点赞' : '点赞' }}
+        </Button>
+        <Button 
+          variant="secondary" 
+          size="medium" 
+          @click="shareArticle"
+          class="share-btn"
+        >
+          <i class="icon">📤</i> 分享
+        </Button>
+        <Button 
+          variant="secondary" 
+          size="medium" 
+          @click="toggleCollect"
+          :class="{ 'active': article.collected, 'collect-btn': true }"
+        >
+          <i class="icon">⭐</i> {{ article.collected ? '已收藏' : '收藏' }}
+        </Button>
+      </div>
+      
+      <!-- 相关推荐 -->
+      <div class="related-content">
+        <h3 class="related-title">
+          <span class="related-icon">📚</span> 相关推荐
+        </h3>
+        <div class="related-list">
+          <div 
+            v-for="item in relatedArticles" 
+            :key="item.id" 
+            class="related-item"
+          >
+            <router-link :to="`/article/${item.id}`" class="related-link">
+              <div class="related-item-header">
+                <span class="related-item-category">
+                  <span class="category-icon">{{ getCategoryIcon(item.category) }}</span>
+                  {{ item.category }}
+                </span>
+              </div>
+              <h4 class="related-item-title">{{ item.title }}</h4>
+              <p class="related-item-summary">{{ item.summary }}</p>
+            </router-link>
+          </div>
         </div>
       </div>
-    </div>
+    </template>
   </div>
 </template>
 
@@ -60,11 +103,13 @@
 import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useContentStore } from '../stores'
+import Button from '../components/Button.vue'
 
 const route = useRoute()
 const router = useRouter()
 const contentStore = useContentStore()
 const articleId = parseInt(route.params.id)
+const loading = ref(true)
 
 // 文章详情
 const article = ref({
@@ -82,62 +127,94 @@ const article = ref({
 
 // 相关推荐
 const relatedArticles = ref([
-  { id: 2, title: '如何科学安排孕期饮食', summary: '孕期饮食对胎儿发育至关重要，本文将为您介绍科学的孕期饮食安排。' },
-  { id: 3, title: '上班族必看：缓解颈椎疼痛的方法', summary: '长期久坐的上班族容易出现颈椎问题，这些简单的方法可以帮助您缓解疼痛。' },
-  { id: 4, title: '营养早餐搭配指南', summary: '一顿营养均衡的早餐是一天活力的开始，学会这些搭配技巧，让您的早餐更健康。' }
+  { id: 2, title: '如何科学安排孕期饮食', category: '营养辅食', summary: '孕期饮食对胎儿发育至关重要，本文将为您介绍科学的孕期饮食安排。' },
+  { id: 3, title: '新生儿护理的10个关键要点', category: '婴儿护理', summary: '新手父母必看，掌握这些新生儿护理技巧，让宝宝健康成长。' },
+  { id: 4, title: '亲子互动游戏推荐（0-1岁）', category: '亲子互动', summary: '通过简单的互动游戏，促进宝宝的智力和情感发展。' },
+  { id: 5, title: '产后恢复的正确方法', category: '产后恢复', summary: '科学的产后恢复计划，帮助新妈妈快速恢复身体健康。' },
+  { id: 6, title: '宝宝辅食添加时间表', category: '营养辅食', summary: '了解宝宝不同阶段的辅食添加建议，让宝宝营养均衡成长。' },
+  { id: 7, title: '婴儿睡眠习惯培养指南', category: '婴儿护理', summary: '帮助宝宝建立良好的睡眠习惯，让全家都能睡个好觉。' }
 ])
 
+// 获取分类对应的图标
+const getCategoryIcon = (categoryName) => {
+  const iconMap = {
+    '婴儿护理': '👶',
+    '育儿知识': '📚',
+    '营养辅食': '🍼',
+    '产后恢复': '🤰',
+    '亲子互动': '👨‍👩‍👧',
+    '成长发育': '🌱',
+    '健康养生': '💊',
+    '母婴育儿': '👪'
+  }
+  return iconMap[categoryName] || '📖'
+}
+
 // 加载文章详情
-onMounted(() => {
-  // 在实际项目中，这里会调用API获取文章详情
-  // contentStore.fetchArticleDetail(articleId)
-  
-  // 模拟数据
-  article.value = {
-    id: articleId,
-    title: '10个简单的养生小技巧',
-    category: '健康养生',
-    summary: '养生并不需要复杂的方法，这些简单的小技巧可以帮助您保持健康的生活方式。',
-    content: `
-      <p>在快节奏的现代生活中，保持健康的生活方式变得越来越重要。以下是10个简单易行的养生小技巧，帮助您在日常生活中保持健康：</p>
-      
-      <h2>1. 每天喝足够的水</h2>
-      <p>水是生命之源，保持充足的水分摄入对身体健康至关重要。建议每天喝8-10杯水，保持身体水分平衡。</p>
-      
-      <h2>2. 坚持适量运动</h2>
-      <p>适量的运动可以增强身体免疫力，促进血液循环。可以选择散步、瑜伽、游泳等低强度运动，每周保持3-5次。</p>
-      
-      <h2>3. 保证充足睡眠</h2>
-      <p>睡眠是身体恢复的重要时期，建议每天保持7-8小时的睡眠时间，建立规律的作息习惯。</p>
-      
-      <h2>4. 合理饮食</h2>
-      <p>保持饮食均衡，多吃蔬菜、水果、全谷物等富含营养的食物，减少油腻、辛辣食物的摄入。</p>
-      
-      <h2>5. 保持良好的心态</h2>
-      <p>情绪对身体健康有很大影响，保持积极乐观的心态，学会缓解压力，可以通过冥想、听音乐等方式放松心情。</p>
-      
-      <h2>6. 定期体检</h2>
-      <p>定期进行身体检查，及早发现和预防疾病，是保持健康的重要措施。</p>
-      
-      <h2>7. 减少久坐时间</h2>
-      <p>长期久坐容易导致颈椎、腰椎问题，建议每隔1小时起身活动一下，伸展身体。</p>
-      
-      <h2>8. 戒烟限酒</h2>
-      <p>吸烟和过量饮酒对身体健康有很大危害，尽量戒烟限酒，保持健康的生活方式。</p>
-      
-      <h2>9. 保持良好的个人卫生</h2>
-      <p>勤洗手、保持居住环境清洁，可以有效预防疾病的传播。</p>
-      
-      <h2>10. 多与家人朋友交流</h2>
-      <p>保持良好的人际关系，多与家人朋友交流，可以缓解压力，保持心理健康。</p>
-      
-      <p>以上这些养生小技巧简单易行，只要坚持实施，就能帮助您保持健康的生活方式，提高生活质量。</p>
-    `,
-    created_at: '2025-01-15',
-    views: 1234,
-    likes: 89,
-    liked: false,
-    collected: false
+onMounted(async () => {
+  loading.value = true
+  try {
+    // 尝试从store获取文章详情
+    const articleData = await contentStore.fetchArticleDetail(articleId)
+    if (articleData) {
+      article.value = {
+        ...articleData,
+        liked: false,
+        collected: false
+      }
+    } else {
+      // 如果store没有数据，使用模拟数据
+      article.value = {
+        id: articleId,
+        title: '新生儿护理的10个重要技巧',
+        category: '婴儿护理',
+        summary: '作为新手父母，掌握正确的新生儿护理技巧至关重要。本文将为您介绍10个关键的护理要点，帮助您更好地照顾宝宝。',
+        content: `
+          <p>欢迎阅读这篇关于新生儿护理的文章！作为新手父母，照顾刚出生的宝宝可能会感到紧张和不知所措。别担心，只要掌握了一些基本的护理知识和技巧，您就能成为一位出色的父母。</p>
+          
+          <h2>1. 正确的抱姿</h2>
+          <p>新生儿的颈部肌肉还没有发育完全，所以抱宝宝时一定要支撑好他的头部和颈部。可以使用"摇篮抱"或者"足球抱"的方式，确保宝宝感到安全和舒适。</p>
+          
+          <h2>2. 脐带护理</h2>
+          <p>新生儿的脐带需要保持清洁和干燥，直到自然脱落（通常需要1-2周时间）。每天用酒精棉擦拭脐带根部，避免感染。</p>
+          
+          <h2>3. 洗澡时间</h2>
+          <p>给新生儿洗澡时，水温要控制在37-38℃左右。可以使用专门的婴儿浴盆，注意不要让水进入宝宝的耳朵和眼睛。洗澡时间不宜过长，5-10分钟即可。</p>
+          
+          <h2>4. 睡眠安全</h2>
+          <p>为了降低SIDS（婴儿猝死综合征）的风险，建议让宝宝仰卧睡觉，避免使用过软的床垫和枕头。宝宝的睡眠环境要保持安静和舒适。</p>
+          
+          <h2>5. 喂养技巧</h2>
+          <p>无论是母乳喂养还是配方奶喂养，都要注意正确的姿势和频率。新生儿通常每2-3小时需要喂一次奶，每次喂养时间在15-20分钟左右。</p>
+          
+          <h2>6. 换尿布</h2>
+          <p>及时更换尿布可以预防尿布疹的发生。换尿布时要用温水清洗宝宝的臀部，然后擦干，必要时可以涂抹护臀霜。</p>
+          
+          <h2>7. 体温监测</h2>
+          <p>新生儿的体温调节能力较弱，所以要经常监测宝宝的体温。正常体温范围在36.5-37.5℃之间。</p>
+          
+          <h2>8. 哭闹安抚</h2>
+          <p>新生儿哭闹是表达需求的方式，可能是饿了、累了、尿布湿了或者需要安抚。可以尝试轻轻摇晃、抚摸或者唱歌来安抚宝宝。</p>
+          
+          <h2>9. 疫苗接种</h2>
+          <p>按照医生的建议，及时为宝宝接种疫苗，预防各种传染病。</p>
+          
+          <h2>10. 观察异常情况</h2>
+          <p>要密切观察宝宝的身体状况，如果出现发热、呕吐、腹泻、呼吸急促等异常情况，要及时就医。</p>
+          
+          <p>希望这些护理技巧能够帮助您更好地照顾宝宝！记住，每个宝宝都是独特的，您需要根据自己宝宝的情况调整护理方式。如果有任何疑问，不要犹豫，及时咨询医生或专业人士。</p>
+        `,
+        created_at: '2024-06-03',
+        views: 1567,
+        likes: 123,
+        liked: false,
+        collected: false
+      }
+    }
+  } catch (error) {
+    console.error('Failed to load article:', error)
+  } finally {
+    loading.value = false
   }
 })
 
@@ -164,26 +241,121 @@ const shareArticle = () => {
   max-width: 100%;
 }
 
+/* 母婴主题装饰 */
+.theme-decoration {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  margin-bottom: 20px;
+  animation: float 3s ease-in-out infinite;
+}
+
+.decoration-icon {
+  font-size: 32px;
+  filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1));
+  transform: rotate(-10deg);
+}
+
+.decoration-icon:nth-child(2) {
+  font-size: 36px;
+  transform: rotate(0deg);
+  animation-delay: 0.5s;
+}
+
+.decoration-icon:nth-child(3) {
+  font-size: 30px;
+  transform: rotate(10deg);
+  animation-delay: 1s;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+/* 加载状态样式 */
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
+  padding: 40px;
+}
+
+.loading-spinner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.spinner {
+  width: 50px;
+  height: 50px;
+  border: 4px solid var(--bg-secondary);
+  border-top: 4px solid var(--primary-color);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.loading-spinner p {
+  font-size: 16px;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
 /* 文章头部信息 */
 .article-header {
   margin-bottom: 40px;
-  padding-bottom: 20px;
-  border-bottom: 1px solid #eee;
+  padding-bottom: 25px;
+  border-bottom: 2px solid var(--border-color);
+  background-color: var(--bg-primary);
+  padding: 25px;
+  border-radius: 16px;
+  box-shadow: var(--shadow-medium);
+  position: relative;
+  overflow: hidden;
+}
+
+.article-header::before {
+  content: "👶";
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  font-size: 40px;
+  opacity: 0.1;
+  transform: rotate(15deg);
 }
 
 .article-category {
   font-size: 14px;
-  color: #1E88E5;
-  font-weight: 500;
-  margin-bottom: 10px;
+  color: var(--primary-color);
+  font-weight: 600;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: var(--bg-secondary);
+  padding: 6px 12px;
+  border-radius: 15px;
+  width: fit-content;
+}
+
+.category-icon {
+  font-size: 16px;
 }
 
 .article-title {
   font-size: 32px;
   font-weight: 700;
-  margin-bottom: 15px;
+  margin-bottom: 20px;
   line-height: 1.3;
-  color: #333;
+  color: var(--text-primary);
 }
 
 .article-meta {
@@ -191,22 +363,27 @@ const shareArticle = () => {
   gap: 20px;
   margin-bottom: 20px;
   font-size: 14px;
-  color: #999;
+  color: var(--text-light);
+  flex-wrap: wrap;
 }
 
 .meta-item {
   display: flex;
   align-items: center;
   gap: 8px;
+  background-color: var(--bg-secondary);
+  padding: 4px 12px;
+  border-radius: 12px;
 }
 
 .article-summary {
   font-size: 16px;
-  line-height: 1.6;
-  color: #666;
-  background-color: #f8f9fa;
-  padding: 15px;
-  border-radius: 8px;
+  line-height: 1.7;
+  color: var(--text-secondary);
+  background-color: var(--bg-secondary);
+  padding: 18px;
+  border-radius: 12px;
+  border-left: 4px solid var(--primary-color);
 }
 
 /* 文章正文 */
@@ -214,27 +391,50 @@ const shareArticle = () => {
   margin-bottom: 40px;
   font-size: 16px;
   line-height: 1.8;
-  color: #333;
+  color: var(--text-primary);
+  background-color: var(--bg-primary);
+  padding: 30px;
+  border-radius: 16px;
+  box-shadow: var(--shadow-medium);
 }
 
 .article-content h2 {
   font-size: 24px;
   font-weight: 600;
-  margin: 30px 0 15px;
-  color: #333;
+  margin: 35px 0 20px;
+  color: var(--primary-color);
+  padding-bottom: 8px;
+  border-bottom: 2px solid var(--border-color);
+}
+
+.article-content h2:first-child {
+  margin-top: 0;
 }
 
 .article-content p {
-  margin-bottom: 20px;
+  margin-bottom: 25px;
+  text-align: justify;
 }
 
 .article-content ul, .article-content ol {
-  margin-left: 20px;
-  margin-bottom: 20px;
+  margin-left: 25px;
+  margin-bottom: 25px;
+  padding-left: 10px;
 }
 
 .article-content li {
-  margin-bottom: 10px;
+  margin-bottom: 12px;
+  padding-left: 8px;
+}
+
+.article-content ul li::marker {
+  color: var(--primary-color);
+  font-size: 18px;
+}
+
+.article-content ol li::marker {
+  color: var(--primary-color);
+  font-weight: 600;
 }
 
 /* 文章操作区 */
@@ -242,42 +442,54 @@ const shareArticle = () => {
   display: flex;
   gap: 15px;
   margin-bottom: 40px;
-  padding: 20px;
-  background-color: #f8f9fa;
-  border-radius: 8px;
+  padding: 25px;
+  background-color: var(--bg-primary);
+  border-radius: 16px;
+  box-shadow: var(--shadow-medium);
+  flex-wrap: wrap;
 }
 
 .action-btn {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 10px 20px;
-  border: 1px solid #ddd;
-  background-color: white;
-  border-radius: 25px;
+  padding: 12px 24px;
+  border: 2px solid var(--border-color);
+  background-color: var(--bg-secondary);
+  border-radius: 28px;
   font-size: 14px;
+  font-weight: 500;
   cursor: pointer;
   transition: all 0.3s ease;
+  color: var(--text-secondary);
+  box-shadow: var(--shadow-light);
 }
 
 .action-btn:hover {
-  background-color: #f5f5f5;
-  border-color: #ccc;
+  background-color: var(--bg-primary);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-medium);
 }
 
-.like-btn:hover {
-  color: #e53935;
-  border-color: #e53935;
+.action-btn.active {
+  border-color: var(--primary-color);
+  color: var(--primary-color);
+  background-color: var(--bg-secondary);
+}
+
+.like-btn:hover, .like-btn.active {
+  border-color: var(--accent-color);
+  color: var(--accent-color);
 }
 
 .share-btn:hover {
-  color: #1E88E5;
-  border-color: #1E88E5;
+  border-color: var(--primary-color);
+  color: var(--primary-color);
 }
 
-.collect-btn:hover {
-  color: #FFC107;
-  border-color: #FFC107;
+.collect-btn:hover, .collect-btn.active {
+  border-color: var(--secondary-color);
+  color: var(--secondary-color);
 }
 
 /* 相关推荐 */
@@ -286,45 +498,87 @@ const shareArticle = () => {
 }
 
 .related-title {
-  font-size: 20px;
+  font-size: 22px;
   font-weight: 600;
-  margin-bottom: 20px;
-  color: #333;
+  margin-bottom: 25px;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.related-icon {
+  font-size: 24px;
+  color: var(--primary-color);
 }
 
 .related-list {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 25px;
 }
 
 .related-item {
-  padding: 20px;
-  background-color: #f8f9fa;
-  border-radius: 8px;
+  padding: 25px;
+  background-color: var(--bg-primary);
+  border-radius: 16px;
+  box-shadow: var(--shadow-medium);
   transition: all 0.3s ease;
+  border-left: 4px solid var(--primary-color);
+  position: relative;
+  overflow: hidden;
+}
+
+.related-item::before {
+  content: "📚";
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  font-size: 24px;
+  opacity: 0.1;
+  transform: rotate(15deg);
 }
 
 .related-item:hover {
-  background-color: #eee;
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-large);
 }
 
 .related-link {
   text-decoration: none;
   color: inherit;
+  display: block;
+}
+
+.related-item-header {
+  margin-bottom: 12px;
+}
+
+.related-item-category {
+  font-size: 12px;
+  color: var(--primary-color);
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background-color: var(--bg-secondary);
+  padding: 4px 10px;
+  border-radius: 12px;
+  width: fit-content;
 }
 
 .related-item-title {
   font-size: 16px;
   font-weight: 600;
   margin-bottom: 10px;
-  color: #333;
+  color: var(--text-primary);
+  line-height: 1.4;
 }
 
 .related-item-summary {
   font-size: 14px;
   line-height: 1.5;
-  color: #666;
+  color: var(--text-secondary);
   overflow: hidden;
   text-overflow: ellipsis;
   display: -webkit-box;
@@ -333,17 +587,48 @@ const shareArticle = () => {
 }
 
 /* 响应式设计 */
+@media (max-width: 992px) {
+  .article-title {
+    font-size: 28px;
+  }
+  
+  .article-content {
+    padding: 25px;
+  }
+  
+  .article-content h2 {
+    font-size: 22px;
+  }
+  
+  .related-list {
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+  }
+  
+  .theme-decoration {
+    gap: 20px;
+  }
+  
+  .decoration-icon {
+    font-size: 28px;
+  }
+}
+
 @media (max-width: 768px) {
+  .article-header {
+    padding: 20px;
+  }
+  
   .article-title {
     font-size: 24px;
   }
   
   .article-meta {
-    flex-wrap: wrap;
     gap: 10px;
   }
   
   .article-content {
+    padding: 20px;
     font-size: 15px;
   }
   
@@ -352,12 +637,61 @@ const shareArticle = () => {
   }
   
   .article-actions {
-    flex-wrap: wrap;
+    gap: 10px;
+    padding: 20px;
+  }
+  
+  .action-btn {
+    padding: 10px 20px;
+    font-size: 13px;
+  }
+  
+  .related-title {
+    font-size: 20px;
   }
   
   .related-list {
     grid-template-columns: 1fr;
+    gap: 18px;
+  }
+  
+  .related-item {
+    padding: 20px;
+  }
+  
+  .theme-decoration {
     gap: 15px;
+  }
+  
+  .decoration-icon {
+    font-size: 24px;
+  }
+}
+
+@media (max-width: 480px) {
+  .article-title {
+    font-size: 20px;
+  }
+  
+  .article-summary {
+    font-size: 14px;
+  }
+  
+  .article-content {
+    font-size: 14px;
+  }
+  
+  .article-content h2 {
+    font-size: 18px;
+  }
+  
+  .action-btn {
+    padding: 8px 16px;
+    font-size: 12px;
+  }
+  
+  .related-item-title {
+    font-size: 15px;
   }
 }
 </style>

@@ -163,6 +163,42 @@ export const useUserStore = defineStore('user', {
         this.token = token
         this.user = JSON.parse(user)
       }
+    },
+    
+    // 立即购买功能
+    async buyNow(toolkitId, amount = 99.0) {
+      this.loading = true
+      this.error = null
+      try {
+        // 添加Authorization头
+        const headers = {
+          'Authorization': `Bearer ${this.token}`
+        }
+        
+        // 构建订单数据
+        const orderData = {
+          product_type: 'toolkit',
+          product_id: toolkitId,
+          amount: amount,
+          items: [{
+            product_name: `工具包 #${toolkitId}`,
+            product_price: amount,
+            quantity: 1,
+            total_amount: amount
+          }]
+        }
+        
+        // 发送请求
+        const response = await axios.post('/api/orders', orderData, { headers })
+        console.log('购买成功:', response.data)
+        return response.data
+      } catch (error) {
+        this.error = error.message
+        console.error('购买失败:', error)
+        return null
+      } finally {
+        this.loading = false
+      }
     }
   }
 })

@@ -44,7 +44,7 @@
         <div class="ad-content">
           <h4>获取专业工具包</h4>
           <p>9.9元即可获得价值99元的专业工具包</p>
-          <button class="ad-btn">立即购买</button>
+          <button class="ad-btn" @click="buyNow">立即购买</button>
         </div>
       </div>
     </div>
@@ -99,6 +99,32 @@ const navigateToArticle = (articleId) => {
 // 导航到工具包详情
 const navigateToToolkit = (toolkitId) => {
   router.push(`/toolkit/${toolkitId}`)
+}
+
+// 立即购买功能
+const buyNow = () => {
+  // 为广告创建一个模拟的商品对象
+  const mockToolkit = {
+    id: 999, // 模拟的工具包ID
+    title: '专业工具包',
+    type: 'toolkit',
+    price: 9.9
+  }
+  
+  console.log('=== 立即购买按钮点击事件开始 ===')
+  console.log('点击的商品：', mockToolkit)
+  
+  // 跳转到支付页面，携带商品信息
+  router.push({
+    path: '/payment',
+    query: {
+      product_type: mockToolkit.type,
+      product_id: mockToolkit.id,
+      product_name: mockToolkit.title,
+      price: mockToolkit.price
+    }
+  })
+  console.log('路由跳转命令已执行，跳转到支付页面')
 }
 </script>
 

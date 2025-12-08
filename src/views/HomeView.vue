@@ -25,8 +25,16 @@
       </button>
     </div>
     
+    <!-- 加载状态 -->
+    <div v-if="loading" class="loading-container">
+      <div class="loading-spinner">
+        <div class="spinner"></div>
+        <p>正在加载内容...</p>
+      </div>
+    </div>
+    
     <!-- 内容列表 -->
-    <div class="content-list">
+    <div v-else-if="filteredContent.length > 0" class="content-list">
       <div 
         v-for="item in filteredContent" 
         :key="item.id" 
@@ -40,24 +48,28 @@
           </div>
           <div class="card-type">{{ item.type === 'article' ? '📚 文章' : '🎁 工具包' }}</div>
         </div>
+
         
         <h3 class="card-title">
           <router-link :to="`/${item.type === 'article' ? 'article' : 'toolkit'}/${item.id}`">
-            {{ item.title }}
+            {{ item.title || '标题加载中...' }}
           </router-link>
         </h3>
         
-        <p class="card-summary">{{ item.summary }}</p>
+        <p class="card-summary">{{ item.summary || '内容摘要加载中...' }}</p>
         
         <div class="card-meta">
           <span class="meta-item">
-            <i class="icon">📅</i> {{ item.created_at }}
+            <i class="icon">📅</i> {{ item.created_at || '2024-06-03' }}
           </span>
           <span class="meta-item">
-            <i class="icon">👁️‍🗨️</i> {{ item.views }} 阅读
+            <i class="icon">👁️‍🗨️</i> {{ item.views || 0 }} 阅读
           </span>
           <span class="meta-item">
-            <i class="icon">❤️</i> {{ item.likes }} 点赞
+            <i class="icon">❤️</i> {{ item.likes || 0 }} 点赞
+          </span>
+          <span v-if="item.type === 'toolkit'" class="meta-item price">
+            <i class="icon">💰</i> ¥{{ item.price || 99.0 }}
           </span>
         </div>
         
@@ -68,10 +80,21 @@
           >
             {{ item.type === 'article' ? '阅读全文' : '查看详情' }} →
           </router-link>
-          <button v-if="item.type === 'toolkit'" class="buy-btn">立即购买</button>
+          <button v-if="item.type === 'toolkit'" class="buy-btn" @click="buyToolkit(item)">立即购买</button>
         </div>
       </div>
     </div>
+    
+    <!-- 空状态 -->
+    <div v-else class="empty-state">
+      <div class="empty-icon">📚</div>
+      <h3>暂无内容</h3>
+      <p>该分类下暂时没有相关内容，换个分类试试吧！</p>
+    </div>
+    
+
+    
+
     
     <!-- 加载更多按钮 -->
     <div class="load-more">
@@ -82,10 +105,13 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
-import { useContentStore } from '../stores'
+import { useRouter } from 'vue-router'
+import { useContentStore, useUserStore } from '../stores'
 
 const contentStore = useContentStore()
+const router = useRouter()
 const activeCategory = ref(0) // 0表示全部
+const loading = ref(false)
 
 // 模拟分类数据
 const categories = ref([
@@ -97,6 +123,21 @@ const categories = ref([
   { id: 5, name: '亲子互动' },
   { id: 6, name: '成长发育' }
 ])
+
+// 页面加载时获取内容
+onMounted(async () => {
+  loading.value = true
+  try {
+    await Promise.all([
+      contentStore.fetchLatestArticles(),
+      contentStore.fetchLatestToolkits()
+    ])
+  } catch (error) {
+    console.error('Failed to load content:', error)
+  } finally {
+    loading.value = false
+  }
+})
 
 // 获取分类对应的图标
 const getCategoryIcon = (categoryName) => {
@@ -112,22 +153,41 @@ const getCategoryIcon = (categoryName) => {
   return iconMap[categoryName] || '📖'
 }
 
+// 合并文章和工具包数据
+const allContent = computed(() => {
+  const articlesWithType = contentStore.articles.map(article => ({
+    ...article,
+    type: 'article',
+    category: article.category || '母婴育儿'
+  }))
+  
+  const toolkitsWithType = contentStore.toolkits.map(toolkit => ({
+    ...toolkit,
+    type: 'toolkit',
+    category: toolkit.category || '育儿工具'
+  }))
+  
+  return [...articlesWithType, ...toolkitsWithType]
+})
+
 // 筛选后的内容
 const filteredContent = computed(() => {
   if (activeCategory.value === 0) {
-    return contentStore.contentList
+    return allContent.value
   }
-  return contentStore.contentList.filter(item => {
-    const categoryMap = {
-      '健康养生': 1,
-      '母婴育儿': 2,
-      '运动健身': 3,
-      '饮食营养': 4,
-      '心理疏导': 5,
-      '睡眠管理': 6
-    }
-    return categoryMap[item.category] === activeCategory.value
-  })
+  
+  // 根据分类ID筛选内容
+  const categoryMap = {
+    1: ['婴儿护理', '健康养生'],
+    2: ['育儿知识', '母婴育儿'],
+    3: ['营养辅食', '饮食营养'],
+    4: ['产后恢复'],
+    5: ['亲子互动'],
+    6: ['成长发育']
+  }
+  
+  const categoriesToShow = categoryMap[activeCategory.value] || []
+  return allContent.value.filter(item => categoriesToShow.includes(item.category))
 })
 
 // 分类筛选
@@ -136,8 +196,54 @@ const filterContent = (categoryId) => {
 }
 
 // 加载更多内容
-const loadMoreContent = () => {
-  contentStore.loadMoreContent()
+const loadMoreContent = async () => {
+  // 这里可以实现分页加载逻辑
+  console.log('Load more content...')
+}
+
+// 测试点击事件
+const testClick = () => {
+  console.log('测试点击事件触发了！')
+  alert('测试点击事件触发了！')
+}
+
+// 测试路由跳转
+const testRouter = () => {
+  console.log('测试路由跳转...')
+  router.push('/about')
+}
+
+// 购买工具包
+const buyToolkit = async (item) => {
+  try {
+    console.log('=== 立即购买按钮点击事件开始 ===')
+    console.log('点击的商品：', item)
+    
+    // 检查商品数据完整性
+    if (!item || !item.id || !item.title) {
+      console.error('商品数据不完整：', item)
+      alert('商品数据不完整，请刷新页面后重试')
+      return
+    }
+    
+    // 直接跳转到支付页面，携带商品信息
+    router.push({
+      path: '/payment',
+      query: {
+        product_type: item.type,
+        product_id: item.id,
+        product_name: item.title,
+        price: item.price || 99.0
+      }
+    })
+    console.log('路由跳转命令已执行，跳转到支付页面')
+  } catch (error) {
+    console.error('=== 购买工具包时发生错误 ===')
+    console.error('错误类型：', typeof error)
+    console.error('错误消息：', error.message)
+    console.error('错误堆栈：', error.stack)
+    alert('购买失败：' + error.message)
+  }
 }
 </script>
 
@@ -282,6 +388,7 @@ const loadMoreContent = () => {
   font-size: 24px;
   opacity: 0.1;
   transform: rotate(15deg);
+  pointer-events: none;
 }
 
 .content-card:hover {
@@ -373,6 +480,13 @@ const loadMoreContent = () => {
   margin-bottom: 20px;
   font-size: 12px;
   color: var(--text-light);
+  
+  .price {
+    color: var(--accent-color);
+    font-weight: 600;
+    font-size: 14px;
+  }
+
   background-color: var(--bg-secondary);
   padding: 10px;
   border-radius: 8px;
@@ -388,6 +502,7 @@ const loadMoreContent = () => {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-top: 1rem;
 }
 
 .read-more-btn {
@@ -427,9 +542,9 @@ const loadMoreContent = () => {
 }
 
 .buy-btn:hover {
-  background-color: var(--accent-color-hover);
+  background-color: #FFC107;
   transform: translateY(-2px);
-  box-shadow: var(--shadow-large);
+  box-shadow: var(--shadow-medium);
 }
 
 /* 加载更多按钮 */
@@ -437,21 +552,17 @@ const loadMoreContent = () => {
   text-align: center;
 }
 
+
+
 .load-more-btn {
-  background-color: var(--bg-primary);
-  color: var(--primary-color);
-  border: 2px solid var(--primary-color);
-  padding: 12px 40px;
-  border-radius: 28px;
-  font-size: 14px;
-  font-weight: 600;
+  padding: 0.75rem 2rem;
+  background-color: var(--accent-color);
+  color: white;
+  border: none;
+  border-radius: 25px;
+  font-size: 1rem;
   cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: var(--shadow-light);
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin: 0 auto;
+  transition: background-color 0.3s ease, transform 0.3s ease;
 }
 
 .load-more-btn:hover {
@@ -568,5 +679,75 @@ const loadMoreContent = () => {
   .card-summary {
     font-size: 13px;
   }
+}
+
+/* 加载状态样式 */
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
+  padding: 40px;
+}
+
+.loading-spinner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.spinner {
+  width: 50px;
+  height: 50px;
+  border: 4px solid var(--bg-secondary);
+  border-top: 4px solid var(--primary-color);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.loading-spinner p {
+  font-size: 16px;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+/* 空状态样式 */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  padding: 40px;
+  text-align: center;
+  background-color: var(--bg-primary);
+  border-radius: 16px;
+  box-shadow: var(--shadow-medium);
+  margin-bottom: 30px;
+}
+
+.empty-icon {
+  font-size: 64px;
+  margin-bottom: 16px;
+  opacity: 0.2;
+}
+
+.empty-state h3 {
+  font-size: 20px;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+.empty-state p {
+  font-size: 14px;
+  color: var(--text-secondary);
+  max-width: 400px;
 }
 </style>

@@ -16,7 +16,8 @@ onMounted(() => {
   checkSidebarVisibility()
   checkMobileDevice()
   // 加载内容列表
-  contentStore.fetchContentList()
+  contentStore.fetchLatestArticles()
+  contentStore.fetchLatestToolkits()
   
   // 监听窗口大小变化
   window.addEventListener('resize', checkMobileDevice)
