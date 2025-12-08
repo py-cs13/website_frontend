@@ -1,0 +1,289 @@
+<template>
+  <header class="header">
+    <div class="container">
+      <div class="header-content">
+        <div class="logo">
+          <router-link to="/">垂直生活健康平台</router-link>
+        </div>
+        
+        <!-- 桌面端导航 -->
+        <nav class="nav-desktop">
+          <ul>
+            <li><router-link to="/">首页</router-link></li>
+            <li><router-link to="/">文章</router-link></li>
+            <li><router-link to="/">工具包</router-link></li>
+            <li><router-link to="/about">关于我们</router-link></li>
+          </ul>
+        </nav>
+        
+        <div class="user-actions">
+          <button class="search-btn">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+            </svg>
+          </button>
+          
+          <template v-if="userStore.isLoggedIn">
+            <router-link to="/user" class="user-profile">
+              <span class="user-name">{{ userStore.user.username }}</span>
+            </router-link>
+          </template>
+          <template v-else>
+            <button class="login-btn" @click="showLoginModal = true">登录</button>
+            <button class="register-btn" @click="showRegisterModal = true">注册</button>
+          </template>
+          
+          <!-- 移动端菜单按钮 -->
+          <button class="menu-btn" @click="showMobileMenu = !showMobileMenu">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path v-if="!showMobileMenu" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+              <path v-else stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+      
+      <!-- 移动端导航菜单 -->
+      <div class="nav-mobile" v-if="showMobileMenu">
+        <ul>
+          <li><router-link to="/" @click="showMobileMenu = false">首页</router-link></li>
+          <li><router-link to="/" @click="showMobileMenu = false">文章</router-link></li>
+          <li><router-link to="/" @click="showMobileMenu = false">工具包</router-link></li>
+          <li><router-link to="/about" @click="showMobileMenu = false">关于我们</router-link></li>
+        </ul>
+      </div>
+    </div>
+  </header>
+</template>
+
+<script setup>
+import { ref } from 'vue'
+import { useUserStore } from '../stores'
+
+const userStore = useUserStore()
+const showMobileMenu = ref(false)
+const showLoginModal = ref(false)
+const showRegisterModal = ref(false)
+</script>
+
+<style scoped>
+.header {
+  background-color: var(--bg-primary);
+  box-shadow: var(--shadow-light);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  border-bottom: 2px solid var(--primary-color);
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 75px;
+}
+
+.logo {
+  font-size: 26px;
+  font-weight: 700;
+}
+
+.logo a {
+  color: var(--primary-color);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.logo a::before {
+  content: "👶";
+  font-size: 28px;
+}
+
+/* 桌面端导航 */
+.nav-desktop ul {
+  display: flex;
+  list-style: none;
+  gap: 35px;
+}
+
+.nav-desktop a {
+  color: var(--text-primary);
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  padding: 8px 12px;
+  border-radius: 20px;
+  font-size: 16px;
+}
+
+.nav-desktop a:hover {
+  color: var(--primary-color);
+  background-color: var(--bg-accent);
+  transform: translateY(-1px);
+}
+
+.user-actions {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.search-btn, .menu-btn {
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  color: var(--text-secondary);
+  padding: 10px;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+}
+
+.search-btn:hover, .menu-btn:hover {
+  background-color: var(--bg-accent);
+  color: var(--primary-color);
+  transform: translateY(-2px);
+}
+
+.login-btn, .register-btn {
+  padding: 10px 20px;
+  border-radius: 25px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 15px;
+}
+
+.login-btn {
+  background-color: transparent;
+  border: 2px solid var(--primary-color);
+  color: var(--primary-color);
+}
+
+.login-btn:hover {
+  background-color: var(--bg-accent);
+  transform: translateY(-2px);
+}
+
+.register-btn {
+  background-color: var(--primary-color);
+  border: none;
+  color: white;
+  box-shadow: var(--shadow-light);
+}
+
+.register-btn:hover {
+  background-color: #FF4785;
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-medium);
+}
+
+.user-profile {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--text-primary);
+  text-decoration: none;
+  font-weight: 500;
+  padding: 8px 16px;
+  border-radius: 25px;
+  transition: all 0.3s ease;
+  background-color: var(--bg-secondary);
+}
+
+.user-profile:hover {
+  background-color: var(--bg-accent);
+  color: var(--primary-color);
+  transform: translateY(-2px);
+}
+
+/* 移动端导航 */
+.nav-mobile {
+  display: none;
+  padding: 20px 0;
+  border-top: 1px solid var(--border-color);
+  background-color: var(--bg-primary);
+}
+
+.nav-mobile ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.nav-mobile a {
+  color: var(--text-primary);
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  padding: 12px 16px;
+  border-radius: 25px;
+  display: block;
+}
+
+.nav-mobile a:hover {
+  color: var(--primary-color);
+  background-color: var(--bg-accent);
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .nav-desktop {
+    display: none;
+  }
+  
+  .nav-mobile {
+    display: block;
+  }
+  
+  .logo {
+    font-size: 22px;
+  }
+  
+  .logo a::before {
+    font-size: 24px;
+  }
+  
+  .user-actions {
+    gap: 8px;
+  }
+  
+  .login-btn, .register-btn {
+    padding: 8px 16px;
+    font-size: 14px;
+  }
+  
+  .search-btn, .menu-btn {
+    padding: 8px;
+    font-size: 18px;
+  }
+}
+
+@media (max-width: 480px) {
+  .logo {
+    font-size: 20px;
+  }
+  
+  .logo a::before {
+    font-size: 22px;
+  }
+  
+  .user-actions {
+    gap: 5px;
+  }
+  
+  .login-btn, .register-btn {
+    padding: 6px 12px;
+    font-size: 13px;
+  }
+}
+</style>
