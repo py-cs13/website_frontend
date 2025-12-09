@@ -240,7 +240,8 @@
                 </p>
               </div>
               <div class="purchase-item-actions">
-                <Button variant="primary" size="small" class="view-btn">查看</Button>
+                <Button variant="primary" size="small" class="view-btn" @click="viewPurchase(item)">查看</Button>
+                <Button variant="success" size="small" class="download-btn" @click="downloadPurchase(item)">下载</Button>
               </div>
             </div>
           </div>
@@ -399,6 +400,21 @@ const notificationSettings = ref({
   push: false,
   marketing: true
 })
+
+// 查看购买详情
+const viewPurchase = (item) => {
+  console.log('查看购买详情:', item)
+  // 这里可以打开详情模态框或跳转到详情页面
+  alert(`查看购买详情：${item.title}`)
+}
+
+// 下载购买的工具包
+const downloadPurchase = (item) => {
+  console.log('下载购买的工具包:', item)
+  // 这里应该调用后端API获取下载链接
+  alert(`下载：${item.title}`)
+  // 示例：window.open(`/api/download/${item.id}`, '_blank')
+}
 
 // 切换标签
 const switchTab = (tab) => {

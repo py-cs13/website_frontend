@@ -5,8 +5,7 @@
         <div class="footer-section">
           <h3 class="footer-title">关于我们</h3>
           <p class="footer-text">
-            垂直生活健康平台致力于为用户提供高质量的健康养生、母婴育儿等垂直领域内容，
-            帮助用户获得专业、实用的生活健康知识。
+            宝贝成长母婴平台专注于为0-6岁宝宝的父母提供专业的育儿知识、实用的育儿工具和优质的育儿课程，陪伴宝宝健康快乐成长。
           </p>
         </div>
         
@@ -50,7 +49,7 @@
       </div>
       
       <div class="footer-bottom">
-        <p>&copy; {{ new Date().getFullYear() }} 垂直生活健康平台. 保留所有权利.</p>
+        <p>&copy; {{ new Date().getFullYear() }} 宝贝成长母婴平台. 保留所有权利.</p>
       </div>
     </div>
   </footer>

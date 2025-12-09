@@ -3,8 +3,8 @@
     <div class="container">
       <div class="header-content">
         <div class="logo">
-          <router-link to="/">垂直生活健康平台</router-link>
-        </div>
+      <router-link to="/">宝贝成长母婴平台</router-link>
+    </div>
         
         <!-- 桌面端导航 -->
         <nav class="nav-desktop">

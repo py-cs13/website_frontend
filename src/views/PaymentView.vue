@@ -153,10 +153,17 @@
             <span class="label">支付时间：</span>
             <span class="value">{{ paymentResult.payTime }}</span>
           </div>
+          <div class="detail-item download-section">
+            <span class="label">下载工具包：</span>
+            <a href="#" class="download-link" @click.prevent="downloadToolkit">
+              📥 立即下载 {{ orderInfo.productName }}
+            </a>
+          </div>
         </div>
         
         <div class="payment-actions">
           <button v-if="paymentResult.status === 'success'" class="btn btn-primary" @click="goToUserCenter">查看订单</button>
+          <button v-if="paymentResult.status === 'success'" class="btn btn-success" @click="downloadToolkit">立即下载</button>
           <button v-else class="btn btn-primary" @click="retryPayment">重新支付</button>
           <button class="btn btn-secondary" @click="goToHome">返回首页</button>
         </div>
@@ -313,6 +320,15 @@ const goToHome = () => {
 // 前往用户中心
 const goToUserCenter = () => {
   router.push('/user')
+}
+
+// 下载工具包
+const downloadToolkit = () => {
+  // 这里应该调用后端API获取下载链接
+  // 模拟下载功能
+  console.log('下载工具包:', orderInfo.productName)
+  alert('下载功能已触发，实际项目中应调用后端API获取下载链接')
+  // 示例：window.open(`/api/download/${orderInfo.productId}`, '_blank')
 }
 </script>
 
@@ -691,6 +707,36 @@ const goToUserCenter = () => {
   justify-content: space-between;
   padding: 10px 0;
   min-width: 300px;
+}
+
+.download-section {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid var(--border-color);
+}
+
+.download-link {
+  color: var(--success-color);
+  text-decoration: none;
+  font-weight: 600;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.download-link:hover {
+  color: #2ecc71;
+  text-decoration: underline;
+}
+
+.btn-success {
+  background-color: var(--success-color);
+  color: white;
+}
+
+.btn-success:hover {
+  background-color: #2ecc71;
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-medium);
 }
 
 /* 按钮样式 */
