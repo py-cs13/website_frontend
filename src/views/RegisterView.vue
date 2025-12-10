@@ -38,11 +38,14 @@
               type="password" 
               id="password" 
               v-model="password" 
-              placeholder="请输入您的密码（至少6位）" 
+              placeholder="请输入密码（至少8位，包含大小写字母、数字和特殊字符）" 
               required
-              minlength="6"
+              minlength="8"
               class="form-input"
             />
+            <div class="password-requirements">
+              密码要求：至少8位，包含大小写字母、数字和特殊字符
+            </div>
           </div>
           
           <div class="form-group">
@@ -53,7 +56,7 @@
               v-model="confirmPassword" 
               placeholder="请再次输入您的密码" 
               required
-              minlength="6"
+              minlength="8"
               class="form-input"
             />
           </div>
@@ -84,7 +87,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useUserStore } from '../stores'
 
@@ -99,6 +102,15 @@ const confirmPassword = ref('')
 const loading = ref(false)
 const error = ref('')
 
+// 组件挂载时重置表单数据和错误信息
+onMounted(() => {
+  username.value = ''
+  email.value = ''
+  password.value = ''
+  confirmPassword.value = ''
+  error.value = ''
+})
+
 // 处理注册
 const handleRegister = async () => {
   loading.value = true
@@ -112,15 +124,24 @@ const handleRegister = async () => {
   }
   
   try {
+    // 调用注册方法
     const success = await userStore.register(username.value, email.value, password.value)
     if (success) {
-      // 注册成功，跳转到首页
+      // 注册成功，重定向到首页
       router.push('/')
     } else {
-      error.value = '注册失败，请检查信息是否正确'
+      // 注册失败，显示错误信息
+      error.value = userStore.error || '注册失败，请检查输入信息'
     }
   } catch (err) {
-    error.value = '注册失败，请检查网络连接或稍后重试'
+    // 显示更详细的错误信息
+    if (err.response?.data?.details) {
+      error.value = err.response.data.details
+    } else if (err.response?.data?.message) {
+      error.value = err.response.data.message
+    } else {
+      error.value = '注册失败，请稍后重试'
+    }
     console.error('注册错误:', err)
   } finally {
     loading.value = false
@@ -181,14 +202,21 @@ const handleRegister = async () => {
 }
 
 .form-input {
-  width: 100%;
-  padding: 12px;
-  border: 2px solid var(--border-color);
-  border-radius: 8px;
-  font-size: 15px;
-  transition: all 0.3s ease;
-  background-color: var(--bg-secondary);
-}
+        width: 100%;
+        padding: 12px;
+        border: 2px solid var(--border-color);
+        border-radius: 8px;
+        font-size: 15px;
+        transition: all 0.3s ease;
+        background-color: var(--bg-secondary);
+      }
+      
+      .password-requirements {
+        font-size: 12px;
+        color: #666;
+        margin-top: 5px;
+        margin-left: 10px;
+      }
 
 .form-input:focus {
   outline: none;

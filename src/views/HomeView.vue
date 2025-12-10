@@ -60,13 +60,13 @@
         
         <div class="card-meta">
           <span class="meta-item">
-            <i class="icon">📅</i> {{ item.created_at || '2024-06-03' }}
+            <i class="icon">📅</i> {{ formatDate(item.created_at || '2024-06-03') }}
           </span>
           <span class="meta-item">
-            <i class="icon">👁️‍🗨️</i> {{ item.views || 0 }} 阅读
+            <i class="icon">👁️‍🗨️</i> {{ formatNumber(item.views || 0) }}
           </span>
           <span class="meta-item">
-            <i class="icon">❤️</i> {{ item.likes || 0 }} 点赞
+            <i class="icon">❤️</i> {{ formatNumber(item.likes || 0) }}
           </span>
           <span v-if="item.type === 'toolkit'" class="meta-item price">
             <i class="icon">💰</i> ¥{{ item.price || 99.0 }}
@@ -104,13 +104,16 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
+import { ref, computed, onMounted, onActivated, watch } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
 import { useContentStore, useUserStore } from '../stores'
+import { formatDate, formatNumber } from '../utils/formatters'
 
 const contentStore = useContentStore()
 const router = useRouter()
+const route = useRoute()
 const activeCategory = ref(0) // 0表示全部
+const activeType = ref(null) // null表示全部，'article'表示文章，'toolkit'表示工具包
 const loading = ref(false)
 
 // 模拟分类数据
@@ -126,16 +129,42 @@ const categories = ref([
 
 // 页面加载时获取内容
 onMounted(async () => {
+  await loadContent()
+})
+
+// 每次进入页面时重新获取内容
+onActivated(async () => {
+  await loadContent()
+})
+
+// 加载内容的函数
+const loadContent = async () => {
   loading.value = true
   try {
     await Promise.all([
       contentStore.fetchLatestArticles(),
       contentStore.fetchLatestToolkits()
     ])
+    
+    // 检查URL参数
+    if (route.query.category) {
+      if (route.query.category === 'article' || route.query.category === 'toolkit') {
+        activeType.value = route.query.category
+      }
+    }
   } catch (error) {
     console.error('Failed to load content:', error)
   } finally {
     loading.value = false
+  }
+}
+
+// 监听路由参数变化
+watch(() => route.query.category, (newCategory) => {
+  if (newCategory === 'article' || newCategory === 'toolkit') {
+    activeType.value = newCategory
+  } else {
+    activeType.value = null
   }
 })
 
@@ -172,22 +201,30 @@ const allContent = computed(() => {
 
 // 筛选后的内容
 const filteredContent = computed(() => {
-  if (activeCategory.value === 0) {
-    return allContent.value
+  let filtered = allContent.value
+  
+  // 按类型筛选
+  if (activeType.value) {
+    filtered = filtered.filter(item => item.type === activeType.value)
   }
   
-  // 根据分类ID筛选内容
-  const categoryMap = {
-    1: ['婴儿护理', '健康养生'],
-    2: ['育儿知识', '母婴育儿'],
-    3: ['营养辅食', '饮食营养'],
-    4: ['产后恢复'],
-    5: ['亲子互动'],
-    6: ['成长发育']
+  // 按分类筛选
+  if (activeCategory.value !== 0) {
+    // 根据分类ID筛选内容
+    const categoryMap = {
+      1: ['婴儿护理', '健康养生'],
+      2: ['育儿知识', '母婴育儿'],
+      3: ['营养辅食', '饮食营养'],
+      4: ['产后恢复'],
+      5: ['亲子互动'],
+      6: ['成长发育']
+    }
+    
+    const categoriesToShow = categoryMap[activeCategory.value] || []
+    filtered = filtered.filter(item => categoriesToShow.includes(item.category))
   }
   
-  const categoriesToShow = categoryMap[activeCategory.value] || []
-  return allContent.value.filter(item => categoriesToShow.includes(item.category))
+  return filtered
 })
 
 // 分类筛选
@@ -212,6 +249,8 @@ const testRouter = () => {
   console.log('测试路由跳转...')
   router.push('/about')
 }
+
+
 
 // 购买工具包
 const buyToolkit = async (item) => {

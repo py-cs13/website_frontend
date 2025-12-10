@@ -54,7 +54,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useUserStore } from '../stores'
 
@@ -66,6 +66,13 @@ const email = ref('')
 const password = ref('')
 const loading = ref(false)
 const error = ref('')
+
+// 组件挂载时重置表单数据和错误信息
+onMounted(() => {
+  email.value = ''
+  password.value = ''
+  error.value = ''
+})
 
 // 处理登录
 const handleLogin = async () => {

@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import { useUserStore } from '../stores/index.js'
 
 // 路由配置
 const routes = [
@@ -41,6 +42,11 @@ const routes = [
     path: '/about',
     name: 'about',
     component: () => import('../views/AboutView.vue')
+  },
+  {
+    path: '/affiliate',
+    name: 'affiliate',
+    component: () => import('../views/AffiliateView.vue')
   }
 ]
 
@@ -48,6 +54,14 @@ const routes = [
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes
+})
+
+// 路由守卫：在每次路由切换时重置错误信息
+router.beforeEach((to, from, next) => {
+  // 重置错误信息
+  const userStore = useUserStore()
+  userStore.error = ''
+  next()
 })
 
 export default router

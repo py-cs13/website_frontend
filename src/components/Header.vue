@@ -10,8 +10,8 @@
         <nav class="nav-desktop">
           <ul>
             <li><router-link to="/">首页</router-link></li>
-            <li><router-link to="/">文章</router-link></li>
-            <li><router-link to="/">工具包</router-link></li>
+            <li><router-link to="/?category=article">文章</router-link></li>
+            <li><router-link to="/?category=toolkit">工具包</router-link></li>
             <li><router-link to="/about">关于我们</router-link></li>
           </ul>
         </nav>
@@ -25,7 +25,7 @@
           
           <template v-if="userStore.isLoggedIn">
             <router-link to="/user" class="user-profile">
-              <span class="user-name">{{ userStore.user.username }}</span>
+              <span class="user-name">{{ userStore.user?.username || '用户' }}</span>
             </router-link>
           </template>
           <template v-else>
@@ -46,13 +46,21 @@
       <!-- 移动端导航菜单 -->
       <div class="nav-mobile" v-if="showMobileMenu">
         <ul>
-          <li><router-link to="/" @click="showMobileMenu = false">首页</router-link></li>
-          <li><router-link to="/" @click="showMobileMenu = false">文章</router-link></li>
-          <li><router-link to="/" @click="showMobileMenu = false">工具包</router-link></li>
-          <li><router-link to="/about" @click="showMobileMenu = false">关于我们</router-link></li>
-          <li><router-link to="/login" @click="showMobileMenu = false">登录</router-link></li>
-          <li><router-link to="/register" @click="showMobileMenu = false">注册</router-link></li>
-        </ul>
+            <li><router-link to="/" @click="showMobileMenu = false">首页</router-link></li>
+            <li><router-link to="/?category=article" @click="showMobileMenu = false">文章</router-link></li>
+            <li><router-link to="/?category=toolkit" @click="showMobileMenu = false">工具包</router-link></li>
+            <li><router-link to="/about" @click="showMobileMenu = false">关于我们</router-link></li>
+            <li><router-link to="/affiliate" @click="showMobileMenu = false">联盟合作</router-link></li>
+            <li v-if="userStore.isLoggedIn">
+              <router-link to="/user" @click="showMobileMenu = false" class="user-info">
+                <span class="user-name">{{ userStore.user?.username || '用户' }}</span>
+              </router-link>
+            </li>
+            <li v-else>
+              <router-link to="/login" @click="showMobileMenu = false">登录</router-link>
+              <router-link to="/register" @click="showMobileMenu = false">注册</router-link>
+            </li>
+          </ul>
       </div>
     </div>
   </header>
@@ -203,6 +211,22 @@ const showMobileMenu = ref(false)
   background-color: var(--bg-accent);
   color: var(--primary-color);
   transform: translateY(-2px);
+}
+
+.user-name {
+  color: var(--primary-color);
+  font-weight: 700;
+  font-size: 16px;
+  padding: 4px 8px;
+  background-color: var(--bg-accent);
+  border-radius: 12px;
+  transition: all 0.3s ease;
+}
+
+.user-profile:hover .user-name {
+  background-color: var(--primary-color);
+  color: white;
+  transform: scale(1.05);
 }
 
 /* 移动端导航 */

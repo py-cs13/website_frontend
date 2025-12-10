@@ -25,13 +25,13 @@
         <h1 class="article-title">{{ article.title }}</h1>
         <div class="article-meta">
           <span class="meta-item">
-            <i class="icon">📅</i> {{ article.created_at }}
+            <i class="icon">📅</i> {{ formatDate(article.created_at) }}
           </span>
           <span class="meta-item">
-            <i class="icon">👁️</i> {{ article.views }} 阅读
+            <i class="icon">👁️</i> {{ formatNumber(article.views) }}
           </span>
           <span class="meta-item">
-            <i class="icon">❤️</i> {{ article.likes }} 点赞
+            <i class="icon">❤️</i> {{ formatNumber(article.likes) }}
           </span>
         </div>
         <div class="article-summary">{{ article.summary }}</div>
@@ -104,6 +104,7 @@ import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useContentStore } from '../stores'
 import Button from '../components/Button.vue'
+import { formatDate, formatNumber } from '../utils/formatters'
 
 const route = useRoute()
 const router = useRouter()

@@ -323,12 +323,30 @@ const goToUserCenter = () => {
 }
 
 // 下载工具包
-const downloadToolkit = () => {
-  // 这里应该调用后端API获取下载链接
-  // 模拟下载功能
-  console.log('下载工具包:', orderInfo.productName)
-  alert('下载功能已触发，实际项目中应调用后端API获取下载链接')
-  // 示例：window.open(`/api/download/${orderInfo.productId}`, '_blank')
+const downloadToolkit = async () => {
+  try {
+    // 调用后端API获取下载链接
+    const response = await axios.get(`/api/download/${orderInfo.value.productId}`, {
+      responseType: 'blob' // 重要：指定响应类型为二进制数据
+    })
+    
+    // 创建下载链接
+    const url = window.URL.createObjectURL(new Blob([response.data]))
+    const link = document.createElement('a')
+    link.href = url
+    link.setAttribute('download', `${orderInfo.value.productName}.zip`) // 设置下载文件名
+    document.body.appendChild(link)
+    link.click()
+    
+    // 清理
+    document.body.removeChild(link)
+    window.URL.revokeObjectURL(url)
+    
+    console.log('下载工具包成功:', orderInfo.value.productName)
+  } catch (error) {
+    console.error('下载工具包失败:', error)
+    alert('下载失败，请稍后重试')
+  }
 }
 </script>
 

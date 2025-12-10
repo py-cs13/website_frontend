@@ -14,10 +14,25 @@
       <aside class="user-sidebar">
         <div class="user-info">
           <div class="user-avatar">
-            <img src="https://via.placeholder.com/100" alt="用户头像" />
-            <div class="avatar-decoration">👼</div>
+            <img v-if="user.avatar" :src="user.avatar" alt="用户头像" />
+            <div v-else class="avatar-placeholder">
+              {{ user.username ? user.username.charAt(0).toUpperCase() : 'U' }}
+            </div>
+            <div class="avatar-upload">
+              <input
+                type="file"
+                id="avatar-upload"
+                accept="image/*"
+                @change="handleAvatarUpload"
+                class="avatar-upload-input"
+              >
+              <label for="avatar-upload" class="upload-btn">
+                {{ isUploading ? '上传中...' : '更换头像' }}
+              </label>
+            </div>
+            <div v-if="avatarError" class="error-message">{{ avatarError }}</div>
           </div>
-          <div class="user-name">{{ user.name }}</div>
+          <div class="user-name">{{ user.username }}</div>
           <div class="user-email">{{ user.email }}</div>
           <div class="user-badge" v-if="user.babyName">
             👶 {{ user.babyName }} 的妈妈
@@ -51,6 +66,11 @@
                 <i class="icon">❤️</i> 我的收藏
               </a>
             </li>
+            <li class="nav-item">
+              <a href="/affiliate" target="_self">
+                <i class="icon">📣</i> 联盟推广
+              </a>
+            </li>
             <li class="nav-item" :class="{ active: activeTab === 'settings' }">
               <a href="#" @click.prevent="switchTab('settings')">
                 <i class="icon">⚙️</i> 账户设置
@@ -67,14 +87,13 @@
           <h2 class="tab-title">
             <span class="title-icon">👤</span> 个人信息
           </h2>
-          <form class="profile-form">
+          <form class="profile-form" novalidate>
             <div class="form-group">
               <FormInput
                 id="username"
-                v-model="user.name"
+                v-model="user.username"
                 label="用户名"
                 type="text"
-                :disabled="true"
               />
             </div>
             <div class="form-group">
@@ -83,18 +102,9 @@
                 v-model="user.email"
                 label="邮箱"
                 type="email"
-                :disabled="true"
               />
             </div>
-            <div class="form-group">
-              <FormInput
-                id="nickname"
-                v-model="user.nickname"
-                label="昵称"
-                type="text"
-                placeholder="例如：小宝贝的妈妈"
-              />
-            </div>
+
             <div class="form-group">
               <label for="gender">性别</label>
               <select id="gender" v-model="user.gender" class="form-input">
@@ -120,9 +130,12 @@
                 placeholder="分享你的育儿故事..."
               />
             </div>
+            <div class="error-message" v-if="error">
+              {{ error }}
+            </div>
             <div class="form-actions">
               <Button variant="secondary" size="medium" class="cancel-btn">取消</Button>
-              <Button variant="primary" size="medium" class="save-btn">保存修改</Button>
+              <Button variant="primary" size="medium" class="save-btn" @click="saveUserInfo">保存修改</Button>
             </div>
           </form>
         </div>
@@ -169,7 +182,7 @@
             </div>
             <div class="form-actions">
               <Button variant="secondary" size="medium" class="cancel-btn">取消</Button>
-              <Button variant="primary" size="medium" class="save-btn">保存宝宝信息</Button>
+              <Button variant="primary" size="medium" class="save-btn" @click="saveBabyInfo">保存宝宝信息</Button>
             </div>
           </form>
         </div>
@@ -205,7 +218,7 @@
               <div class="content-item-info">
                 <h3 class="content-item-title">{{ item.title }}</h3>
                 <p class="content-item-meta">
-                  <span>{{ item.created_at }}</span>
+                  <span>{{ formatDate(item.created_at) }}</span>
                   <span>{{ item.status === 'published' ? '已发布' : '草稿' }}</span>
                 </p>
               </div>
@@ -264,7 +277,7 @@
             >
               <div class="favorite-item-info">
                 <h3 class="favorite-item-title">{{ item.title }}</h3>
-                <p class="favorite-item-meta">{{ item.created_at }}</p>
+                <p class="favorite-item-meta">{{ formatDate(item.created_at) }}</p>
               </div>
               <div class="favorite-item-actions">
                 <Button variant="danger" size="small" class="remove-btn">取消收藏</Button>
@@ -339,34 +352,214 @@
         </div>
       </main>
     </div>
+    <!-- Toast提示组件 -->
+    <Toast v-if="showToast" :type="toastType">
+      {{ toastMessage }}
+    </Toast>
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, computed, onMounted, onActivated, watch } from 'vue'
+import { useRouter } from 'vue-router'
 import { useUserStore } from '../stores'
+import axios from 'axios'
 import Button from '../components/Button.vue'
 import FormInput from '../components/FormInput.vue'
 import FormTextarea from '../components/FormTextarea.vue'
+import Toast from '../components/Toast.vue'
+import { formatDate } from '../utils/formatters'
 
+const router = useRouter()
 const userStore = useUserStore()
 const activeTab = ref('profile')
 const activeContentTab = ref('articles')
+const error = ref('')
+
+// 头像相关
+const avatarError = ref('')
+const isUploading = ref(false)
 
 // 用户信息
 const user = ref({
-  name: '小宝贝妈妈',
-  email: 'mama@example.com',
-  nickname: '',
-  gender: 'female',
+  username: '',
+  email: '',
+  avatar: '',
+  gender: '',
   birthday: '',
   bio: '',
   // 母婴特色字段
-  babyName: '小宝贝',
-  babyBirthday: '2024-01-15',
-  babyGender: 'girl',
-  babyMilestones: '2024-06-01 第一次翻身\n2024-08-15 长出第一颗牙\n2024-10-01 第一次爬行'
+  babyName: '',
+  babyBirthday: '',
+  babyGender: '',
+  babyMilestones: ''
 })
+
+// 标记是否正在保存，用于控制是否重新加载用户数据
+const isSaving = ref(false)
+
+// Toast提示状态
+const showToast = ref(false)
+const toastMessage = ref('')
+const toastType = ref('success')
+
+// 显示Toast提示
+function showToastMessage(message, type = 'success') {
+  toastMessage.value = message
+  toastType.value = type
+  showToast.value = true
+  
+  // 3秒后自动隐藏
+  setTimeout(() => {
+    showToast.value = false
+  }, 3000)
+}
+
+// 从API获取最新的用户数据
+async function loadUserData() {
+  try {
+    const token = localStorage.getItem('token')
+    const response = await axios.get('/api/users/me', {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    })
+    
+    const userData = response.data
+    
+    // 处理生日日期，确保它是YYYY-MM-DD格式
+    let formattedBirthday = ''
+    if (userData.birthday) {
+      const birthday = new Date(userData.birthday)
+      formattedBirthday = isNaN(birthday.getTime()) ? '' : birthday.toISOString().split('T')[0]
+    }
+    
+    // 处理宝宝生日日期，确保它是YYYY-MM-DD格式
+    let formattedBabyBirthday = ''
+    if (userData.baby_birthday) {
+      const babyBirthday = new Date(userData.baby_birthday)
+      formattedBabyBirthday = isNaN(babyBirthday.getTime()) ? '' : babyBirthday.toISOString().split('T')[0]
+    }
+    
+    // 完全使用后端返回的新值，不保留之前的表单值
+    user.value = {
+      username: userData.username,
+      email: userData.email,
+      avatar: userData.avatar || '',
+      gender: userData.gender || '',
+      birthday: formattedBirthday,
+      bio: userData.bio || '',
+      // 母婴特色字段
+      babyName: userData.baby_name || '',
+      babyBirthday: formattedBabyBirthday,
+      babyGender: userData.baby_gender || '',
+      babyMilestones: userData.baby_milestones || ''
+    }
+  } catch (err) {
+    console.error('加载用户数据失败:', err)
+    // 如果加载失败，检查是否是认证错误
+    if (err.response && err.response.status === 401) {
+      // 认证失败，清除本地存储并要求用户重新登录
+      showToastMessage('登录已过期，请重新登录', 'error')
+      userStore.logout()
+      // 跳转到登录页面
+      router.push('/login')
+    } else {
+      // 其他错误，显示错误信息
+      showToastMessage('加载用户数据失败，请稍后重试', 'error')
+    }
+  }
+}
+
+// 组件挂载时加载用户数据
+onMounted(async () => {
+  await loadUserData()
+})
+
+// 组件激活时重新加载用户数据（用于路由切换返回时）
+onActivated(async () => {
+  await loadUserData()
+})
+
+// 移除自动监听userStore.user变化的逻辑，避免页面抖动
+// 用户信息在页面加载和激活时获取，确保总是显示最新数据
+
+// 保存用户信息
+async function saveUserInfo() {
+  error.value = ''
+  isSaving.value = true
+  
+  try {
+    // 准备要更新的数据，包含所有表单字段
+    const userData = {
+      username: user.value.username,
+      email: user.value.email,
+      gender: user.value.gender || null,
+      birthday: user.value.birthday ? new Date(user.value.birthday).toISOString().split('T')[0] : null,
+      bio: user.value.bio || null,
+      // 母婴特色字段（转换为后端期望的下划线格式）
+      baby_name: user.value.babyName || null,
+      baby_birthday: user.value.babyBirthday ? new Date(user.value.babyBirthday).toISOString().split('T')[0] : null,
+      baby_gender: user.value.babyGender || null,
+      baby_milestones: user.value.babyMilestones || null
+    }
+    
+    // 使用userStore的updateUser方法更新用户信息，确保前端状态和localStorage同步
+    const success = await userStore.updateUser(userData)
+    
+    if (success) {
+      // 保存成功，显示提示
+      showToastMessage('用户信息更新成功！')
+      
+      // 直接从API获取最新数据，确保显示的是数据库中的最新状态
+      await loadUserData()
+    } else {
+      // 更新失败，使用userStore中的错误信息
+      error.value = userStore.error
+    }
+  } catch (err) {
+    error.value = err.response?.data?.details || err.response?.data?.message || '更新失败，请重试'
+    console.error('更新用户信息失败:', err)
+  } finally {
+    isSaving.value = false
+  }
+}
+
+// 保存宝宝信息
+async function saveBabyInfo() {
+  error.value = ''
+  isSaving.value = true
+  
+  try {
+    // 准备要更新的数据，只包含宝宝相关字段
+    const userData = {
+      // 母婴特色字段（转换为后端期望的下划线格式）
+      baby_name: user.value.babyName || null,
+      baby_birthday: user.value.babyBirthday ? new Date(user.value.babyBirthday).toISOString().split('T')[0] : null,
+      baby_gender: user.value.babyGender || null,
+      baby_milestones: user.value.babyMilestones || null
+    }
+    
+    // 使用userStore的updateUser方法更新用户信息，确保前端状态和localStorage同步
+    const success = await userStore.updateUser(userData)
+    
+    if (success) {
+      // 保存成功，显示提示
+      showToastMessage('宝宝信息更新成功！')
+      
+      // 直接从API获取最新数据，确保显示的是数据库中的最新状态
+      await loadUserData()
+    } else {
+      // 更新失败，使用userStore中的错误信息
+      error.value = userStore.error
+    }
+  } catch (err) {
+    error.value = err.response?.data?.details || err.response?.data?.message || '更新失败，请重试'
+    console.error('更新宝宝信息失败:', err)
+  } finally {
+    isSaving.value = false
+  }
+}
 
 // 内容标签
 const contentTabs = [
@@ -414,6 +607,60 @@ const downloadPurchase = (item) => {
   // 这里应该调用后端API获取下载链接
   alert(`下载：${item.title}`)
   // 示例：window.open(`/api/download/${item.id}`, '_blank')
+}
+
+// 处理头像上传
+const handleAvatarUpload = async (event) => {
+  const file = event.target.files[0]
+  if (!file) return
+  
+  // 检查文件类型
+  const allowedTypes = ['image/jpeg', 'image/png', 'image/gif']
+  if (!allowedTypes.includes(file.type)) {
+    avatarError.value = '只支持JPEG、PNG和GIF格式的图片'
+    return
+  }
+  
+  // 检查文件大小（5MB限制）
+  if (file.size > 5 * 1024 * 1024) {
+    avatarError.value = '头像大小不能超过5MB'
+    return
+  }
+  
+  isUploading.value = true
+  avatarError.value = ''
+  
+  try {
+    const formData = new FormData()
+    formData.append('file', file)
+    
+    // 调用后端API上传头像
+    const response = await axios.post('/api/users/me/avatar', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+        'Authorization': `Bearer ${userStore.token}`
+      }
+    })
+    
+    // 更新用户信息
+    user.value.avatar = response.data.avatar
+    // 直接更新userStore中的user对象，确保导航栏同步更新
+    userStore.user = response.data
+    // 同时更新localStorage
+    localStorage.setItem('user', JSON.stringify(response.data))
+    
+    // 显示成功信息
+    setTimeout(() => {
+      alert('头像上传成功')
+    }, 1000)
+  } catch (error) {
+    console.error('上传头像失败:', error)
+    avatarError.value = '上传头像失败，请稍后重试'
+  } finally {
+    isUploading.value = false
+    // 清空文件输入
+    event.target.value = ''
+  }
 }
 
 // 切换标签
@@ -506,6 +753,7 @@ const switchTab = (tab) => {
   margin-bottom: 15px;
   position: relative;
   display: inline-block;
+  text-align: center;
 }
 
 .user-avatar img {
@@ -515,6 +763,59 @@ const switchTab = (tab) => {
   object-fit: cover;
   border: 3px solid var(--primary-color);
   box-shadow: var(--shadow-medium);
+}
+
+.avatar-placeholder {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background-color: var(--primary-color);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 48px;
+  font-weight: bold;
+  border: 3px solid var(--primary-color);
+  box-shadow: var(--shadow-medium);
+}
+
+.avatar-upload {
+  margin-top: 10px;
+  position: relative;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.avatar-upload-input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.upload-btn {
+  background-color: var(--secondary-color);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  padding: 8px 16px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: var(--shadow-light);
+}
+
+.upload-btn:hover {
+  background-color: var(--accent-color);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-medium);
+}
+
+.upload-btn:disabled {
+  background-color: var(--text-light);
+  cursor: not-allowed;
 }
 
 .avatar-decoration {
@@ -540,6 +841,15 @@ const switchTab = (tab) => {
   font-size: 14px;
   color: var(--text-light);
   margin-bottom: 10px;
+}
+
+.user-avatar .error-message {
+  font-size: 12px;
+  color: var(--danger-color);
+  margin-top: 5px;
+  display: block;
+  text-align: center;
+  width: 100%;
 }
 
 .user-badge {

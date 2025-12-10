@@ -146,16 +146,31 @@ const emit = defineEmits(['click'])
 .btn-small {
   padding: 8px 16px;
   font-size: 14px;
+  min-width: 80px;
+  max-width: 100%;
+  word-wrap: break-word;
+  white-space: normal;
+  line-height: 1.4;
 }
 
 .btn-medium {
   padding: 10px 20px;
   font-size: 16px;
+  min-width: 100px;
+  max-width: 100%;
+  word-wrap: break-word;
+  white-space: normal;
+  line-height: 1.4;
 }
 
 .btn-large {
   padding: 12px 24px;
   font-size: 18px;
+  min-width: 120px;
+  max-width: 100%;
+  word-wrap: break-word;
+  white-space: normal;
+  line-height: 1.4;
 }
 
 /* 块级按钮 */

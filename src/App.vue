@@ -1,18 +1,21 @@
 <script setup>
 import { ref, onMounted } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, onBeforeRouteUpdate } from 'vue-router'
 import Header from './components/Header.vue'
 import Sidebar from './components/Sidebar.vue'
 import Footer from './components/Footer.vue'
-import { useContentStore } from './stores'
+import { useContentStore, useUserStore } from './stores'
 
 const route = useRoute()
 const contentStore = useContentStore()
+const userStore = useUserStore()
 const showSidebar = ref(true)
 const isMobile = ref(false)
 
 // 监听路由变化，在首页显示侧边栏，详情页隐藏侧边栏
 onMounted(() => {
+  // 初始化认证信息
+  userStore.initAuth()
   checkSidebarVisibility()
   checkMobileDevice()
   // 加载内容列表
@@ -21,6 +24,11 @@ onMounted(() => {
   
   // 监听窗口大小变化
   window.addEventListener('resize', checkMobileDevice)
+})
+
+// 每次路由切换前确保认证信息存在
+onBeforeRouteUpdate(() => {
+  userStore.ensureAuth()
 })
 
 const checkSidebarVisibility = () => {

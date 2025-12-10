@@ -6,13 +6,13 @@
       <h1 class="toolkit-title">{{ toolkit.title }}</h1>
       <div class="toolkit-meta">
         <span class="meta-item">
-          <i class="icon">📅</i> {{ toolkit.created_at }}
+          <i class="icon">📅</i> {{ formatDate(toolkit.created_at) }}
         </span>
         <span class="meta-item">
-          <i class="icon">👁️</i> {{ toolkit.views }} 浏览
+          <i class="icon">👁️</i> {{ formatNumber(toolkit.views) }}
         </span>
         <span class="meta-item">
-          <i class="icon">❤️</i> {{ toolkit.likes }} 点赞
+          <i class="icon">❤️</i> {{ formatNumber(toolkit.likes) }}
         </span>
       </div>
       <div class="toolkit-summary">{{ toolkit.summary }}</div>
@@ -56,7 +56,7 @@
                 {{ star <= review.rating ? '⭐' : '☆' }}
               </span>
             </div>
-            <span class="review-date">{{ review.created_at }}</span>
+            <span class="review-date">{{ formatDate(review.created_at) }}</span>
           </div>
           <p class="review-content">{{ review.content }}</p>
         </div>
@@ -88,6 +88,7 @@ import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useContentStore } from '../stores'
 import Button from '../components/Button.vue'
+import { formatDate, formatNumber } from '../utils/formatters'
 
 const route = useRoute()
 const router = useRouter()
@@ -184,6 +185,8 @@ const buyNow = () => {
     }
   })
 }
+
+
 
 // 加入购物车
 const addToCart = () => {
