@@ -31,6 +31,15 @@ apiClient.interceptors.response.use(
     return response
   },
   (error) => {
+    // 处理401错误（未授权）
+    if (error.response && error.response.status === 401) {
+      // 清除本地存储的认证信息
+      localStorage.removeItem('user')
+      localStorage.removeItem('token')
+      // 跳转到登录页面
+      window.location.href = '/login'
+      Swal.fire('登录已过期', '请重新登录', 'warning')
+    }
     // 处理403错误（权限不足）
     if (error.response && error.response.status === 403) {
       Swal.fire('权限不足', '您没有足够的权限执行此操作', 'error')

@@ -75,12 +75,12 @@ export const useAuthStore = defineStore('auth', {
     },
     
     // 注册
-    async register(userData) {
+    async register(email, password, nickname, affiliateCode) {
       this.loading = true
       this.error = null
       try {
         // 使用apiClient确保错误处理一致
-        const response = await apiClient.post('/auth/register', userData)
+        const response = await apiClient.post('/auth/register', { email, password, nickname, affiliate_code: affiliateCode })
         return response.data
       } catch (error) {
         this.error = error.response?.data?.message || '注册失败'
