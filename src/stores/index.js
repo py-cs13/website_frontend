@@ -1,292 +1,375 @@
 import { defineStore } from 'pinia'
+import { ref } from 'vue'
 import axios from 'axios'
+import * as api from '../utils/api'
 
-// 内容管理store
-export const useContentStore = defineStore('content', {
-  state: () => ({
-    articles: [],
-    toolkits: [],
-    todayFeature: null,
-    loading: false,
-    error: null
-  }),
-  
-  actions: {
-    // 获取今日推荐内容
-    async fetchTodayFeature() {
-      this.loading = true
-      this.error = null
-      try {
-        const response = await axios.get('/api/content/today-feature')
-        this.todayFeature = response.data
-      } catch (error) {
-        this.error = error.message
-        console.error('Failed to fetch today feature:', error)
-      } finally {
-        this.loading = false
-      }
-    },
-    
-    // 获取最新文章
-    async fetchLatestArticles() {
-      this.loading = true
-      this.error = null
-      try {
-        const response = await axios.get('/api/articles/latest')
-        this.articles = response.data
-      } catch (error) {
-        this.error = error.message
-        console.error('Failed to fetch latest articles:', error)
-      } finally {
-        this.loading = false
-      }
-    },
-    
-    // 获取最新工具包
-    async fetchLatestToolkits() {
-      this.loading = true
-      this.error = null
-      try {
-        const response = await axios.get('/api/toolkits/latest')
-        this.toolkits = response.data
-      } catch (error) {
-        this.error = error.message
-        console.error('Failed to fetch latest toolkits:', error)
-      } finally {
-        this.loading = false
-      }
-    },
-    
-    // 获取文章详情
-    async fetchArticleDetail(id) {
-      this.loading = true
-      this.error = null
-      try {
-        const response = await axios.get(`/api/articles/${id}`)
-        return response.data
-      } catch (error) {
-        this.error = error.message
-        console.error(`Failed to fetch article detail ${id}:`, error)
-        return null
-      } finally {
-        this.loading = false
-      }
-    },
-    
-    // 获取工具包详情
-    async fetchToolkitDetail(id) {
-      this.loading = true
-      this.error = null
-      try {
-        const response = await axios.get(`/api/toolkits/${id}`)
-        return response.data
-      } catch (error) {
-        this.error = error.message
-        console.error(`Failed to fetch toolkit detail ${id}:`, error)
-        return null
-      } finally {
-        this.loading = false
-      }
+// 导入其他store
+import { useContentStore } from './content'
+import { useAuthStore } from './auth'
+
+// 导出所有store
+export {
+  useContentStore,
+  useAuthStore
+}
+
+// 推广统计Store
+export const useAffiliateStatStore = defineStore('affiliateStat', () => {
+  // 状态
+  const affiliateStats = ref({})
+  const affiliateUsers = ref([])
+  const commissionStats = ref({})
+  const filterParams = ref({
+    dateRange: '7d',
+    startDate: '',
+    endDate: '',
+    statType: 'clicks'
+  })
+  const loading = ref(false)
+  const error = ref(null)
+
+  // 获取总体统计数据
+  const fetchAffiliateStats = async () => {
+    loading.value = true
+    error.value = null
+    try {
+      const response = await api.getAffiliateStats(filterParams.value)
+      affiliateStats.value = response.data
+    } catch (err) {
+      console.error('获取推广统计数据失败:', err)
+      error.value = err.response?.data?.message || '获取推广统计数据失败'
+    } finally {
+      loading.value = false
     }
+  }
+
+  // 获取推广用户列表
+  const fetchAffiliateUsers = async () => {
+    loading.value = true
+    error.value = null
+    try {
+      const response = await api.getAffiliateUsers()
+      affiliateUsers.value = response.data
+    } catch (err) {
+      console.error('获取推广用户列表失败:', err)
+      error.value = err.response?.data?.message || '获取推广用户列表失败'
+    } finally {
+      loading.value = false
+    }
+  }
+
+  // 获取佣金统计数据
+  const fetchCommissionStats = async () => {
+    loading.value = true
+    error.value = null
+    try {
+      const response = await api.getCommissionStats(filterParams.value)
+      commissionStats.value = response.data
+    } catch (err) {
+      console.error('获取佣金统计数据失败:', err)
+      error.value = err.response?.data?.message || '获取佣金统计数据失败'
+    } finally {
+      loading.value = false
+    }
+  }
+
+  // 更新筛选条件
+  const updateFilterParams = (params) => {
+    filterParams.value = { ...filterParams.value, ...params }
+  }
+
+  return {
+    affiliateStats,
+    affiliateUsers,
+    commissionStats,
+    filterParams,
+    loading,
+    error,
+    fetchAffiliateStats,
+    fetchAffiliateUsers,
+    fetchCommissionStats,
+    updateFilterParams
   }
 })
 
-// 用户管理store
-export const useUserStore = defineStore('user', {
-  state: () => ({
-    user: JSON.parse(localStorage.getItem('user')) || null,
-    token: localStorage.getItem('token') || null,
-    loading: false,
-    error: null
-  }),
-  
-  getters: {
-    isLoggedIn: (state) => !!state.token
-  },
-  
-  actions: {
-    // 登录
-    async login(email, password) {
-      this.loading = true
-      this.error = ''
-      try {
-        const response = await axios.post('/api/auth/login', { email, password })
-        this.token = response.data.access_token
-        // 登录成功后获取用户信息
-        const userResponse = await axios.get('/api/users/me', {
-          headers: {
-            'Authorization': `Bearer ${this.token}`
-          }
-        })
-        this.user = userResponse.data
-        // 存储token到本地
-        localStorage.setItem('token', this.token)
-        localStorage.setItem('user', JSON.stringify(this.user))
-        return true
-      } catch (error) {
-        this.error = error.response?.data?.message || '登录失败，请检查邮箱和密码'
-        console.error('Login failed:', error)
-        return false
-      } finally {
-        this.loading = false
-      }
-    },
-    
-    // 注册
-    async register(username, email, password) {
-      this.loading = true
-      this.error = ''
-      try {
-        const response = await axios.post('/api/auth/register', { username, email, password })
-        // 注册成功后自动登录
-        return await this.login(email, password)
-      } catch (error) {
-        // 优先使用详细错误信息，如果没有则使用默认消息
-        this.error = error.response?.data?.details || error.response?.data?.message || '注册失败，请检查输入信息'
-        console.error('Registration failed:', error)
-        return false
-      } finally {
-        this.loading = false
-      }
-    },
-    
-    // 登出
-    logout() {
-      this.user = null
-      this.token = null
-      localStorage.removeItem('token')
-      localStorage.removeItem('user')
-    },
-    
-    // 从本地存储加载用户信息
-    loadUserFromStorage() {
-      const token = localStorage.getItem('token')
-      const user = localStorage.getItem('user')
-      if (token && user) {
-        this.token = token
-        this.user = JSON.parse(user)
-      }
-    },
-    
-    // 立即购买功能
-    async buyNow(toolkitId, amount = 99.0) {
-      this.loading = true
-      this.error = null
-      try {
-        // 添加Authorization头
-        const headers = {
-          'Authorization': `Bearer ${this.token}`
-        }
-        
-        // 构建订单数据
-        const orderData = {
-          product_type: 'toolkit',
-          product_id: toolkitId,
-          amount: amount,
-          items: [{
-            product_name: `工具包 #${toolkitId}`,
-            product_price: amount,
-            quantity: 1,
-            total_amount: amount
-          }]
-        }
-        
-        // 发送请求
-        const response = await axios.post('/api/orders', orderData, { headers })
-        console.log('购买成功:', response.data)
-        return response.data
-      } catch (error) {
-        this.error = error.message
-        console.error('购买失败:', error)
-        return null
-      } finally {
-        this.loading = false
-      }
-    },
-    
-    // 初始化认证状态
-    initAuth() {
-      // 从localStorage加载认证信息
-      const savedToken = localStorage.getItem('token')
-      const savedUser = localStorage.getItem('user')
-      
-      if (savedToken) {
-        this.token = savedToken
+// 订单管理Store
+export const useOrderStore = defineStore('order', () => {
+  // 状态
+  const orders = ref([])
+  const totalOrders = ref(0)
+  const currentPage = ref(1)
+  const pageSize = ref(10)
+  const loading = ref(false)
+  const error = ref(null)
+  const filter = ref({
+    search: '',
+    status: '',
+    dateRange: ''
+  })
+
+  // 获取订单列表（带分页和筛选）
+  const fetchOrders = async (params = {}) => {
+    loading.value = true
+    error.value = null
+    try {
+      // 合并默认参数和传入参数
+      const requestParams = {
+        page: currentPage.value,
+        page_size: pageSize.value,
+        ...filter.value,
+        ...params
       }
       
-      if (savedUser) {
-        try {
-          this.user = JSON.parse(savedUser)
-        } catch (e) {
-          console.error('解析用户信息失败:', e)
-          localStorage.removeItem('user')
-        }
-      }
-    },
-    
-    // 确保认证信息不被清除
-    ensureAuth() {
-      // 检查当前状态
-      const currentToken = this.token || localStorage.getItem('token')
-      const currentUser = this.user || (localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')) : null)
-      
-      // 如果内存中的信息丢失但localStorage中还有，恢复它
-      if (currentToken && !this.token) {
-        this.token = currentToken
-        localStorage.setItem('token', currentToken)
-      }
-      
-      if (currentUser && !this.user) {
-        this.user = currentUser
-        localStorage.setItem('user', JSON.stringify(currentUser))
-      }
-    },
-    
-    async updateUser(userData) {
-      this.loading = true
-      this.error = ''
-      
-      try {
-        console.log('发送的用户数据:', userData)
-        
-        // 更新前确保认证信息存在
-        this.ensureAuth()
-        
-        // 如果没有token，不执行更新
-        if (!this.token) {
-          throw new Error('未找到认证信息，无法更新用户数据')
-        }
-        
-        const response = await axios.put('/api/users/me', userData, {
-          headers: {
-            'Authorization': `Bearer ${this.token}`
-          }
-        })
-        
-        console.log('响应数据:', response.data)
-        
-        // 替换整个user对象，只保留后端返回的字段
-        this.user = response.data
-        
-        // 更新localStorage中的user信息，确保刷新页面后数据同步
-        localStorage.setItem('user', JSON.stringify(this.user))
-        // 确保token仍然被保存
-        localStorage.setItem('token', this.token)
-        
-        console.log('用户信息更新成功:', this.user)
-        return true
-      } catch (error) {
-        console.log('错误响应:', error.response?.data)
-        this.error = error.response?.data?.details || error.response?.data?.message || '更新用户信息失败'
-        console.error('更新用户信息失败:', error)
-        
-        // 更新失败时确保认证信息不丢失
-        this.ensureAuth()
-        
-        return false
-      } finally {
-        this.loading = false
-      }
+      const response = await api.getOrders(requestParams)
+      orders.value = response.data.orders
+      totalOrders.value = response.data.total
+      return response.data
+    } catch (err) {
+      console.error('获取订单列表失败:', err)
+      error.value = err.response?.data?.message || '获取订单列表失败'
+      return null
+    } finally {
+      loading.value = false
     }
+  }
+
+  // 获取订单详情
+  const fetchOrderDetail = async (id) => {
+    loading.value = true
+    error.value = null
+    try {
+      const response = await api.getOrderDetail(id)
+      return response.data
+    } catch (err) {
+      console.error(`获取订单详情 ${id} 失败:`, err)
+      error.value = err.response?.data?.message || '获取订单详情失败'
+      return null
+    } finally {
+      loading.value = false
+    }
+  }
+
+  // 更新订单状态
+  const updateOrderStatus = async (id, status) => {
+    loading.value = true
+    error.value = null
+    try {
+      const response = await api.updateOrderStatus(id, status)
+      // 重新获取订单列表以更新数据
+      await fetchOrders()
+      return response.data
+    } catch (err) {
+      console.error(`更新订单状态 ${id} 失败:`, err)
+      error.value = err.response?.data?.message || '更新订单状态失败'
+      return null
+    } finally {
+      loading.value = false
+    }
+  }
+
+  // 删除订单
+  const deleteOrder = async (id) => {
+    loading.value = true
+    error.value = null
+    try {
+      const response = await api.deleteOrder(id)
+      // 重新获取订单列表以更新数据
+      await fetchOrders()
+      return response.data
+    } catch (err) {
+      console.error(`删除订单 ${id} 失败:`, err)
+      error.value = err.response?.data?.message || '删除订单失败'
+      return null
+    } finally {
+      loading.value = false
+    }
+  }
+
+  // 批量删除订单
+  const batchDeleteOrders = async (ids) => {
+    loading.value = true
+    error.value = null
+    try {
+      const response = await api.batchDeleteOrders(ids)
+      // 重新获取订单列表以更新数据
+      await fetchOrders()
+      return response.data
+    } catch (err) {
+      console.error('批量删除订单失败:', err)
+      error.value = err.response?.data?.message || '批量删除订单失败'
+      return null
+    } finally {
+      loading.value = false
+    }
+  }
+
+  // 设置筛选条件
+  const setFilter = (newFilter) => {
+    filter.value = { ...filter.value, ...newFilter }
+    // 筛选条件变化时重置页码
+    currentPage.value = 1
+  }
+
+  // 设置当前页码
+  const setCurrentPage = (page) => {
+    currentPage.value = page
+  }
+
+  // 设置每页显示数量
+  const setPageSize = (size) => {
+    pageSize.value = size
+    // 每页数量变化时重置页码
+    currentPage.value = 1
+  }
+
+  // 重置筛选条件
+  const resetFilter = () => {
+    filter.value = {
+      search: '',
+      status: '',
+      dateRange: ''
+    }
+    currentPage.value = 1
+  }
+
+  return {
+    orders,
+    totalOrders,
+    currentPage,
+    pageSize,
+    loading,
+    error,
+    filter,
+    fetchOrders,
+    fetchOrderDetail,
+    updateOrderStatus,
+    deleteOrder,
+    batchDeleteOrders,
+    setFilter,
+    setCurrentPage,
+    setPageSize,
+    resetFilter
+  }
+})
+
+// 佣金管理Store
+export const useCommissionStore = defineStore('commission', () => {
+  // 状态
+  const commissions = ref([])
+  const totalCommissions = ref(0)
+  const currentPage = ref(1)
+  const pageSize = ref(10)
+  const loading = ref(false)
+  const error = ref(null)
+  const filter = ref({
+    search: '',
+    status: '',
+    dateRange: ''
+  })
+
+  // 获取佣金列表（带分页和筛选）
+  const fetchCommissions = async (params = {}) => {
+    loading.value = true
+    error.value = null
+    try {
+      // 合并默认参数和传入参数
+      const requestParams = {
+        page: currentPage.value,
+        page_size: pageSize.value,
+        ...filter.value,
+        ...params
+      }
+      
+      const response = await api.getCommissions(requestParams)
+      commissions.value = response.data.commissions
+      totalCommissions.value = response.data.total
+      return response.data
+    } catch (err) {
+      console.error('获取佣金列表失败:', err)
+      error.value = err.response?.data?.message || '获取佣金列表失败'
+      return null
+    } finally {
+      loading.value = false
+    }
+  }
+
+  // 获取佣金详情
+  const fetchCommissionDetail = async (id) => {
+    loading.value = true
+    error.value = null
+    try {
+      const response = await api.getCommissionDetail(id)
+      return response.data
+    } catch (err) {
+      console.error(`获取佣金详情 ${id} 失败:`, err)
+      error.value = err.response?.data?.message || '获取佣金详情失败'
+      return null
+    } finally {
+      loading.value = false
+    }
+  }
+
+  // 更新佣金状态
+  const updateCommissionStatus = async (id, status) => {
+    loading.value = true
+    error.value = null
+    try {
+      const response = await api.updateCommissionStatus(id, status)
+      // 重新获取佣金列表以更新数据
+      await fetchCommissions()
+      return response.data
+    } catch (err) {
+      console.error(`更新佣金状态 ${id} 失败:`, err)
+      error.value = err.response?.data?.message || '更新佣金状态失败'
+      return null
+    } finally {
+      loading.value = false
+    }
+  }
+
+  // 设置筛选条件
+  const setFilter = (newFilter) => {
+    filter.value = { ...filter.value, ...newFilter }
+    // 筛选条件变化时重置页码
+    currentPage.value = 1
+  }
+
+  // 设置当前页码
+  const setCurrentPage = (page) => {
+    currentPage.value = page
+  }
+
+  // 设置每页显示数量
+  const setPageSize = (size) => {
+    pageSize.value = size
+    // 每页数量变化时重置页码
+    currentPage.value = 1
+  }
+
+  // 重置筛选条件
+  const resetFilter = () => {
+    filter.value = {
+      search: '',
+      status: '',
+      dateRange: ''
+    }
+    currentPage.value = 1
+  }
+
+  return {
+    commissions,
+    totalCommissions,
+    currentPage,
+    pageSize,
+    loading,
+    error,
+    filter,
+    fetchCommissions,
+    fetchCommissionDetail,
+    updateCommissionStatus,
+    setFilter,
+    setCurrentPage,
+    setPageSize,
+    resetFilter
   }
 })

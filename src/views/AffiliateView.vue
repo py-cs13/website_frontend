@@ -71,11 +71,13 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import { useUserStore } from '../stores/index'
+import { useRouter } from 'vue-router'
+import { useAuthStore } from '../stores/index'
 import Swal from 'sweetalert2'
 import { formatDate } from '../utils/formatters'
 
-const userStore = useUserStore()
+const userStore = useAuthStore()
+const router = useRouter()
 const affiliateLink = ref(null)
 const stats = ref({})
 const commissions = ref([])
@@ -204,13 +206,11 @@ const formatCurrency = (amount) => {
   }).format(amount)
 }
 
-// 页面加载时获取数据
-onMounted(() => {
-  if (userStore.isLoggedIn) {
-    getAffiliateLink()
-    getAffiliateStats()
-    getAffiliateCommissions()
-  }
+// 页面加载时获取推广数据
+onMounted(async () => {
+  await getAffiliateLink()
+  await getAffiliateStats()
+  await getAffiliateCommissions()
 })
 </script>
 

@@ -88,11 +88,12 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
-import { useUserStore } from '../stores'
+import { useRouter, useRoute } from 'vue-router'
+import { useAuthStore } from '../stores'
 
 const router = useRouter()
-const userStore = useUserStore()
+const route = useRoute()
+const userStore = useAuthStore()
 
 // 表单数据
 const username = ref('')
@@ -101,6 +102,7 @@ const password = ref('')
 const confirmPassword = ref('')
 const loading = ref(false)
 const error = ref('')
+const referralCode = ref('')
 
 // 组件挂载时重置表单数据和错误信息
 onMounted(() => {
@@ -109,6 +111,13 @@ onMounted(() => {
   password.value = ''
   confirmPassword.value = ''
   error.value = ''
+  
+  // 获取URL中的推广码
+  const code = route.query.ref
+  if (code) {
+    referralCode.value = code
+    console.log('获取到推广码:', code)
+  }
 })
 
 // 处理注册
@@ -124,8 +133,8 @@ const handleRegister = async () => {
   }
   
   try {
-    // 调用注册方法
-    const success = await userStore.register(username.value, email.value, password.value)
+    // 调用注册方法，传递推广码
+    const success = await userStore.register(username.value, email.value, password.value, referralCode.value)
     if (success) {
       // 注册成功，重定向到首页
       router.push('/')

@@ -175,11 +175,11 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { useUserStore } from '../stores'
+import { useAuthStore } from '../stores'
 
 const route = useRoute()
 const router = useRouter()
-const userStore = useUserStore()
+const userStore = useAuthStore()
 
 // 支付步骤
 const currentStep = ref(1)

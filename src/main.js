@@ -20,5 +20,10 @@ const app = createApp(App)
 app.use(pinia)
 app.use(router)
 
+// 挂载应用前加载用户信息
+import { useAuthStore } from './stores/auth.js'
+const userStore = useAuthStore()
+userStore.loadUserFromStorage()
+
 // 挂载应用
 app.mount('#app')

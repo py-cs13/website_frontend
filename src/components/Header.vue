@@ -23,7 +23,7 @@
             </svg>
           </button>
           
-          <template v-if="userStore.isLoggedIn">
+          <template v-if="userStore.isAuthenticated">
             <router-link to="/user" class="user-profile">
               <span class="user-name">{{ userStore.user?.username || '用户' }}</span>
             </router-link>
@@ -50,8 +50,8 @@
             <li><router-link to="/?category=article" @click="showMobileMenu = false">文章</router-link></li>
             <li><router-link to="/?category=toolkit" @click="showMobileMenu = false">工具包</router-link></li>
             <li><router-link to="/about" @click="showMobileMenu = false">关于我们</router-link></li>
-            <li><router-link to="/affiliate" @click="showMobileMenu = false">联盟合作</router-link></li>
-            <li v-if="userStore.isLoggedIn">
+            <li><a href="#" @click.prevent="showMobileMenu = false; showAffiliateAlert">联盟合作</a></li>
+            <li v-if="userStore.isAuthenticated">
               <router-link to="/user" @click="showMobileMenu = false" class="user-info">
                 <span class="user-name">{{ userStore.user?.username || '用户' }}</span>
               </router-link>
@@ -68,10 +68,21 @@
 
 <script setup>
 import { ref } from 'vue'
-import { useUserStore } from '../stores'
+import { useAuthStore } from '../stores'
+import Swal from 'sweetalert2'
 
-const userStore = useUserStore()
+const userStore = useAuthStore()
 const showMobileMenu = ref(false)
+
+// 显示联盟推广弹窗
+const showAffiliateAlert = () => {
+  Swal.fire({
+    title: '联盟推广',
+    text: '感谢您对我们的支持！目前联盟推广功能正在开发中，敬请期待。',
+    icon: 'info',
+    confirmButtonText: '确定'
+  })
+}
 </script>
 
 <style scoped>

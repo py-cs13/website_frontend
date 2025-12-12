@@ -56,10 +56,10 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { useUserStore } from '../stores'
+import { useAuthStore } from '../stores'
 
 const router = useRouter()
-const userStore = useUserStore()
+const userStore = useAuthStore()
 
 // 表单数据
 const email = ref('')

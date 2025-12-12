@@ -4,27 +4,48 @@ import { useRoute, onBeforeRouteUpdate } from 'vue-router'
 import Header from './components/Header.vue'
 import Sidebar from './components/Sidebar.vue'
 import Footer from './components/Footer.vue'
-import { useContentStore, useUserStore } from './stores'
+import { useContentStore, useAuthStore } from './stores'
 
 const route = useRoute()
 const contentStore = useContentStore()
-const userStore = useUserStore()
+const userStore = useAuthStore()
 const showSidebar = ref(true)
 const isMobile = ref(false)
 
 // 监听路由变化，在首页显示侧边栏，详情页隐藏侧边栏
 onMounted(() => {
   // 初始化认证信息
-  userStore.initAuth()
+  userStore.loadUserFromStorage()
   checkSidebarVisibility()
   checkMobileDevice()
   // 加载内容列表
   contentStore.fetchLatestArticles()
   contentStore.fetchLatestToolkits()
   
+  // 检测URL中的推广参数
+  checkReferral()
+  
   // 监听窗口大小变化
   window.addEventListener('resize', checkMobileDevice)
 })
+
+// 检测并处理URL中的推广参数
+const checkReferral = () => {
+  const urlParams = new URLSearchParams(window.location.search)
+  const referralCode = urlParams.get('ref')
+  if (referralCode) {
+    // 将推广码发送到后端进行记录
+    fetch('/api/affiliate/track', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ referral_code: referralCode })
+    }).catch(error => {
+      console.error('Failed to track referral:', error)
+    })
+  }
+}
 
 // 每次路由切换前确保认证信息存在
 onBeforeRouteUpdate(() => {

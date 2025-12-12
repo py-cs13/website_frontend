@@ -67,7 +67,7 @@
               </a>
             </li>
             <li class="nav-item">
-              <a href="/affiliate" target="_self">
+              <a href="#" @click.prevent="showAffiliateAlert">
                 <i class="icon">📣</i> 联盟推广
               </a>
             </li>
@@ -362,16 +362,18 @@
 <script setup>
 import { ref, computed, onMounted, onActivated, watch } from 'vue'
 import { useRouter } from 'vue-router'
-import { useUserStore } from '../stores'
+import { useAuthStore } from '../stores'
 import axios from 'axios'
+import apiClient from '../utils/api.js'
 import Button from '../components/Button.vue'
 import FormInput from '../components/FormInput.vue'
 import FormTextarea from '../components/FormTextarea.vue'
 import Toast from '../components/Toast.vue'
 import { formatDate } from '../utils/formatters'
+import Swal from 'sweetalert2'
 
 const router = useRouter()
-const userStore = useUserStore()
+const userStore = useAuthStore()
 const activeTab = ref('profile')
 const activeContentTab = ref('articles')
 const error = ref('')
@@ -415,15 +417,13 @@ function showToastMessage(message, type = 'success') {
   }, 3000)
 }
 
+
+
 // 从API获取最新的用户数据
 async function loadUserData() {
   try {
-    const token = localStorage.getItem('token')
-    const response = await axios.get('/api/users/me', {
-      headers: {
-        'Authorization': `Bearer ${token}`
-      }
-    })
+    // 使用apiClient确保错误处理一致
+    const response = await apiClient.get('/users/me')
     
     const userData = response.data
     
@@ -609,6 +609,16 @@ const downloadPurchase = (item) => {
   // 示例：window.open(`/api/download/${item.id}`, '_blank')
 }
 
+// 显示联盟推广弹窗
+const showAffiliateAlert = () => {
+  Swal.fire({
+    title: '联盟推广',
+    text: '感谢您对我们的支持！目前联盟推广功能正在开发中，敬请期待。',
+    icon: 'info',
+    confirmButtonText: '确定'
+  })
+}
+
 // 处理头像上传
 const handleAvatarUpload = async (event) => {
   const file = event.target.files[0]
@@ -634,11 +644,10 @@ const handleAvatarUpload = async (event) => {
     const formData = new FormData()
     formData.append('file', file)
     
-    // 调用后端API上传头像
-    const response = await axios.post('/api/users/me/avatar', formData, {
+    // 调用后端API上传头像，使用apiClient确保认证错误处理一致
+    const response = await apiClient.post('/users/me/avatar', formData, {
       headers: {
-        'Content-Type': 'multipart/form-data',
-        'Authorization': `Bearer ${userStore.token}`
+        'Content-Type': 'multipart/form-data'
       }
     })
     

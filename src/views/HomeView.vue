@@ -106,7 +106,7 @@
 <script setup>
 import { ref, computed, onMounted, onActivated, watch } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import { useContentStore, useUserStore } from '../stores'
+import { useContentStore, useAuthStore } from '../stores'
 import { formatDate, formatNumber } from '../utils/formatters'
 
 const contentStore = useContentStore()
