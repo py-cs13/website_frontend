@@ -59,12 +59,14 @@ const router = useRouter()
 
 // 模拟分类数据
 const categories = ref([
-  { id: 1, name: '健康养生', count: 25 },
-  { id: 2, name: '母婴育儿', count: 18 },
-  { id: 3, name: '运动健身', count: 12 },
-  { id: 4, name: '饮食营养', count: 20 },
-  { id: 5, name: '心理疏导', count: 8 },
-  { id: 6, name: '睡眠管理', count: 15 }
+  { id: 1, name: '婴儿护理', count: 25 },
+  { id: 2, name: '育儿知识', count: 18 },
+  { id: 3, name: '营养辅食', count: 20 },
+  { id: 4, name: '产后恢复', count: 15 },
+  { id: 5, name: '亲子互动', count: 12 },
+  { id: 6, name: '成长发育', count: 8 },
+  { id: 7, name: '早期教育', count: 10 },
+  { id: 8, name: '健康养生', count: 15 }
 ])
 
 // 模拟热门文章数据

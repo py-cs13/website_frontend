@@ -35,7 +35,7 @@
           <div class="user-name">{{ user.username }}</div>
           <div class="user-email">{{ user.email }}</div>
           <div class="user-badge" v-if="user.babyName">
-            👶 {{ user.babyName }} 的妈妈
+            👶 {{ user.babyName }} 的{{ user.gender === 'male' ? '爸爸' : '妈妈' }}
           </div>
         </div>
         
@@ -51,7 +51,8 @@
                 <i class="icon">👶</i> 宝宝信息
               </a>
             </li>
-            <li class="nav-item" :class="{ active: activeTab === 'content' }">
+            <!-- 我的内容标签 - 第一版隐藏 -->
+            <li class="nav-item" :class="{ active: activeTab === 'content' }" v-if="false">
               <a href="#" @click.prevent="switchTab('content')">
                 <i class="icon">📝</i> 我的内容
               </a>
@@ -71,7 +72,8 @@
                 <i class="icon">📣</i> 联盟推广
               </a>
             </li>
-            <li class="nav-item" :class="{ active: activeTab === 'settings' }">
+            <!-- 账户设置标签 - 第一版隐藏 -->
+            <li class="nav-item" :class="{ active: activeTab === 'settings' }" v-if="false">
               <a href="#" @click.prevent="switchTab('settings')">
                 <i class="icon">⚙️</i> 账户设置
               </a>
@@ -87,7 +89,7 @@
           <h2 class="tab-title">
             <span class="title-icon">👤</span> 个人信息
           </h2>
-          <form class="profile-form" novalidate>
+          <form class="profile-form" novalidate @submit.prevent>
             <div class="form-group">
               <FormInput
                 id="username"
@@ -145,7 +147,7 @@
           <h2 class="tab-title">
             <span class="title-icon">👶</span> 宝宝信息
           </h2>
-          <form class="baby-form">
+          <form class="baby-form" novalidate @submit.prevent>
             <div class="form-group">
               <FormInput
                 id="babyName"
@@ -187,8 +189,8 @@
           </form>
         </div>
         
-        <!-- 我的内容 -->
-        <div v-if="activeTab === 'content'" class="tab-content">
+        <!-- 我的内容 - 第一版隐藏 -->
+        <div v-if="activeTab === 'content' && false" class="tab-content">
           <h2 class="tab-title">
             <span class="title-icon">📝</span> 我的内容
           </h2>
@@ -286,14 +288,14 @@
           </div>
         </div>
         
-        <!-- 账户设置 -->
-        <div v-if="activeTab === 'settings'" class="tab-content">
+        <!-- 账户设置 - 第一版隐藏 -->
+        <div v-if="activeTab === 'settings' && false" class="tab-content">
           <h2 class="tab-title">
             <span class="title-icon">⚙️</span> 账户设置
           </h2>
           <div class="settings-section">
             <h3 class="section-title">密码设置</h3>
-            <form class="password-form">
+            <form class="password-form" novalidate @submit.prevent>
               <div class="form-group">
                 <FormInput
                   id="old-password"

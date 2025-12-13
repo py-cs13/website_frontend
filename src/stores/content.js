@@ -26,11 +26,46 @@ export const useContentStore = defineStore('content', {
   }),
   
   actions: {
+    // 获取缓存数据
+    getCachedData(key) {
+      const cached = localStorage.getItem(key)
+      if (cached) {
+        try {
+          const data = JSON.parse(cached)
+          // 检查缓存是否过期（1小时）
+          if (Date.now() - data.timestamp < 3600000) {
+            return data.content
+          }
+        } catch (e) {
+          console.error('Error parsing cached data:', e)
+        }
+      }
+      return null
+    },
+    
+    // 设置缓存数据
+    setCachedData(key, content) {
+      try {
+        localStorage.setItem(key, JSON.stringify({
+          content,
+          timestamp: Date.now()
+        }))
+      } catch (e) {
+        console.error('Error setting cached data:', e)
+      }
+    },
+    
+    // 清除缓存数据
+    clearCachedData(key) {
+      localStorage.removeItem(key)
+    },
+    
     // 获取今日推荐内容
     async fetchTodayFeature() {
       this.loading = true
       this.error = null
       try {
+        // 今日推荐不缓存，每次都从API获取
         const response = await axios.get('/api/content/today-feature')
         this.todayFeature = response.data
       } catch (error) {
@@ -46,11 +81,22 @@ export const useContentStore = defineStore('content', {
       this.loading = true
       this.error = null
       try {
+        // 尝试从缓存获取
+        const cachedArticles = this.getCachedData('latest_articles')
+        if (cachedArticles) {
+          this.articles = cachedArticles
+        }
+        
+        // 无论是否有缓存，都从API获取最新数据（后台更新时能及时显示）
         const response = await axios.get('/api/articles/latest')
         this.articles = response.data
+        
+        // 更新缓存
+        this.setCachedData('latest_articles', response.data)
       } catch (error) {
         this.error = error.message
         console.error('Failed to fetch latest articles:', error)
+        // 如果API请求失败，至少保持缓存数据（如果有的话）
       } finally {
         this.loading = false
       }
@@ -61,11 +107,22 @@ export const useContentStore = defineStore('content', {
       this.loading = true
       this.error = null
       try {
+        // 尝试从缓存获取
+        const cachedToolkits = this.getCachedData('latest_toolkits')
+        if (cachedToolkits) {
+          this.toolkits = cachedToolkits
+        }
+        
+        // 无论是否有缓存，都从API获取最新数据
         const response = await axios.get('/api/toolkits/latest')
         this.toolkits = response.data
+        
+        // 更新缓存
+        this.setCachedData('latest_toolkits', response.data)
       } catch (error) {
         this.error = error.message
         console.error('Failed to fetch toolkits:', error)
+        // 如果API请求失败，至少保持缓存数据（如果有的话）
       } finally {
         this.loading = false
       }
@@ -73,7 +130,7 @@ export const useContentStore = defineStore('content', {
     
     // 获取最新工具包
     async fetchLatestToolkits() {
-      // 调用现有的fetchToolkits方法，因为它已经获取了工具包列表
+      // 调用现有的fetchToolkits方法，因为它已经获取了工具包列表并实现了缓存
       await this.fetchToolkits()
     },
     

@@ -29,7 +29,21 @@ const routes = [
     name: 'toolkit-detail',
     component: () => import('../views/ToolkitDetailView.vue')
   },
-  {    path: '/user',    name: 'user-center',    component: () => import('../views/UserCenterView.vue'),    meta: { requiresAuth: true }  },  {    path: '/payment',    name: 'payment',    component: () => import('../views/PaymentView.vue'),    meta: { requiresAuth: true }  },  {    path: '/about',    name: 'about',    component: () => import('../views/AboutView.vue')  },  {    path: '/affiliate',    name: 'affiliate',    component: () => import('../views/AffiliateView.vue'),    meta: { requiresAuth: true }  },
+  {    path: '/user',    name: 'user-center',    component: () => import('../views/UserCenterView.vue'),    meta: { requiresAuth: true }  },  {    path: '/payment',    name: 'payment',    component: () => import('../views/PaymentView.vue'),    meta: { requiresAuth: true }  },  {
+    path: '/about',
+    name: 'about',
+    component: () => import('../views/AboutView.vue')
+  },
+  {
+    path: '/articles',
+    name: 'articles',
+    component: () => import('../views/ArticlesView.vue')
+  },
+  {
+    path: '/toolkits',
+    name: 'toolkits',
+    component: () => import('../views/ToolkitsView.vue')
+  },  {    path: '/affiliate',    name: 'affiliate',    component: () => import('../views/AffiliateView.vue'),    meta: { requiresAuth: true }  },
   // 管理后台路由
   {
     path: '/admin',

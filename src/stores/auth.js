@@ -54,16 +54,20 @@ export const useAuthStore = defineStore('auth', {
         const response = await apiClient.post('/auth/login', { email, password })
         this.token = response.data.access_token
         
-        // 登录成功后获取用户信息
+        // 登录成功后立即保存token到localStorage，确保后续请求能使用token
+        this.saveUserToStorage()
+        
+        // 然后获取用户信息
         try {
           const userResponse = await apiClient.get('/users/me')
           this.user = userResponse.data
+          // 更新用户信息到localStorage
+          this.saveUserToStorage()
         } catch (userError) {
           console.error('Failed to fetch user info after login:', userError)
           // 如果获取用户信息失败，至少保证token被存储
         }
         
-        this.saveUserToStorage()
         return response.data
       } catch (error) {
         this.error = error.response?.data?.message || '登录失败'
@@ -75,12 +79,16 @@ export const useAuthStore = defineStore('auth', {
     },
     
     // 注册
-    async register(email, password, nickname, affiliateCode) {
+    async register(username, email, password, referralCode) {
       this.loading = true
       this.error = null
       try {
         // 使用apiClient确保错误处理一致
-        const response = await apiClient.post('/auth/register', { email, password, nickname, affiliate_code: affiliateCode })
+        const response = await apiClient.post('/auth/register', { username, email, password, referral_code: referralCode })
+        
+        // 注册成功后自动登录
+        await this.login(email, password)
+        
         return response.data
       } catch (error) {
         this.error = error.response?.data?.message || '注册失败'
@@ -97,6 +105,9 @@ export const useAuthStore = defineStore('auth', {
       this.token = null
       localStorage.removeItem('user')
       localStorage.removeItem('token')
+      
+      // 跳转到首页
+      window.location.href = '/'
     },
     
     // 更新用户信息
@@ -117,6 +128,8 @@ export const useAuthStore = defineStore('auth', {
         this.loading = false
       }
     },
+    
+
     
     // 确保认证信息存在（用于路由切换时调用）
     ensureAuth() {

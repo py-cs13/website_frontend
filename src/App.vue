@@ -121,6 +121,27 @@ const checkMobileDevice = () => {
   gap: 30px;
   align-items: flex-start;
   position: relative;
+  width: 100%;
+}
+
+/* 确保在大屏幕上内容区域和侧边栏的整体布局更加平衡 */
+@media (min-width: 1200px) {
+  /* 在大屏幕上，为内容区域和侧边栏添加统一的外边距 */
+  .content-view {
+    flex: 1;
+    min-width: 0;
+  }
+  
+  /* 确保侧边栏不会挤压主内容 */
+  .sidebar {
+    flex-shrink: 0;
+  }
+  
+  /* 调整整体容器，确保左右留白对称 */
+  .container {
+    max-width: calc(1200px + 40px); /* 包含左右各20px的边距 */
+    padding: 0;
+  }
 }
 
 .content-view {
@@ -130,6 +151,9 @@ const checkMobileDevice = () => {
   padding: 30px;
   box-shadow: var(--shadow-medium);
   transition: all 0.3s ease;
+  box-sizing: border-box;
+  overflow-x: hidden;
+  overflow-y: visible; /* 允许垂直方向溢出可见 */
 }
 
 .content-view:hover {

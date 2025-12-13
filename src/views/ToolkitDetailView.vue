@@ -127,7 +127,7 @@ onMounted(() => {
   toolkit.value = {
     id: toolkitId,
     title: '家庭健康管理工具包',
-    category: '健康养生',
+    category: '育儿工具',
     summary: '全面的家庭健康管理知识和实用工具，帮助您管理家人的健康。',
     content: `
       <p>家庭健康管理是现代生活中非常重要的一部分，一个好的家庭健康管理工具包可以帮助您更好地照顾家人的健康。</p>

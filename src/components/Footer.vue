@@ -2,10 +2,11 @@
   <footer class="footer">
     <div class="container">
       <div class="footer-content">
+        <!-- 按高度从高到低排列：关于我们 > 快速链接 > 关注我们 > 联系方式 -->
         <div class="footer-section">
           <h3 class="footer-title">关于我们</h3>
           <p class="footer-text">
-            宝贝成长母婴平台专注于为0-6岁宝宝的父母提供专业的育儿知识、实用的育儿工具和优质的育儿课程，陪伴宝宝健康快乐成长。
+            母婴趣指南专注于为0-6岁宝宝的父母提供专业的育儿知识、实用的育儿工具和优质的育儿课程，陪伴宝宝健康快乐成长。
           </p>
         </div>
         
@@ -21,6 +22,16 @@
         </div>
         
         <div class="footer-section">
+          <h3 class="footer-title">关注我们</h3>
+          <ul class="social-links">
+            <li><a href="#" class="social-link">微信</a></li>
+            <li><a href="#" class="social-link">微博</a></li>
+            <li><a href="#" class="social-link">知乎</a></li>
+            <li><a href="#" class="social-link">小红书</a></li>
+          </ul>
+        </div>
+        
+        <div class="footer-section">
           <h3 class="footer-title">联系方式</h3>
           <div class="contact-info">
             <p><i class="icon">📧</i> contact@example.com</p>
@@ -28,28 +39,10 @@
             <p><i class="icon">📍</i> 北京市朝阳区科技园区</p>
           </div>
         </div>
-        
-        <div class="footer-section">
-          <h3 class="footer-title">关注我们</h3>
-          <div class="social-links">
-            <a href="#" class="social-link">
-              <span class="icon">微信</span>
-            </a>
-            <a href="#" class="social-link">
-              <span class="icon">微博</span>
-            </a>
-            <a href="#" class="social-link">
-              <span class="icon">知乎</span>
-            </a>
-            <a href="#" class="social-link">
-              <span class="icon">小红书</span>
-            </a>
-          </div>
-        </div>
       </div>
       
       <div class="footer-bottom">
-        <p>&copy; {{ new Date().getFullYear() }} 宝贝成长母婴平台. 保留所有权利.</p>
+        <p>&copy; {{ new Date().getFullYear() }} 母婴趣指南. 保留所有权利.</p>
       </div>
     </div>
   </footer>
@@ -78,8 +71,17 @@
 .footer-content {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 40px;
+  gap: 30px;
   margin-bottom: 30px;
+  align-items: start;
+}
+
+.footer-section {
+  background-color: var(--bg-primary);
+  padding: 20px;
+  border-radius: 10px;
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-light);
 }
 
 .footer-section .footer-title {
@@ -101,15 +103,13 @@
   font-size: 14px;
   line-height: 1.8;
   color: var(--text-secondary);
-  background-color: var(--bg-primary);
-  padding: 15px;
-  border-radius: 10px;
-  border: 1px solid var(--border-color);
-  box-shadow: var(--shadow-light);
+  margin: 0;
 }
 
 .footer-links {
   list-style: none;
+  margin: 0;
+  padding: 0;
 }
 
 .footer-links li {
@@ -121,8 +121,8 @@
 .footer-links li::before {
   content: "🌟";
   position: absolute;
-  left: 0;
-  top: 4px;
+  left: 8px;
+  top: 10px;
   font-size: 12px;
   color: var(--accent-color);
 }
@@ -132,15 +132,20 @@
   text-decoration: none;
   font-size: 14px;
   transition: all 0.3s ease;
-  padding: 6px 8px;
-  border-radius: 6px;
-  display: inline-block;
+  padding: 8px 12px;
+  border-radius: 8px;
+  display: block;
 }
 
 .footer-links a:hover {
   color: var(--primary-color);
   background-color: var(--bg-accent);
   transform: translateX(5px);
+}
+
+.contact-info {
+  margin: 0;
+  padding: 0;
 }
 
 .contact-info p {
@@ -150,15 +155,13 @@
   margin-bottom: 15px;
   font-size: 14px;
   color: var(--text-secondary);
-  background-color: var(--bg-primary);
-  padding: 10px 15px;
-  border-radius: 8px;
-  border: 1px solid var(--border-color);
-  transition: all 0.3s ease;
+}
+
+.contact-info p:last-child {
+  margin-bottom: 0;
 }
 
 .contact-info p:hover {
-  box-shadow: var(--shadow-light);
   transform: translateY(-2px);
 }
 
@@ -169,34 +172,44 @@
 }
 
 .social-links {
-  display: flex;
-  gap: 18px;
-  flex-wrap: wrap;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.social-links li {
+  margin-bottom: 12px;
+  position: relative;
+  padding-left: 22px;
+}
+
+.social-links li:last-child {
+  margin-bottom: 0;
+}
+
+.social-links li::before {
+  content: "🌟";
+  position: absolute;
+  left: 8px;
+  top: 10px;
+  font-size: 12px;
+  color: var(--accent-color);
 }
 
 .social-link {
-  display: inline-block;
-  width: 45px;
-  height: 45px;
-  background-color: var(--bg-primary);
   color: var(--text-secondary);
-  border-radius: 50%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
   text-decoration: none;
-  font-size: 15px;
+  font-size: 14px;
   transition: all 0.3s ease;
-  border: 2px solid var(--border-color);
-  box-shadow: var(--shadow-light);
+  padding: 8px 12px;
+  border-radius: 8px;
+  display: block;
 }
 
 .social-link:hover {
-  background-color: var(--primary-color);
-  color: white;
-  transform: translateY(-4px) scale(1.1);
-  border-color: var(--primary-color);
-  box-shadow: var(--shadow-medium);
+  color: var(--primary-color);
+  background-color: var(--bg-accent);
+  transform: translateX(5px);
 }
 
 .footer-bottom {
@@ -205,11 +218,6 @@
   border-top: 2px solid var(--border-color);
   color: var(--text-light);
   font-size: 14px;
-  background-color: var(--bg-primary);
-  margin: 0 -20px -20px;
-  padding-left: 20px;
-  padding-right: 20px;
-  border-radius: 0 0 15px 15px;
 }
 
 .footer-bottom p {
@@ -228,6 +236,10 @@
     gap: 30px;
   }
   
+  .footer-section {
+    padding: 15px;
+  }
+  
   .footer-section .footer-title {
     font-size: 17px;
   }
@@ -236,20 +248,9 @@
     font-size: 16px;
   }
   
-  .social-links {
-    justify-content: center;
-    gap: 15px;
-  }
-  
   .social-link {
-    width: 40px;
-    height: 40px;
-    font-size: 14px;
-  }
-  
-  .contact-info p {
-    padding: 8px 12px;
-    gap: 10px;
+    font-size: 13px;
+    padding: 6px 10px;
   }
 }
 
