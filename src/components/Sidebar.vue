@@ -84,13 +84,13 @@ const hotToolkits = ref([
   { id: 2, title: '新生儿护理工具包' },
   { id: 3, title: '减肥健身计划工具包' },
   { id: 4, title: '营养膳食搭配工具包' },
-  { id: 5, title: '心理健康测试工具包' }
+  { id: 5, title: '心理健康评估工具包' }
 ])
 
 // 分类筛选方法
 const filterByCategory = (categoryName) => {
   // 实际项目中这里会调用API获取对应分类的内容
-  console.log(`Filter by category: ${categoryName}`)
+  // Filter by category
 }
 
 // 导航到文章详情
@@ -113,9 +113,6 @@ const buyNow = () => {
     price: 9.9
   }
   
-  console.log('=== 立即购买按钮点击事件开始 ===')
-  console.log('点击的商品：', mockToolkit)
-  
   // 跳转到支付页面，携带商品信息
   router.push({
     path: '/payment',
@@ -126,7 +123,6 @@ const buyNow = () => {
       price: mockToolkit.price
     }
   })
-  console.log('路由跳转命令已执行，跳转到支付页面')
 }
 </script>
 
@@ -143,7 +139,7 @@ const buyNow = () => {
 .sidebar-section {
   margin-bottom: 25px;
   background-color: var(--bg-secondary);
-  padding: 18px;
+  padding: 15px;
   border-radius: 10px;
   transition: all 0.3s ease;
 }
@@ -163,6 +159,7 @@ const buyNow = () => {
   display: flex;
   align-items: center;
   gap: 8px;
+  padding-left: 0;
 }
 
 .section-title::before {
@@ -173,10 +170,13 @@ const buyNow = () => {
 /* 分类列表 */
 .category-list {
   list-style: none;
+  padding-left: 0;
+  margin-left: 0;
 }
 
 .category-list li {
-  margin-bottom: 12px;
+  margin-bottom: 10px;
+  position: relative;
 }
 
 .category-list a {
@@ -186,29 +186,53 @@ const buyNow = () => {
   color: var(--text-secondary);
   text-decoration: none;
   transition: all 0.3s ease;
-  padding: 8px 12px;
+  padding: 10px 10px 10px 28px;
   border-radius: 8px;
-  font-size: 15px;
+  font-size: 14px;
+  line-height: 1.5;
+  width: 100%;
+  box-sizing: border-box;
+  position: relative;
+}
+
+.category-list a::before {
+  content: "✨";
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 14px;
+  transition: transform 0.3s ease;
 }
 
 .category-list a:hover {
   color: var(--primary-color);
   background-color: var(--bg-accent);
-  transform: translateX(5px);
+  transform: translateX(3px);
+}
+
+.category-list a:hover::before {
+  transform: translateY(-50%) scale(1.2);
+  color: #FFD700;
 }
 
 .category-list .count {
   font-size: 12px;
   color: var(--text-light);
   background-color: var(--bg-primary);
-  padding: 3px 8px;
+  padding: 4px 10px;
   border-radius: 12px;
   border: 1px solid var(--border-color);
+  min-width: 35px;
+  text-align: center;
+  font-weight: 500;
 }
 
 /* 热门列表 */
 .hot-list {
   list-style: none;
+  padding-left: 0;
+  margin-left: 0;
 }
 
 .hot-list li {
@@ -216,15 +240,23 @@ const buyNow = () => {
   padding-bottom: 15px;
   border-bottom: 1px solid var(--border-color);
   position: relative;
-  padding-left: 20px;
+  padding-left: 28px;
+  min-height: 24px;
+  margin-left: 0;
 }
 
 .hot-list li::before {
   content: "✨";
   position: absolute;
-  left: 0;
+  left: 8px;
   top: 5px;
-  font-size: 12px;
+  font-size: 14px;
+  width: 15px;
+  height: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.3s ease;
 }
 
 .hot-list li:last-child {
@@ -237,14 +269,22 @@ const buyNow = () => {
   color: var(--text-secondary);
   text-decoration: none;
   font-size: 14px;
-  line-height: 1.6;
+  line-height: 1.5;
   transition: all 0.3s ease;
   display: block;
+  padding: 2px 0;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .hot-list a:hover {
   color: var(--primary-color);
-  transform: translateX(5px);
+  transform: translateX(3px);
+}
+
+.hot-list li:hover::before {
+  transform: scale(1.2);
+  color: #FFD700;
 }
 
 /* 广告区域 */

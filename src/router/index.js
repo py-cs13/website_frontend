@@ -40,10 +40,26 @@ const routes = [
     component: () => import('../views/ArticlesView.vue')
   },
   {
+    path: '/simple-articles',
+    name: 'SimpleArticles',
+    component: () => import('../views/SimpleArticlesView.vue')
+  },
+  {
+    path: '/direct-articles',
+    name: 'DirectArticles',
+    component: () => import('../views/DirectArticlesView.vue')
+  },
+  {
     path: '/toolkits',
     name: 'toolkits',
     component: () => import('../views/ToolkitsView.vue')
-  },  {    path: '/affiliate',    name: 'affiliate',    component: () => import('../views/AffiliateView.vue'),    meta: { requiresAuth: true }  },
+  },
+  {
+    path: '/affiliate',
+    name: 'affiliate',
+    component: () => import('../views/AffiliateView.vue'),
+    meta: { requiresAuth: true }
+  },
   // 管理后台路由
   {
     path: '/admin',

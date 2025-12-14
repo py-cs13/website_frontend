@@ -1,12 +1,6 @@
 <template>
   <div class="toolkits-view">
     <div class="content-view">
-      <div class="page-title-container">
-        <h1 class="page-title">
-          <span class="section-icon">🎁</span>
-          所有工具包
-        </h1>
-      </div>
       
       <div class="content-list">
         <div 

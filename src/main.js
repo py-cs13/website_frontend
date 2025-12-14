@@ -7,8 +7,7 @@ import App from './App.vue'
 import axios from 'axios'
 axios.defaults.baseURL = 'http://localhost:8000/'
 
-// 引入详细调试脚本
-import './debug.js'
+// 生产环境不加载调试脚本
 
 // 创建Pinia实例
 const pinia = createPinia()

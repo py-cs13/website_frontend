@@ -81,48 +81,21 @@ export const useContentStore = defineStore('content', {
       this.loading = true
       this.error = null
       try {
-        // 尝试从缓存获取
-        const cachedArticles = this.getCachedData('latest_articles')
-        if (cachedArticles) {
-          this.articles = cachedArticles
+        // 直接从API获取最新文章，不使用缓存（确保显示真实数据）
+        const response = await axios.get('/api/articles')
+        // 处理不同的数据格式
+        let data = response.data
+        if (response.data && response.data.data && Array.isArray(response.data.data)) {
+          data = response.data.data
+        } else if (response.data && Array.isArray(response.data)) {
+          data = response.data
         }
-        
-        // 无论是否有缓存，都从API获取最新数据（后台更新时能及时显示）
-        const response = await axios.get('/api/articles/latest')
-        this.articles = response.data
-        
+        this.articles = data
         // 更新缓存
-        this.setCachedData('latest_articles', response.data)
+        this.setCachedData('latest_articles', this.articles)
       } catch (error) {
         this.error = error.message
         console.error('Failed to fetch latest articles:', error)
-        // 如果API请求失败，至少保持缓存数据（如果有的话）
-      } finally {
-        this.loading = false
-      }
-    },
-    
-    // 获取工具包列表
-    async fetchToolkits() {
-      this.loading = true
-      this.error = null
-      try {
-        // 尝试从缓存获取
-        const cachedToolkits = this.getCachedData('latest_toolkits')
-        if (cachedToolkits) {
-          this.toolkits = cachedToolkits
-        }
-        
-        // 无论是否有缓存，都从API获取最新数据
-        const response = await axios.get('/api/toolkits/latest')
-        this.toolkits = response.data
-        
-        // 更新缓存
-        this.setCachedData('latest_toolkits', response.data)
-      } catch (error) {
-        this.error = error.message
-        console.error('Failed to fetch toolkits:', error)
-        // 如果API请求失败，至少保持缓存数据（如果有的话）
       } finally {
         this.loading = false
       }
@@ -130,8 +103,27 @@ export const useContentStore = defineStore('content', {
     
     // 获取最新工具包
     async fetchLatestToolkits() {
-      // 调用现有的fetchToolkits方法，因为它已经获取了工具包列表并实现了缓存
-      await this.fetchToolkits()
+      this.loading = true
+      this.error = null
+      try {
+        // 直接从API获取最新工具包，不使用缓存（确保显示真实数据）
+        const response = await axios.get('/api/toolkits')
+        // 处理不同的数据格式
+        let data = response.data
+        if (response.data && response.data.data && Array.isArray(response.data.data)) {
+          data = response.data.data
+        } else if (response.data && Array.isArray(response.data)) {
+          data = response.data
+        }
+        this.toolkits = data
+        // 更新缓存
+        this.setCachedData('latest_toolkits', this.toolkits)
+      } catch (error) {
+        this.error = error.message
+        console.error('Failed to fetch toolkits:', error)
+      } finally {
+        this.loading = false
+      }
     },
     
     // 管理后台 - 获取文章列表
@@ -347,6 +339,19 @@ export const useContentStore = defineStore('content', {
         status: ''
       }
       this.currentPage = 1
+    },
+    
+    // 刷新所有内容数据
+    async refreshContent() {
+      try {
+        // 并行请求文章和工具包数据
+        await Promise.all([
+          this.fetchLatestArticles(),
+          this.fetchLatestToolkits()
+        ])
+      } catch (error) {
+        console.error('Failed to refresh content:', error)
+      }
     }
   }
 })

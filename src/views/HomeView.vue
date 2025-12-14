@@ -96,7 +96,7 @@
     </div>
     
     <!-- 加载状态：传统加载动画（作为备选） -->
-    <div v-else-if="loading" class="loading-container">
+    <div v-if="loading" class="loading-container">
       <div class="loading-spinner">
         <div class="spinner"></div>
         <p>正在加载内容...</p>
@@ -104,17 +104,18 @@
     </div>
     
     <!-- 内容区域 -->
-    <div v-else-if="activeType === null || activeType === 'all' || activeType === 'article' || activeType === 'toolkit'">
-      <!-- 文章区域 -->
-      <div v-if="(activeType === 'article' || activeType === 'all' || activeType === null) && (!searchQuery || filteredArticles.length > 0)" class="content-section">
-        <!-- 只在首页显示"最新文章"标题和"查看全部"链接，分类页面不显示 -->
-        <div class="section-header" v-if="!$route.query.category">
-          <h2 class="section-title">
-            <span class="section-icon">📚</span>
-            最新文章
-          </h2>
-          <router-link to="/?category=article" class="view-all-link">查看全部 →</router-link>
-        </div>
+    <div>
+  
+      
+      <!-- 文章区域 - 暂时移除条件渲染 -->
+      <div class="content-section">
+        <!-- 只在首页显示文章列表标题 -->
+        <h2 v-if="!route.query.category" class="section-title">
+          <span class="section-icon">📚</span>
+          文章列表
+        </h2>
+        
+  
         
         <div class="content-list">
           <!-- 生成文章卡片 -->
@@ -164,7 +165,7 @@
         </div>
         
         <!-- 加载更多按钮（仅在分类页面显示） -->
-        <div v-if="$route.query.category && displayedArticles.length < filteredArticles.length" class="load-more-container">
+        <div v-if="route.query.category && displayedArticles.length < filteredArticles.length" class="load-more-container">
           <button @click="loadMoreArticles" class="load-more-btn">
             <span v-if="loadingMore" class="loading-spinner"></span>
             {{ loadingMore ? '加载中...' : '加载更多' }}
@@ -175,7 +176,7 @@
       <!-- 工具包区域 -->
       <div v-if="(activeType === 'toolkit' || activeType === 'all' || activeType === null) && (!searchQuery || filteredToolkits.length > 0)" class="content-section">
         <!-- 只在首页显示"实用工具包"标题和"查看全部"链接，分类页面不显示 -->
-        <div class="section-header" v-if="!$route.query.category">
+        <div class="section-header" v-if="!route.query.category">
           <h2 class="section-title">
             <span class="section-icon">🎁</span>
             实用工具包
@@ -241,7 +242,7 @@
         </div>
         
         <!-- 加载更多按钮（仅在分类页面显示） -->
-        <div v-if="$route.query.category && displayedToolkits.length < filteredToolkits.length" class="load-more-container">
+        <div v-if="route.query.category && displayedToolkits.length < filteredToolkits.length" class="load-more-container">
           <button @click="loadMoreToolkits" class="load-more-btn">
             <span v-if="loadingMore" class="loading-spinner"></span>
             {{ loadingMore ? '加载中...' : '加载更多' }}
@@ -251,7 +252,7 @@
     </div>
     
     <!-- 空状态 -->
-    <div v-else-if="filteredContent.length === 0" class="empty-state">
+    <div v-if="filteredContent.length === 0" class="empty-state">
       <div class="empty-icon">
         {{ searchQuery ? '🔍' : '📚' }}
       </div>
@@ -284,11 +285,13 @@ const activeCategory = ref(0) // 0表示全部
 const activeType = ref(null) // null表示全部，'article'表示文章，'toolkit'表示工具包
 const loading = ref(false)
 const isExpanded = ref(false) // 控制标签是否展开
-const displayedArticleCount = ref(4) // 默认显示4篇文章
-const displayedToolkitCount = ref(2) // 默认显示2个工具包
-const loadStep = 4 // 每次加载数量
+const currentDisplayCount = ref(6) // 默认显示6篇文章
+const displayedToolkitCount = ref(6) // 默认显示6个工具包
+const loadStep = 6 // 每次加载数量
 const loadingMore = ref(false) // 加载更多的加载状态
 const searchQuery = ref('') // 搜索关键词
+
+
 
 // 模拟分类数据
 const categories = ref([
@@ -310,25 +313,25 @@ onMounted(async () => {
 
 // 每次进入页面时重新获取内容
 onActivated(async () => {
-  await loadContent()
+  await loadContent(true)
 })
 
 // 加载内容的函数
 const lastLoadedTime = ref(0)
 const REFRESH_INTERVAL = 5 * 60 * 1000 // 5分钟刷新一次
 
-const loadContent = async () => {
+const loadContent = async (force = false) => {
+  loading.value = true
   try {
-    // 检查是否需要刷新数据（5分钟内不重复刷新）
+    // 检查是否需要刷新数据（5分钟内不重复刷新，除非强制刷新）
     const now = Date.now()
-    if (now - lastLoadedTime.value < REFRESH_INTERVAL && 
+    if (!force && now - lastLoadedTime.value < REFRESH_INTERVAL && 
         contentStore.articles.length > 0 && 
         contentStore.toolkits.length > 0) {
       loading.value = false
       return
     }
     
-    loading.value = true
     // 并行请求文章和工具包数据
     await Promise.all([
       contentStore.fetchLatestArticles(),
@@ -343,6 +346,8 @@ const loadContent = async () => {
       if (route.query.category === 'article' || route.query.category === 'toolkit') {
         activeType.value = route.query.category
       }
+    } else {
+      activeType.value = null
     }
     
     // 检查搜索参数
@@ -350,7 +355,7 @@ const loadContent = async () => {
       searchQuery.value = route.query.search
     }
   } catch (error) {
-    console.error('Failed to load content:', error)
+    // 加载内容失败
   } finally {
     loading.value = false
   }
@@ -404,61 +409,83 @@ const allContent = computed(() => {
 })
 
 // 筛选后的文章
-const filteredArticles = computed(() => {
-  // 如果activeType为toolkit，则不显示文章
-  if (activeType.value === 'toolkit') {
-    return []
-  }
-  
-  let articles = contentStore.articles.map(article => ({
-    ...article,
-    type: 'article',
-    category: article.category || '母婴育儿'
-  }))
-  
-  // 按分类筛选
-  if (activeCategory.value !== 0) {
-    // 根据分类ID筛选内容
-    const categoryMap = {
-      1: ['婴儿护理'],
-      2: ['育儿知识', '母婴育儿'],
-      3: ['营养辅食'],
-      4: ['产后恢复'],
-      5: ['亲子互动'],
-      6: ['成长发育'],
-      7: ['早期教育'],
-      8: ['健康养生']
+  const filteredArticles = computed(() => {
+    // 如果activeType为toolkit，则不显示文章
+    if (activeType.value === 'toolkit') {
+      return []
     }
     
-    const categoriesToShow = categoryMap[activeCategory.value] || []
-    articles = articles.filter(item => categoriesToShow.includes(item.category))
-  }
-  
-  // 按搜索关键词筛选
-  if (searchQuery.value) {
-    const query = searchQuery.value.toLowerCase()
-    articles = articles.filter(item => 
-      item.title.toLowerCase().includes(query) || 
-      (item.content && item.content.toLowerCase().includes(query)) ||
-      (item.description && item.description.toLowerCase().includes(query))
-    )
-  }
-  
-  return articles
+    let articles = contentStore.articles.map(article => ({
+      ...article,
+      type: 'article',
+      // 确保category始终是一个字符串，默认值为'母婴育儿'
+      category: article.category ? 
+        (Array.isArray(article.category) ? article.category.join(', ') : String(article.category)) 
+        : '母婴育儿'
+    }))
+    
+    // 按分类筛选 - 只有当activeCategory有值时才进行筛选
+    if (activeCategory.value && activeCategory.value !== 0) {
+      // 根据分类ID筛选内容
+      const categoryMap = {
+        1: ['婴儿护理'],
+        2: ['育儿知识', '母婴育儿'],
+        3: ['营养辅食'],
+        4: ['产后恢复'],
+        5: ['亲子互动'],
+        6: ['成长发育'],
+        7: ['早期教育'],
+        8: ['健康养生']
+      }
+      
+      const categoriesToShow = categoryMap[activeCategory.value] || []
+      // 只有当categoriesToShow不为空时才进行筛选
+      if (categoriesToShow.length > 0) {
+        // 检查文章分类是否包含任何要显示的分类
+        articles = articles.filter(item => {
+          // 额外的安全检查，确保item和item.category存在
+          if (!item || !item.category) {
+            return false
+          }
+          const articleCategory = String(item.category) // 确保是字符串
+          const isMatch = categoriesToShow.some(category => articleCategory.includes(category))
+          return isMatch
+        })
+      }
+    }
+    
+    // 按搜索关键词筛选
+    if (searchQuery.value) {
+      const query = searchQuery.value.toLowerCase()
+      articles = articles.filter(item => 
+        item.title.toLowerCase().includes(query) || 
+        (item.content && item.content.toLowerCase().includes(query)) ||
+        (item.summary && item.summary.toLowerCase().includes(query)) ||
+        item.category.toLowerCase().includes(query)
+      )
+    }
+    
+    return articles
 })
+
+// 当前显示的文章数量，分类页面支持加载更多
+// currentDisplayCount已在setup函数开始处定义
 
 // 当前显示的文章
 const displayedArticles = computed(() => {
-  return filteredArticles.value.slice(0, displayedArticleCount.value)
+  // 首页固定显示4个文章卡片，分类页面使用currentDisplayCount
+  const limit = route.query.category ? currentDisplayCount.value : 4
+  return filteredArticles.value.slice(0, limit)
 })
 
-// 加载更多文章
+// 加载更多文章 - 仅在分类页面允许加载更多
 const loadMoreArticles = () => {
-  loadingMore.value = true
-  setTimeout(() => {
-    displayedArticleCount.value += loadStep
-    loadingMore.value = false
-  }, 500)
+  if (!route.query.category) {
+    return
+  }
+  
+  const loadStep = 4 // 每次加载4篇
+  currentDisplayCount.value += loadStep
 }
 
 // 筛选后的工具包
@@ -474,8 +501,8 @@ const filteredToolkits = computed(() => {
     category: toolkit.category || '育儿工具'
   }))
   
-  // 按分类筛选
-  if (activeCategory.value !== 0) {
+  // 按分类筛选 - 只有当activeCategory有值且不是0时才进行筛选
+  if (activeCategory.value) {
     // 根据分类ID筛选内容
     const categoryMap = {
       1: ['婴儿护理'],
@@ -489,7 +516,10 @@ const filteredToolkits = computed(() => {
     }
     
     const categoriesToShow = categoryMap[activeCategory.value] || []
-    toolkits = toolkits.filter(item => categoriesToShow.includes(item.category))
+    // 只有当categoriesToShow不为空时才进行筛选
+    if (categoriesToShow.length > 0) {
+      toolkits = toolkits.filter(item => categoriesToShow.includes(item.category))
+    }
   }
   
   // 按搜索关键词筛选
@@ -505,18 +535,24 @@ const filteredToolkits = computed(() => {
   return toolkits
 })
 
+// 当前显示的工具包数量，分类页面支持加载更多
+const currentToolkitDisplayCount = ref(6) // 初始显示6个
+
 // 当前显示的工具包
 const displayedToolkits = computed(() => {
-  return filteredToolkits.value.slice(0, displayedToolkitCount.value)
+  // 使用真实数据显示工具包，首页最多显示2个
+  const limit = route.query.category ? currentToolkitDisplayCount.value : 2
+  return filteredToolkits.value.slice(0, limit)
 })
 
-// 加载更多工具包
+// 加载更多工具包 - 仅在分类页面允许加载更多
 const loadMoreToolkits = () => {
-  loadingMore.value = true
-  setTimeout(() => {
-    displayedToolkitCount.value += loadStep
-    loadingMore.value = false
-  }, 500)
+  if (!route.query.category) {
+    return
+  }
+  
+  const loadStep = 2 // 每次加载2个
+  currentToolkitDisplayCount.value += loadStep
 }
 
 // 筛选后的所有内容（用于空状态判断）
@@ -555,29 +591,11 @@ const resetSearch = () => {
 
 
 
-// 测试点击事件
-const testClick = () => {
-  console.log('测试点击事件触发了！')
-  alert('测试点击事件触发了！')
-}
-
-// 测试路由跳转
-const testRouter = () => {
-  console.log('测试路由跳转...')
-  router.push('/about')
-}
-
-
-
 // 购买工具包
 const buyToolkit = async (item) => {
   try {
-    console.log('=== 立即购买按钮点击事件开始 ===')
-    console.log('点击的商品：', item)
-    
     // 检查商品数据完整性
     if (!item || !item.id || !item.title) {
-      console.error('商品数据不完整：', item)
       alert('商品数据不完整，请刷新页面后重试')
       return
     }
@@ -592,12 +610,7 @@ const buyToolkit = async (item) => {
         price: item.price || 99.0
       }
     })
-    console.log('路由跳转命令已执行，跳转到支付页面')
   } catch (error) {
-    console.error('=== 购买工具包时发生错误 ===')
-    console.error('错误类型：', typeof error)
-    console.error('错误消息：', error.message)
-    console.error('错误堆栈：', error.stack)
     alert('购买失败：' + error.message)
   }
 }
