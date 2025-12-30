@@ -4,8 +4,16 @@ FROM node:18.20.0-slim AS builder
 # 设置工作目录
 WORKDIR /app
 
-# 安装构建工具
-RUN apt-get update && apt-get install -y python3 make g++ git
+# 安装构建工具链 - 更完整的工具集
+RUN apt-get update && apt-get install -y \
+    python3 \
+    python3-pip \
+    make \
+    g++ \
+    git \
+    curl \
+    build-essential \
+    libc6-dev
 
 # 设置npm配置，避免权限问题
 RUN npm config set fund false && npm config set audit false

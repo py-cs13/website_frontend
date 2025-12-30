@@ -340,4 +340,19 @@ export const downloadAgent = async (agentId) => {
     throw error
   }
 }
+
+// ========================= 工具包API =========================
+
+// 下载工具包
+export const downloadToolkit = async (toolkitId) => {
+  try {
+    const response = await apiClient.get(`/toolkits/${toolkitId}/download`, {
+      responseType: 'blob'
+    })
+    return response
+  } catch (error) {
+    console.error(`下载工具包失败 (ID: ${toolkitId}):`, error)
+    throw error
+  }
+}
 export default apiClient
