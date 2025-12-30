@@ -4,8 +4,7 @@ import router from './router'
 import './style.css'
 import App from './App.vue'
 
-import axios from 'axios'
-axios.defaults.baseURL = 'http://localhost:8000/'
+// 移除全局axios配置，避免影响apiClient实例
 
 // 生产环境不加载调试脚本
 

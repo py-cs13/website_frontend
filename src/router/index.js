@@ -25,9 +25,9 @@ const routes = [
     component: () => import('../views/ArticleDetailView.vue')
   },
   {
-    path: '/toolkit/:id',
-    name: 'toolkit-detail',
-    component: () => import('../views/ToolkitDetailView.vue')
+    path: '/agent/:id',
+    name: 'agent-detail',
+    component: () => import('../views/AgentDetailView.vue')
   },
   {    path: '/user',    name: 'user-center',    component: () => import('../views/UserCenterView.vue'),    meta: { requiresAuth: true }  },  {    path: '/payment',    name: 'payment',    component: () => import('../views/PaymentView.vue'),    meta: { requiresAuth: true }  },  {
     path: '/about',
@@ -50,9 +50,9 @@ const routes = [
     component: () => import('../views/DirectArticlesView.vue')
   },
   {
-    path: '/toolkits',
-    name: 'toolkits',
-    component: () => import('../views/ToolkitsView.vue')
+    path: '/agents',
+    name: 'agents',
+    component: () => import('../views/AgentsView.vue')
   },
   {
     path: '/affiliate',
@@ -74,9 +74,9 @@ const routes = [
     meta: { requiresAdmin: true }
   },
   {
-    path: '/admin/toolkits',
-    name: 'admin-toolkits',
-    component: () => import('../views/Admin/ToolkitManagementView.vue'),
+    path: '/admin/agents',
+    name: 'admin-agents',
+    component: () => import('../views/Admin/AgentManagementView.vue'),
     meta: { requiresAdmin: true }
   },
   {

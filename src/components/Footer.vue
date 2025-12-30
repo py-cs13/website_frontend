@@ -15,28 +15,27 @@
           <ul class="footer-links">
             <li><router-link to="/">首页</router-link></li>
             <li><router-link to="/about">关于我们</router-link></li>
-            <li><a href="#">联系我们</a></li>
-            <li><a href="#">隐私政策</a></li>
-            <li><a href="#">服务条款</a></li>
+            <li><router-link to="/articles">文章中心</router-link></li>
+            <li><router-link to="/agents">智能体工具</router-link></li>
           </ul>
         </div>
         
         <div class="footer-section">
           <h3 class="footer-title">关注我们</h3>
           <ul class="social-links">
-            <li><a href="#" class="social-link">微信</a></li>
-            <li><a href="#" class="social-link">微博</a></li>
-            <li><a href="#" class="social-link">知乎</a></li>
-            <li><a href="#" class="social-link">小红书</a></li>
+            <li><span class="social-text">微信</span></li>
+            <li><span class="social-text">微博</span></li>
+            <li><span class="social-text">知乎</span></li>
+            <li><span class="social-text">小红书</span></li>
           </ul>
         </div>
         
         <div class="footer-section">
           <h3 class="footer-title">联系方式</h3>
           <div class="contact-info">
-            <p><i class="icon">📧</i> contact@example.com</p>
-            <p><i class="icon">📞</i> 400-123-4567</p>
-            <p><i class="icon">📍</i> 北京市朝阳区科技园区</p>
+            <p><i class="icon">📧</i> cl06221227@gmail.com</p>
+            <p><i class="icon">📞</i> 19041331887</p>
+            <p><i class="icon">📍</i> 河北省邯郸市</p>
           </div>
         </div>
       </div>
@@ -196,20 +195,12 @@
   color: var(--accent-color);
 }
 
-.social-link {
+.social-text {
   color: var(--text-secondary);
-  text-decoration: none;
   font-size: 14px;
-  transition: all 0.3s ease;
   padding: 8px 12px;
   border-radius: 8px;
   display: block;
-}
-
-.social-link:hover {
-  color: var(--primary-color);
-  background-color: var(--bg-accent);
-  transform: translateX(5px);
 }
 
 .footer-bottom {

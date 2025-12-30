@@ -34,13 +34,20 @@ export const useAuthStore = defineStore('auth', {
       const savedUser = localStorage.getItem('user')
       const savedToken = localStorage.getItem('token')
       
-      if (savedUser && savedToken) {
-        try {
-          this.user = JSON.parse(savedUser)
-          this.token = savedToken
-        } catch (e) {
-          console.error('Error parsing user data from localStorage:', e)
-          this.logout()
+      // 只要token存在就加载用户信息，不需要同时有user信息
+      if (savedToken) {
+        this.token = savedToken
+        
+        // 如果有user信息也加载
+        if (savedUser) {
+          try {
+            this.user = JSON.parse(savedUser)
+          } catch (e) {
+            console.error('Error parsing user data from localStorage:', e)
+            // 只清除user信息，保留token
+            localStorage.removeItem('user')
+            this.user = null
+          }
         }
       }
     },
@@ -65,7 +72,14 @@ export const useAuthStore = defineStore('auth', {
           this.saveUserToStorage()
         } catch (userError) {
           console.error('Failed to fetch user info after login:', userError)
-          // 如果获取用户信息失败，至少保证token被存储
+          // 如果获取用户信息失败，尝试使用/auth/me路径
+          try {
+            const userResponse = await apiClient.get('/auth/me')
+            this.user = userResponse.data
+            this.saveUserToStorage()
+          } catch (fallbackError) {
+            console.error('Failed to fetch user info with fallback path:', fallbackError)
+          }
         }
         
         return response.data

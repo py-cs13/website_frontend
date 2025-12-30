@@ -10,8 +10,8 @@
         <nav class="nav-desktop">
           <ul>
             <li><router-link to="/">首页</router-link></li>
-            <li><router-link to="/?category=article">文章</router-link></li>
-            <li><router-link to="/?category=toolkit">工具包</router-link></li>
+            <li><router-link to="/articles">文章</router-link></li>
+            <li><router-link to="/agents">智能体</router-link></li>
             <li><router-link to="/about">关于我们</router-link></li>
           </ul>
         </nav>
@@ -23,7 +23,7 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
               </svg>
             </button>
-            <input type="text" v-model="searchQuery" placeholder="搜索文章、工具包..." class="search-input" v-show="showSearch" @keyup.enter="performSearch" ref="searchInput">
+            <input type="text" v-model="searchQuery" placeholder="搜索文章、智能体..." class="search-input" v-show="showSearch" @keyup.enter="performSearch" ref="searchInput">
             <button class="search-submit-btn" @click="performSearch" v-show="showSearch">
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
@@ -103,8 +103,8 @@
       <div class="nav-mobile" v-if="showMobileMenu">
         <ul>
             <li><router-link to="/" @click="showMobileMenu = false">首页</router-link></li>
-            <li><router-link to="/?category=article" @click="showMobileMenu = false">文章</router-link></li>
-            <li><router-link to="/?category=toolkit" @click="showMobileMenu = false">工具包</router-link></li>
+            <li><router-link to="/articles" @click="showMobileMenu = false">文章</router-link></li>
+            <li><router-link to="/agents" @click="showMobileMenu = false">智能体</router-link></li>
             <li><router-link to="/about" @click="showMobileMenu = false">关于我们</router-link></li>
             <li><a href="#" @click.prevent="showMobileMenu = false; showAffiliateAlert">联盟合作</a></li>
             <li v-if="userStore.isAuthenticated">
@@ -169,8 +169,8 @@ const toggleSearch = () => {
 // 执行搜索
 const performSearch = () => {
   if (searchQuery.value.trim()) {
-    // 跳转到首页并带上搜索参数
-    router.push({ path: '/', query: { search: searchQuery.value.trim() } })
+    // 跳转到文章列表页并带上搜索参数
+    router.push({ path: '/articles', query: { search: searchQuery.value.trim() } })
     showSearch.value = false
   }
 }
@@ -189,7 +189,7 @@ const showAffiliateAlert = () => {
 const showContactAlert = () => {
   Swal.fire({
     title: '联系我们',
-    html: '<p>邮箱：contact@muyingqu.com</p><p>微信：muyingquzhinan</p>',
+    html: '<p>邮箱：cl06221227@gmail.com</p><p>微信：muyingquzhinan</p>',
     icon: 'info',
     confirmButtonText: '确定'
   })

@@ -15,7 +15,7 @@
     <section class="about-section">
       <h2 class="section-title">我们的使命</h2>
       <div class="section-content">
-        <p>我们的使命是陪伴每一位父母，用科学的育儿知识和温暖的人文关怀，让每个孩子都能在爱与智慧中健康成长。</p>
+        <p>我们的使命是陪伴每一位父母，用科学的育儿知识和温暖的人类关怀，让每个孩子都能在爱与智慧中健康成长。</p>
         <ul class="mission-list">
           <li>提供专业、易懂的0-6岁育儿知识</li>
           <li>传播科学、先进的育儿理念</li>
@@ -35,21 +35,21 @@
           <i class="icon">📧</i>
           <div class="contact-details">
             <h3>邮箱</h3>
-            <p>contact@example.com</p>
+            <p>cl06221227@gmail.com</p>
           </div>
         </div>
         <div class="contact-item">
           <i class="icon">📞</i>
           <div class="contact-details">
             <h3>电话</h3>
-            <p>400-123-4567</p>
+            <p>19041331887</p>
           </div>
         </div>
         <div class="contact-item">
           <i class="icon">📍</i>
           <div class="contact-details">
             <h3>地址</h3>
-            <p>北京市朝阳区科技园区</p>
+            <p>河北省邯郸市</p>
           </div>
         </div>
       </div>

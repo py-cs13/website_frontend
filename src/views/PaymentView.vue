@@ -155,7 +155,7 @@
           </div>
           <div class="detail-item download-section">
             <span class="label">下载工具包：</span>
-            <a href="#" class="download-link" @click.prevent="downloadToolkit">
+            <a href="#" class="download-link" @click.prevent="handleDownload">
               📥 立即下载 {{ orderInfo.productName }}
             </a>
           </div>
@@ -163,7 +163,7 @@
         
         <div class="payment-actions">
           <button v-if="paymentResult.status === 'success'" class="btn btn-primary" @click="goToUserCenter">查看订单</button>
-          <button v-if="paymentResult.status === 'success'" class="btn btn-success" @click="downloadToolkit">立即下载</button>
+          <button v-if="paymentResult.status === 'success'" class="btn btn-success" @click="handleDownload">立即下载</button>
           <button v-else class="btn btn-primary" @click="retryPayment">重新支付</button>
           <button class="btn btn-secondary" @click="goToHome">返回首页</button>
         </div>
@@ -176,6 +176,10 @@
 import { ref, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useAuthStore } from '../stores'
+import axios from 'axios'
+import apiClient from '../utils/api.js'
+import { downloadToolkit, createOrder, payOrder } from '../utils/api.js'
+import Swal from 'sweetalert2'
 
 const route = useRoute()
 const router = useRouter()
@@ -241,7 +245,7 @@ onMounted(() => {
   if (product_id) {
     orderInfo.value = {
       orderId: generateOrderId(),
-      productId: product_id,
+      productId: parseInt(product_id), // 确保产品ID是整数类型
       productName: product_name || `商品 #${product_id}`,
       productType: product_type || 'toolkit',
       price: parseFloat(price) || 99.0,
@@ -277,21 +281,60 @@ const prevStep = () => {
 }
 
 // 处理支付
-const processPayment = () => {
-  // 模拟支付过程
-  setTimeout(() => {
-    // 随机模拟支付成功或失败（90%成功率）
-    const success = Math.random() > 0.1
+const processPayment = async () => {
+  try {
+    // 真实创建订单
+    const orderData = {
+      product_type: orderInfo.value.productType,
+      product_id: orderInfo.value.productId,
+      amount: orderInfo.value.price - orderInfo.value.discount,
+      items: [
+        {
+          product_name: orderInfo.value.productName,
+          product_price: orderInfo.value.price,
+          quantity: 1,
+          total_amount: orderInfo.value.price - orderInfo.value.discount
+        }
+      ]
+    }
     
+    console.log('创建订单数据:', orderData)
+    
+    // 调用创建订单API
+    const orderResponse = await createOrder(orderData)
+    console.log('订单创建成功:', orderResponse)
+    
+    // 调用支付接口（测试模式下会自动完成支付）
+    const paymentData = {
+      order_id: orderResponse.id,
+      payment_method: 'alipay',
+      return_url: window.location.origin + '/payment-success'
+    }
+    
+    console.log('调用支付接口:', paymentData)
+    const paymentResponse = await payOrder(orderResponse.id, paymentData)
+    console.log('支付请求处理成功:', paymentResponse)
+    
+    // 支付成功后更新状态
     paymentResult.value = {
-      status: success ? 'success' : 'failed',
-      title: success ? '支付成功' : '支付失败',
-      message: success ? '您的订单已支付成功，感谢您的购买！' : '支付失败，请检查支付信息后重试。',
-      payTime: success ? new Date().toLocaleString('zh-CN') : ''
+      status: 'success',
+      title: '支付成功',
+      message: '您的订单已支付成功，感谢您的购买！',
+      payTime: new Date().toLocaleString('zh-CN')
     }
     
     currentStep.value = 3
-  }, 1500)
+  } catch (error) {
+    console.error('处理支付失败:', error)
+    // 支付失败
+    paymentResult.value = {
+      status: 'failed',
+      title: '支付失败',
+      message: error.response?.data?.message || '支付失败，请稍后重试。',
+      payTime: ''
+    }
+    currentStep.value = 3
+  }
 }
 
 // 重试支付
@@ -323,18 +366,27 @@ const goToUserCenter = () => {
 }
 
 // 下载工具包
-const downloadToolkit = async () => {
+const handleDownload = async () => {
   try {
-    // 调用后端API获取下载链接
-    const response = await axios.get(`/api/download/${orderInfo.value.productId}`, {
-      responseType: 'blob' // 重要：指定响应类型为二进制数据
-    })
+    // 使用新的downloadToolkit函数
+    console.log('开始下载工具包，产品ID:', orderInfo.value.productId)
+    const response = await downloadToolkit(orderInfo.value.productId)
+    
+    // 获取文件名
+    const contentDisposition = response.headers['content-disposition']
+    let fileName = `${orderInfo.value.productName}.pdf`
+    if (contentDisposition) {
+      const matches = contentDisposition.match(/filename\*=UTF-8''([^;]+)/)
+      if (matches && matches[1]) {
+        fileName = decodeURIComponent(matches[1])
+      }
+    }
     
     // 创建下载链接
     const url = window.URL.createObjectURL(new Blob([response.data]))
     const link = document.createElement('a')
     link.href = url
-    link.setAttribute('download', `${orderInfo.value.productName}.zip`) // 设置下载文件名
+    link.setAttribute('download', fileName) // 设置下载文件名
     document.body.appendChild(link)
     link.click()
     
@@ -343,9 +395,11 @@ const downloadToolkit = async () => {
     window.URL.revokeObjectURL(url)
     
     console.log('下载工具包成功:', orderInfo.value.productName)
+    Swal.fire('下载成功', '工具包已开始下载', 'success')
   } catch (error) {
     console.error('下载工具包失败:', error)
-    alert('下载失败，请稍后重试')
+    // 显示详细的错误信息
+    Swal.fire('下载失败', error.message || '下载工具包时出现未知错误', 'error')
   }
 }
 </script>

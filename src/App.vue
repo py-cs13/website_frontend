@@ -1,12 +1,13 @@
 <script setup>
 import { ref, onMounted } from 'vue'
-import { useRoute, onBeforeRouteUpdate } from 'vue-router'
+import { useRoute, useRouter, onBeforeRouteUpdate } from 'vue-router'
 import Header from './components/Header.vue'
 import Sidebar from './components/Sidebar.vue'
 import Footer from './components/Footer.vue'
 import { useContentStore, useAuthStore } from './stores'
 
 const route = useRoute()
+const router = useRouter()
 const contentStore = useContentStore()
 const userStore = useAuthStore()
 const showSidebar = ref(true)
@@ -20,7 +21,7 @@ onMounted(() => {
   checkMobileDevice()
   // 加载内容列表
   contentStore.fetchLatestArticles()
-  contentStore.fetchLatestToolkits()
+  // contentStore.fetchLatestToolkits() - 已删除工具包功能
   
   // 检测URL中的推广参数
   checkReferral()
@@ -50,10 +51,13 @@ const checkReferral = () => {
 // 每次路由切换前确保认证信息存在
 onBeforeRouteUpdate(() => {
   userStore.ensureAuth()
+  checkSidebarVisibility() // 路由变化时更新侧边栏可见性
 })
 
+// 显示逻辑：在所有页面都显示侧边栏，除了特定页面
 const checkSidebarVisibility = () => {
-  showSidebar.value = route.path === '/'
+  // 可以在这里添加例外页面，例如：route.path === '/admin' 等
+  showSidebar.value = true // 所有页面都显示侧边栏
 }
 
 // 检测移动设备
@@ -63,6 +67,15 @@ const checkMobileDevice = () => {
   if (isMobile.value && route.path !== '/') {
     showSidebar.value = false
   }
+}
+
+// 处理分类筛选
+const handleCategoryFilter = (categoryName) => {
+  // 跳转到文章列表页面，并携带分类参数
+  router.push({
+    path: '/articles',
+    query: { category: categoryName }
+  })
 }
 </script>
 
@@ -85,7 +98,7 @@ const checkMobileDevice = () => {
           </section>
           
           <!-- 侧边栏 -->
-          <Sidebar v-if="showSidebar" />
+          <Sidebar v-if="showSidebar" @filter-category="handleCategoryFilter" />
         </div>
       </div>
     </main>
@@ -152,8 +165,7 @@ const checkMobileDevice = () => {
   box-shadow: var(--shadow-medium);
   transition: all 0.3s ease;
   box-sizing: border-box;
-  overflow-x: hidden;
-  overflow-y: visible; /* 允许垂直方向溢出可见 */
+  /* 移除可能影响侧边栏点击的溢出设置 */
 }
 
 .content-view:hover {
