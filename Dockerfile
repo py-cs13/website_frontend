@@ -1,5 +1,6 @@
 # 第一阶段：构建前端应用
-FROM node:18.20.0-slim AS builder
+# FROM node:18.20.0-slim AS builder
+FROM registry.cn-hangzhou.aliyuncs.com/acs/node:18.20.0-slim AS builder
 
 # 设置工作目录
 WORKDIR /app
