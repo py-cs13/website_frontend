@@ -13,8 +13,8 @@ RUN npm config set fund false && npm config set audit false
 # 复制package.json和package-lock.json
 COPY package*.json ./
 
-# 先安装依赖
-RUN npm ci --only=production
+# 先安装所有依赖（包含开发依赖）
+RUN npm ci
 
 # 复制所有源代码
 COPY . .
