@@ -1,11 +1,11 @@
 # 第一阶段：构建前端应用
-FROM node:18.20.0-alpine AS builder
+FROM node:18.20.0-slim AS builder
 
 # 设置工作目录
 WORKDIR /app
 
 # 安装构建工具
-RUN apk add --no-cache python3 make g++ git
+RUN apt-get update && apt-get install -y python3 make g++ git
 
 # 设置npm配置，避免权限问题
 RUN npm config set fund false && npm config set audit false
