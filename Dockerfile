@@ -13,6 +13,9 @@ RUN npm install
 # 复制所有源代码
 COPY . .
 
+# 查看安装的依赖
+RUN npm list 
+
 # 构建生产版本
 RUN npm run build
 
