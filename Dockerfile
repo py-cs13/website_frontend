@@ -1,11 +1,11 @@
 # 第一阶段：构建前端应用
-FROM node:18.20.0-alpine AS builder
+FROM node:18.20.0-slim AS builder
 
 # 设置工作目录
 WORKDIR /app
 
 # 安装构建工具
-RUN apk add --no-cache python3 make g++ git
+RUN apt-get update && apt-get install -y python3 make g++ git
 
 # 设置npm配置，避免权限问题
 RUN npm config set fund false && npm config set audit false
@@ -13,14 +13,11 @@ RUN npm config set fund false && npm config set audit false
 # 复制package.json和package-lock.json
 COPY package*.json ./
 
-# 先安装依赖
-RUN npm ci --only=production
+# 安装所有依赖（包含开发依赖）- 阿里云CICD兼容方案
+RUN npm install --production=false
 
 # 复制所有源代码
 COPY . .
-
-# 查看安装的依赖
-RUN npm list 
 
 # 构建生产版本
 RUN npm run build
