@@ -21,66 +21,37 @@
       </div>
     </div>
 
-    <!-- 母婴主题装饰 -->
-    <div class="theme-decoration">
-      <div class="decoration-item">👶</div>
-      <div class="decoration-item">🎀</div>
-      <div class="decoration-item">💖</div>
-      <div class="decoration-item">🍼</div>
-      <div class="decoration-item">🤰</div>
-    </div>
-
     <!-- 订单确认步骤 -->
     <div v-if="currentStep === 1" class="payment-step step-1">
       <div class="payment-card">
-        <h2 class="card-title">订单信息</h2>
+        <h2 class="card-title">确认订单信息</h2>
+        
         <div class="order-info">
-          <div class="order-item">
-            <span class="label">商品名称：</span>
-            <span class="value">{{ orderInfo.productName }}</span>
+          <div class="info-item">
+            <span class="label">产品类型：</span>
+            <span class="value">{{ getProductTypeText() }}</span>
           </div>
-          <div class="order-item">
-            <span class="label">商品类型：</span>
-            <span class="value">{{ orderInfo.productType === 'toolkit' ? '工具包' : '文章' }}</span>
+          <div class="info-item">
+            <span class="label">产品名称：</span>
+            <span class="value">{{ orderInfo.title }}</span>
           </div>
-          <div class="order-item">
+          <div class="info-item">
             <span class="label">商品价格：</span>
             <span class="value price">¥{{ orderInfo.price.toFixed(2) }}</span>
           </div>
-          <div class="order-item">
-            <span class="label">订单号：</span>
-            <span class="value">{{ orderInfo.orderId }}</span>
+          <div v-if="orderInfo.discount > 0" class="info-item">
+            <span class="label">优惠金额：</span>
+            <span class="value discount">-¥{{ orderInfo.discount.toFixed(2) }}</span>
           </div>
-          <div class="order-item">
-            <span class="label">创建时间：</span>
-            <span class="value">{{ orderInfo.createTime }}</span>
-          </div>
-        </div>
-        
-        <h3 class="section-title">收货信息</h3>
-        <div class="address-info">
-          <div class="address-item">
-            <span class="label">收货人：</span>
-            <span class="value">{{ userInfo.name }}</span>
-          </div>
-          <div class="address-item">
-            <span class="label">联系电话：</span>
-            <span class="value">{{ userInfo.phone }}</span>
-          </div>
-          <div class="address-item">
-            <span class="label">邮箱：</span>
-            <span class="value">{{ userInfo.email }}</span>
+          <div class="info-item order-total">
+            <span class="label">实付金额：</span>
+            <span class="value total-price">¥{{ (orderInfo.price - orderInfo.discount).toFixed(2) }}</span>
           </div>
         </div>
-        
-        <div class="order-total">
-          <span class="total-label">应付金额：</span>
-          <span class="total-price">¥{{ orderInfo.price.toFixed(2) }}</span>
-        </div>
-        
+
         <div class="payment-actions">
-          <button class="btn btn-primary" @click="nextStep">继续支付</button>
-          <button class="btn btn-secondary" @click="cancelPayment">取消订单</button>
+          <button class="btn btn-primary" @click="proceedToPayment">确认并支付</button>
+          <button class="btn btn-secondary" @click="cancelOrder">取消订单</button>
         </div>
       </div>
     </div>
@@ -90,43 +61,42 @@
       <div class="payment-card">
         <h2 class="card-title">选择支付方式</h2>
         
+        <div class="order-summary">
+          <div class="summary-item">
+            <span>商品：{{ orderInfo.title }}</span>
+            <span>¥{{ (orderInfo.price - orderInfo.discount).toFixed(2) }}</span>
+          </div>
+        </div>
+
         <div class="payment-methods">
           <div 
             v-for="method in paymentMethods" 
-            :key="method.id" 
-            class="payment-method" 
+            :key="method.id"
+            class="payment-method"
             :class="{ active: selectedPayment === method.id }"
-            @click="selectedPayment = method.id"
+            @click="selectPayment(method.id)"
           >
-            <div class="method-icon">{{ method.icon }}</div>
             <div class="method-info">
-              <div class="method-name">{{ method.name }}</div>
-              <div class="method-desc">{{ method.desc }}</div>
+              <div class="method-icon">{{ method.icon }}</div>
+              <div class="method-details">
+                <div class="method-name">{{ method.name }}</div>
+                <div class="method-desc">{{ method.description }}</div>
+              </div>
             </div>
             <div class="method-radio">
-              <div class="radio-circle" :class="{ checked: selectedPayment === method.id }"></div>
+              <input 
+                type="radio" 
+                :value="method.id" 
+                v-model="selectedPayment"
+                class="radio-input"
+              >
             </div>
           </div>
         </div>
-        
-        <div class="order-summary">
-          <div class="summary-item">
-            <span class="label">商品金额：</span>
-            <span class="value">¥{{ orderInfo.price.toFixed(2) }}</span>
-          </div>
-          <div class="summary-item">
-            <span class="label">优惠金额：</span>
-            <span class="value discount">-¥{{ orderInfo.discount.toFixed(2) }}</span>
-          </div>
-          <div class="summary-item total">
-            <span class="label">实付金额：</span>
-            <span class="value">¥{{ (orderInfo.price - orderInfo.discount).toFixed(2) }}</span>
-          </div>
-        </div>
-        
+
         <div class="payment-actions">
-          <button class="btn btn-primary" @click="processPayment">立即支付</button>
-          <button class="btn btn-secondary" @click="prevStep">返回上一步</button>
+          <button class="btn btn-primary" @click="confirmPayment">确认支付</button>
+          <button class="btn btn-secondary" @click="backToOrder">返回订单</button>
         </div>
       </div>
     </div>
@@ -153,20 +123,9 @@
             <span class="label">支付时间：</span>
             <span class="value">{{ paymentResult.payTime }}</span>
           </div>
-          <div class="detail-item download-section">
-            <span class="label">下载工具包：</span>
-            <a href="#" class="download-link" @click.prevent="handleDownload">
-              📥 立即下载 {{ orderInfo.productName }}
-            </a>
-          </div>
         </div>
-        
-        <div class="payment-actions">
-          <button v-if="paymentResult.status === 'success'" class="btn btn-primary" @click="goToUserCenter">查看订单</button>
-          <button v-if="paymentResult.status === 'success'" class="btn btn-success" @click="handleDownload">立即下载</button>
-          <button v-else class="btn btn-primary" @click="retryPayment">重新支付</button>
-          <button class="btn btn-secondary" @click="goToHome">返回首页</button>
-        </div>
+        <button v-else class="btn btn-primary" @click="retryPayment">重新支付</button>
+        <button class="btn btn-secondary" @click="goToHome">返回首页</button>
       </div>
     </div>
   </div>
@@ -178,444 +137,349 @@ import { useRoute, useRouter } from 'vue-router'
 import { useAuthStore } from '../stores'
 import axios from 'axios'
 import apiClient from '../utils/api.js'
-import { downloadToolkit, createOrder, payOrder } from '../utils/api.js'
+import { createOrder, payOrder } from '../utils/api.js'
 import Swal from 'sweetalert2'
 
 const route = useRoute()
 const router = useRouter()
-const userStore = useAuthStore()
+const authStore = useAuthStore()
 
-// 支付步骤
+// 响应式数据
 const currentStep = ref(1)
-
-// 支付方式
-const paymentMethods = ref([
-  { id: 1, name: '微信支付', icon: '💬', desc: '推荐使用微信支付，安全快捷' },
-  { id: 2, name: '支付宝', icon: '🐜', desc: '支持扫码支付和账号支付' },
-  { id: 3, name: '银行卡', icon: '💳', desc: '支持国内外主流银行卡' }
-])
-
-// 选中的支付方式
-const selectedPayment = ref(1)
-
-// 模拟订单信息
+const selectedPayment = ref('alipay')
 const orderInfo = ref({
-  orderId: '',
-  productId: '',
-  productName: '',
-  productType: '',
+  id: '',
+  title: '',
   price: 0,
   discount: 0,
-  createTime: ''
+  productType: 'content'
 })
-
-// 模拟用户信息
-const userInfo = ref({
-  name: '宝宝妈妈',
-  phone: '138****8888',
-  email: 'mama@example.com'
-})
-
-// 支付结果
 const paymentResult = ref({
-  status: '', // success or failed
+  status: 'pending',
   title: '',
   message: '',
   payTime: ''
 })
 
-// 计算属性：选中的支付方式名称
+// 支付方式选项
+const paymentMethods = ref([
+  {
+    id: 'alipay',
+    name: '支付宝',
+    icon: '💙',
+    description: '安全快捷，支持花呗分期'
+  },
+  {
+    id: 'wechat',
+    name: '微信支付',
+    icon: '💚',
+    description: '微信扫码支付，方便快捷'
+  },
+  {
+    id: 'bank',
+    name: '银行卡',
+    icon: '💳',
+    description: '储蓄卡/信用卡直接支付'
+  }
+])
+
+// 计算属性
 const selectedPaymentName = computed(() => {
   const method = paymentMethods.value.find(m => m.id === selectedPayment.value)
   return method ? method.name : ''
 })
 
-// 生成订单号
-const generateOrderId = () => {
-  const timestamp = Date.now()
-  const random = Math.floor(Math.random() * 10000)
-  return `ORDER${timestamp}${random.toString().padStart(4, '0')}`
+// 方法
+const getProductTypeText = () => {
+  const typeMap = {
+    'content': '内容付费',
+    'course': '在线课程',
+    'service': '专业服务'
+  }
+  return typeMap[orderInfo.value.productType] || '内容付费'
 }
 
-// 初始化订单信息
-onMounted(() => {
-  // 从查询参数获取商品信息
-  const { product_type, product_id, product_name, price } = route.query
-  
-  if (product_id) {
-    orderInfo.value = {
-      orderId: generateOrderId(),
-      productId: parseInt(product_id), // 确保产品ID是整数类型
-      productName: product_name || `商品 #${product_id}`,
-      productType: product_type || 'toolkit',
-      price: parseFloat(price) || 99.0,
-      discount: Math.min(parseFloat(price) * 0.1, 10), // 10%优惠，最高10元
-      createTime: new Date().toLocaleString('zh-CN')
-    }
-  } else {
-    // 默认订单信息
-    orderInfo.value = {
-      orderId: generateOrderId(),
-      productId: '1',
-      productName: '家庭健康管理工具包',
-      productType: 'toolkit',
-      price: 99.00,
-      discount: 9.90,
-      createTime: new Date().toLocaleString('zh-CN')
-    }
-  }
-})
-
-// 下一步
-const nextStep = () => {
-  if (currentStep.value < 3) {
-    currentStep.value++
-  }
+const proceedToPayment = () => {
+  currentStep.value = 2
 }
 
-// 上一步
-const prevStep = () => {
-  if (currentStep.value > 1) {
-    currentStep.value--
-  }
+const backToOrder = () => {
+  currentStep.value = 1
 }
 
-// 处理支付
-const processPayment = async () => {
+const selectPayment = (methodId) => {
+  selectedPayment.value = methodId
+}
+
+const confirmPayment = async () => {
   try {
-    // 真实创建订单
+    // 创建订单
     const orderData = {
+      product_id: route.query.id || '1',
       product_type: orderInfo.value.productType,
-      product_id: orderInfo.value.productId,
-      amount: orderInfo.value.price - orderInfo.value.discount,
-      items: [
-        {
-          product_name: orderInfo.value.productName,
-          product_price: orderInfo.value.price,
-          quantity: 1,
-          total_amount: orderInfo.value.price - orderInfo.value.discount
-        }
-      ]
+      payment_method: selectedPayment.value,
+      amount: orderInfo.value.price - orderInfo.value.discount
     }
-    
-    console.log('创建订单数据:', orderData)
-    
-    // 调用创建订单API
-    const orderResponse = await createOrder(orderData)
-    console.log('订单创建成功:', orderResponse)
-    
-    // 调用支付接口（测试模式下会自动完成支付）
-    const paymentData = {
-      order_id: orderResponse.id,
-      payment_method: 'alipay',
-      return_url: window.location.origin + '/payment-success'
-    }
-    
-    console.log('调用支付接口:', paymentData)
-    const paymentResponse = await payOrder(orderResponse.id, paymentData)
-    console.log('支付请求处理成功:', paymentResponse)
-    
-    // 支付成功后更新状态
-    paymentResult.value = {
-      status: 'success',
-      title: '支付成功',
-      message: '您的订单已支付成功，感谢您的购买！',
-      payTime: new Date().toLocaleString('zh-CN')
-    }
-    
-    currentStep.value = 3
+
+    const order = await createOrder(orderData)
+    orderInfo.value.id = order.id
+
+    // 模拟支付过程
+    await simulatePayment()
   } catch (error) {
-    console.error('处理支付失败:', error)
-    // 支付失败
-    paymentResult.value = {
-      status: 'failed',
+    console.error('支付失败:', error)
+    Swal.fire({
+      icon: 'error',
       title: '支付失败',
-      message: error.response?.data?.message || '支付失败，请稍后重试。',
-      payTime: ''
-    }
-    currentStep.value = 3
+      text: error.message || '支付过程中出现错误，请稍后重试',
+      confirmButtonText: '确定'
+    })
   }
 }
 
-// 重试支付
+const simulatePayment = async () => {
+  currentStep.value = 3
+  
+  // 模拟支付延迟
+  setTimeout(() => {
+    const isSuccess = Math.random() > 0.1 // 90% 成功率
+    
+    if (isSuccess) {
+      paymentResult.value = {
+        status: 'success',
+        title: '支付成功！',
+        message: '恭喜您，支付已完成。您现在可以享受会员特权了。',
+        payTime: new Date().toLocaleString('zh-CN')
+      }
+      
+      Swal.fire({
+        icon: 'success',
+        title: '支付成功',
+        text: '恭喜您，支付已完成！',
+        confirmButtonText: '确定'
+      })
+    } else {
+      paymentResult.value = {
+        status: 'failed',
+        title: '支付失败',
+        message: '支付过程中出现错误，请稍后重试。',
+        payTime: ''
+      }
+      
+      Swal.fire({
+        icon: 'error',
+        title: '支付失败',
+        text: '支付过程中出现错误，请稍后重试',
+        confirmButtonText: '确定'
+      })
+    }
+  }, 2000)
+}
+
 const retryPayment = () => {
   currentStep.value = 2
-  paymentResult.value = {
-    status: '',
-    title: '',
-    message: '',
-    payTime: ''
-  }
 }
 
-// 取消支付
-const cancelPayment = () => {
-  if (confirm('确定要取消订单吗？')) {
-    router.push('/')
-  }
+const cancelOrder = () => {
+  Swal.fire({
+    title: '确认取消订单？',
+    text: '取消后将无法享受相关服务',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
+    confirmButtonText: '确认取消',
+    cancelButtonText: '继续支付'
+  }).then((result) => {
+    if (result.isConfirmed) {
+      goToHome()
+    }
+  })
 }
 
-// 返回首页
 const goToHome = () => {
   router.push('/')
 }
 
-// 前往用户中心
-const goToUserCenter = () => {
-  router.push('/user')
-}
-
-// 下载工具包
-const handleDownload = async () => {
-  try {
-    // 使用新的downloadToolkit函数
-    console.log('开始下载工具包，产品ID:', orderInfo.value.productId)
-    const response = await downloadToolkit(orderInfo.value.productId)
-    
-    // 获取文件名
-    const contentDisposition = response.headers['content-disposition']
-    let fileName = `${orderInfo.value.productName}.pdf`
-    if (contentDisposition) {
-      const matches = contentDisposition.match(/filename\*=UTF-8''([^;]+)/)
-      if (matches && matches[1]) {
-        fileName = decodeURIComponent(matches[1])
-      }
-    }
-    
-    // 创建下载链接
-    const url = window.URL.createObjectURL(new Blob([response.data]))
-    const link = document.createElement('a')
-    link.href = url
-    link.setAttribute('download', fileName) // 设置下载文件名
-    document.body.appendChild(link)
-    link.click()
-    
-    // 清理
-    document.body.removeChild(link)
-    window.URL.revokeObjectURL(url)
-    
-    console.log('下载工具包成功:', orderInfo.value.productName)
-    Swal.fire('下载成功', '工具包已开始下载', 'success')
-  } catch (error) {
-    console.error('下载工具包失败:', error)
-    // 显示详细的错误信息
-    Swal.fire('下载失败', error.message || '下载工具包时出现未知错误', 'error')
+// 生命周期
+onMounted(() => {
+  // 从路由参数获取订单信息
+  const productId = route.query.id || '1'
+  const productType = route.query.type || 'content'
+  
+  // 模拟订单数据
+  orderInfo.value = {
+    id: productId,
+    title: '母婴护理专业知识',
+    price: 99.00,
+    discount: 0,
+    productType: productType
   }
-}
+})
 </script>
 
 <style scoped>
 .payment-view {
-  max-width: 100%;
-  position: relative;
-  overflow: hidden;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 20px 0;
 }
 
-/* 母婴主题装饰 */
-.theme-decoration {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  z-index: -1;
-  opacity: 0.05;
-}
-
-.decoration-item {
-  position: absolute;
-  font-size: 80px;
-  animation: float 15s infinite ease-in-out;
-}
-
-.decoration-item:nth-child(1) { top: 10%; left: 5%; animation-delay: 0s; }
-.decoration-item:nth-child(2) { top: 20%; right: 10%; animation-delay: 3s; }
-.decoration-item:nth-child(3) { bottom: 20%; left: 15%; animation-delay: 6s; }
-.decoration-item:nth-child(4) { bottom: 10%; right: 5%; animation-delay: 9s; }
-.decoration-item:nth-child(5) { top: 50%; left: 50%; transform: translate(-50%, -50%); animation-delay: 12s; }
-
-@keyframes float {
-  0%, 100% { transform: translateY(0px) rotate(0deg); }
-  25% { transform: translateY(-20px) rotate(5deg); }
-  50% { transform: translateY(10px) rotate(0deg); }
-  75% { transform: translateY(-10px) rotate(-5deg); }
-}
-
-/* 支付页面头部 */
 .payment-header {
-  margin-bottom: 40px;
+  max-width: 1200px;
+  margin: 0 auto 40px;
+  padding: 0 20px;
+  text-align: center;
 }
 
 .page-title {
-  font-size: 28px;
+  color: white;
+  font-size: 2.5rem;
   font-weight: 700;
   margin-bottom: 30px;
-  color: var(--text-primary);
-  text-align: center;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.3);
 }
 
 .payment-steps {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 30px;
-  margin-bottom: 40px;
+  gap: 20px;
+  background: rgba(255,255,255,0.1);
+  backdrop-filter: blur(10px);
+  padding: 20px 40px;
+  border-radius: 50px;
+  border: 1px solid rgba(255,255,255,0.2);
 }
 
 .step {
   display: flex;
-  flex-direction: column;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
+  color: rgba(255,255,255,0.6);
+  transition: all 0.3s ease;
+}
+
+.step.active {
+  color: white;
+  font-weight: 600;
+}
+
+.step.completed {
+  color: #4ade80;
 }
 
 .step-number {
-  width: 40px;
-  height: 40px;
+  width: 30px;
+  height: 30px;
   border-radius: 50%;
-  background-color: var(--bg-secondary);
-  color: var(--text-secondary);
+  background: rgba(255,255,255,0.2);
   display: flex;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
   font-weight: 600;
   transition: all 0.3s ease;
 }
 
 .step.active .step-number {
-  background-color: var(--primary-color);
+  background: #4ade80;
   color: white;
 }
 
 .step.completed .step-number {
-  background-color: var(--success-color);
+  background: #4ade80;
   color: white;
 }
 
-.step-name {
-  font-size: 14px;
-  color: var(--text-secondary);
-}
-
-.step.active .step-name {
-  color: var(--primary-color);
-  font-weight: 500;
-}
-
-.step.completed .step-name {
-  color: var(--success-color);
-  font-weight: 500;
-}
-
 .step-arrow {
-  color: var(--border-color);
-  font-size: 20px;
+  color: rgba(255,255,255,0.6);
+  font-size: 1.2rem;
 }
 
-/* 支付卡片 */
-.payment-card {
-  background-color: white;
-  border-radius: 12px;
-  padding: 30px;
-  box-shadow: var(--shadow-medium);
+.payment-step {
   max-width: 600px;
   margin: 0 auto;
+  padding: 0 20px;
+}
+
+.payment-card {
+  background: white;
+  border-radius: 20px;
+  padding: 40px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+  margin-bottom: 20px;
 }
 
 .card-title {
-  font-size: 24px;
-  font-weight: 600;
-  margin-bottom: 25px;
-  color: var(--text-primary);
-  border-bottom: 2px solid var(--primary-color);
-  padding-bottom: 15px;
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin-bottom: 30px;
+  text-align: center;
 }
 
-/* 订单信息 */
 .order-info {
   margin-bottom: 30px;
 }
 
-.order-item {
+.info-item {
   display: flex;
   justify-content: space-between;
-  padding: 12px 0;
-  border-bottom: 1px solid var(--border-color);
+  align-items: center;
+  padding: 15px 0;
+  border-bottom: 1px solid #f3f4f6;
 }
 
-.order-item:last-child {
+.info-item:last-child {
   border-bottom: none;
 }
 
 .label {
-  color: var(--text-secondary);
-  font-size: 15px;
-}
-
-.value {
-  color: var(--text-primary);
-  font-size: 15px;
+  color: #6b7280;
   font-weight: 500;
 }
 
-.value.price {
-  color: var(--primary-color);
-  font-size: 18px;
-}
-
-.section-title {
-  font-size: 18px;
+.value {
+  color: #1f2937;
   font-weight: 600;
-  margin-bottom: 20px;
-  color: var(--text-primary);
-  margin-top: 30px;
 }
 
-/* 收货信息 */
-.address-info {
-  background-color: var(--bg-secondary);
+.value.price {
+  color: #ef4444;
+  font-size: 1.1rem;
+}
+
+.value.discount {
+  color: #10b981;
+}
+
+.order-total {
+  border-top: 2px solid #e5e7eb;
+  margin-top: 10px;
+  padding-top: 20px;
+  font-size: 1.2rem;
+}
+
+.total-price {
+  color: #ef4444;
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.order-summary {
+  background: #f9fafb;
+  border-radius: 10px;
   padding: 20px;
-  border-radius: 8px;
   margin-bottom: 30px;
 }
 
-.address-item {
-  display: flex;
-  margin-bottom: 10px;
-}
-
-.address-item:last-child {
-  margin-bottom: 0;
-}
-
-.address-item .label {
-  width: 80px;
-  flex-shrink: 0;
-}
-
-/* 订单总计 */
-.order-total {
+.summary-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 20px;
-  background-color: var(--bg-accent);
-  border-radius: 8px;
-  margin-top: 20px;
-}
-
-.order-total .label {
-  font-size: 18px;
   font-weight: 600;
 }
 
-.order-total .value {
-  font-size: 24px;
-  color: var(--primary-color);
-}
-
-/* 支付方式 */
 .payment-methods {
   margin-bottom: 30px;
 }
@@ -623,8 +487,9 @@ const handleDownload = async () => {
 .payment-method {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   padding: 20px;
-  border: 2px solid var(--border-color);
+  border: 2px solid #e5e7eb;
   border-radius: 12px;
   margin-bottom: 15px;
   cursor: pointer;
@@ -632,259 +497,149 @@ const handleDownload = async () => {
 }
 
 .payment-method:hover {
-  border-color: var(--primary-color);
-  background-color: var(--bg-accent);
+  border-color: #3b82f6;
+  background: #f8fafc;
 }
 
 .payment-method.active {
-  border-color: var(--primary-color);
-  background-color: var(--bg-accent);
-}
-
-.method-icon {
-  font-size: 32px;
-  margin-right: 20px;
+  border-color: #3b82f6;
+  background: #eff6ff;
 }
 
 .method-info {
-  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.method-icon {
+  font-size: 2rem;
 }
 
 .method-name {
-  font-size: 16px;
   font-weight: 600;
+  color: #1f2937;
   margin-bottom: 5px;
-  color: var(--text-primary);
 }
 
 .method-desc {
-  font-size: 14px;
-  color: var(--text-secondary);
+  color: #6b7280;
+  font-size: 0.9rem;
 }
 
-.method-radio {
-  margin-left: 20px;
-}
-
-.radio-circle {
+.radio-input {
   width: 20px;
   height: 20px;
-  border: 2px solid var(--border-color);
-  border-radius: 50%;
-  position: relative;
-  transition: all 0.3s ease;
+  accent-color: #3b82f6;
 }
 
-.radio-circle.checked {
-  border-color: var(--primary-color);
-  background-color: var(--primary-color);
-}
-
-.radio-circle.checked::after {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background-color: white;
-}
-
-/* 订单摘要 */
-.order-summary {
-  background-color: var(--bg-secondary);
-  padding: 20px;
-  border-radius: 8px;
-  margin-bottom: 30px;
-}
-
-.summary-item {
-  display: flex;
-  justify-content: space-between;
-  padding: 10px 0;
-}
-
-.summary-item.total {
-  font-weight: 600;
-  font-size: 18px;
-  border-top: 2px solid var(--border-color);
-  margin-top: 10px;
-  padding-top: 15px;
-}
-
-.discount {
-  color: var(--success-color);
-}
-
-/* 支付结果 */
 .result-card {
   text-align: center;
 }
 
 .result-icon {
-  font-size: 80px;
-  margin-bottom: 25px;
-  animation: bounceIn 0.6s ease;
-}
-
-.result-icon.success {
-  color: var(--success-color);
-}
-
-.result-icon.failed {
-  color: #FF6B6B;
-}
-
-@keyframes bounceIn {
-  0% { transform: scale(0.3); opacity: 0; }
-  50% { transform: scale(1.05); opacity: 1; }
-  70% { transform: scale(0.9); }
-  100% { transform: scale(1); }
+  font-size: 4rem;
+  margin-bottom: 20px;
 }
 
 .result-title {
-  font-size: 28px;
+  font-size: 2rem;
   font-weight: 700;
+  color: #1f2937;
   margin-bottom: 15px;
 }
 
-.result-icon.success + .result-title {
-  color: var(--success-color);
-}
-
-.result-icon.failed + .result-title {
-  color: #FF6B6B;
-}
-
 .result-message {
-  font-size: 16px;
-  color: var(--text-secondary);
+  color: #6b7280;
+  font-size: 1.1rem;
   margin-bottom: 30px;
-  line-height: 1.6;
 }
 
 .result-details {
-  background-color: var(--bg-secondary);
+  background: #f9fafb;
+  border-radius: 10px;
   padding: 20px;
-  border-radius: 8px;
   margin-bottom: 30px;
-  display: inline-block;
   text-align: left;
 }
 
 .detail-item {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   padding: 10px 0;
-  min-width: 300px;
+  border-bottom: 1px solid #e5e7eb;
 }
 
-.download-section {
-  margin-top: 10px;
-  padding-top: 10px;
-  border-top: 1px solid var(--border-color);
+.detail-item:last-child {
+  border-bottom: none;
 }
 
-.download-link {
-  color: var(--success-color);
-  text-decoration: none;
-  font-weight: 600;
-  cursor: pointer;
-  transition: color 0.3s ease;
-}
-
-.download-link:hover {
-  color: #2ecc71;
-  text-decoration: underline;
-}
-
-.btn-success {
-  background-color: var(--success-color);
-  color: white;
-}
-
-.btn-success:hover {
-  background-color: #2ecc71;
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-medium);
-}
-
-/* 按钮样式 */
 .payment-actions {
   display: flex;
   gap: 15px;
   justify-content: center;
-  margin-top: 30px;
 }
 
 .btn {
   padding: 12px 30px;
-  border-radius: 25px;
-  font-size: 16px;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
-  border: none;
+  min-width: 120px;
 }
 
 .btn-primary {
-  background-color: var(--primary-color);
+  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
   color: white;
 }
 
 .btn-primary:hover {
-  background-color: #FF4785;
+  background: linear-gradient(135deg, #2563eb, #1e40af);
   transform: translateY(-2px);
-  box-shadow: var(--shadow-medium);
+  box-shadow: 0 10px 20px rgba(59, 130, 246, 0.3);
 }
 
 .btn-secondary {
-  background-color: var(--bg-secondary);
-  color: var(--text-primary);
-  border: 1px solid var(--border-color);
+  background: #f3f4f6;
+  color: #374151;
+  border: 1px solid #d1d5db;
 }
 
 .btn-secondary:hover {
-  background-color: var(--border-color);
-  transform: translateY(-2px);
+  background: #e5e7eb;
+  transform: translateY(-1px);
 }
 
 /* 响应式设计 */
 @media (max-width: 768px) {
+  .payment-steps {
+    flex-direction: column;
+    gap: 15px;
+    padding: 15px 20px;
+  }
+  
+  .step-arrow {
+    transform: rotate(90deg);
+  }
+  
   .payment-card {
     padding: 20px;
-    margin: 0 15px;
+    margin: 0 10px;
   }
   
-  .payment-steps {
-    flex-wrap: wrap;
-    gap: 20px;
+  .payment-actions {
+    flex-direction: column;
   }
   
-  .step-name {
-    font-size: 12px;
+  .btn {
+    width: 100%;
   }
   
-  .payment-method {
-    padding: 15px;
-  }
-  
-  .method-icon {
-    font-size: 24px;
-    margin-right: 15px;
-  }
-  
-  .method-name {
-    font-size: 14px;
-  }
-  
-  .method-desc {
-    font-size: 12px;
-  }
-  
-  .order-item, .summary-item, .detail-item {
+  .info-item {
     flex-direction: column;
     align-items: flex-start;
     gap: 5px;
