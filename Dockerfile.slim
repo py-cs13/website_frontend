@@ -1,13 +1,13 @@
-# 多阶段构建 Dockerfile - 前端应用 (CICD优化版)
-# 构建阶段 - 添加构建依赖
-FROM node:18.20.0-alpine AS builder
+# 多阶段构建 Dockerfile - 前端应用 (Slim版本)
+# 构建阶段 - 使用slim镜像，更兼容CICD环境
+FROM node:18.20.0-slim AS builder
 
 # 安装构建依赖
-RUN apk add --no-cache \
+RUN apt-get update && apt-get install -y \
     python3 \
     make \
     g++ \
-    libc6-compat
+    && rm -rf /var/lib/apt/lists/*
 
 # 设置工作目录
 WORKDIR /app
