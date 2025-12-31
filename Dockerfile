@@ -15,6 +15,9 @@ WORKDIR /app
 # 复制 package.json 和 package-lock.json
 COPY package*.json ./
 
+# 设置npm配置以避免权限问题
+RUN npm config set fund false && npm config set audit false
+
 # 安装依赖
 RUN npm install --silent --no-progress
 

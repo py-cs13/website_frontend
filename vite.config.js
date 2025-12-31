@@ -10,6 +10,21 @@ export default defineConfig({
       '@': resolve(__dirname, './src')
     }
   },
+  build: {
+    target: 'es2015',
+    outDir: 'dist',
+    assetsDir: 'assets',
+    sourcemap: false,
+    minify: 'terser',
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ['vue', 'vue-router', 'pinia'],
+          utils: ['axios', 'sweetalert2', 'marked']
+        }
+      }
+    }
+  },
   server: {
     proxy: {
       '/api': {
