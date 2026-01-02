@@ -1,7 +1,15 @@
 <template>
   <aside class="sidebar">
-    <!-- 分类导航 -->
-    <div class="sidebar-section">
+    <!-- 加载中状态 -->
+    <div v-if="loading" class="sidebar-section loading-state">
+      <h3 class="section-title">内容分类</h3>
+      <div class="loading-content">
+        <div class="skeleton-item" v-for="i in 4" :key="'cat-skeleton-' + i"></div>
+      </div>
+    </div>
+    
+    <!-- 分类导航（正常状态） -->
+    <div v-else-if="categories.length > 0" class="sidebar-section">
       <h3 class="section-title">内容分类</h3>
       <ul class="category-list">
         <li v-for="category in categories" :key="category.id">
@@ -13,8 +21,25 @@
       </ul>
     </div>
     
-    <!-- 热门文章 -->
-    <div class="sidebar-section">
+    <!-- 空状态 - 分类 -->
+    <div v-else class="sidebar-section empty-state">
+      <h3 class="section-title">内容分类</h3>
+      <div class="empty-content">
+        <div class="empty-icon">📚</div>
+        <p>暂无分类数据</p>
+      </div>
+    </div>
+    
+    <!-- 热门文章加载中 -->
+    <div v-if="loading" class="sidebar-section loading-state">
+      <h3 class="section-title">热门文章</h3>
+      <div class="loading-content">
+        <div class="skeleton-item article-skeleton" v-for="i in 3" :key="'hot-skeleton-' + i"></div>
+      </div>
+    </div>
+    
+    <!-- 热门文章（正常状态） -->
+    <div v-else-if="hotArticles.length > 0" class="sidebar-section">
       <h3 class="section-title">热门文章</h3>
         <ul class="hot-list">
           <li v-for="article in hotArticles" :key="article.id">
@@ -25,7 +50,14 @@
         </ul>
     </div>
     
-
+    <!-- 空状态 - 热门文章 -->
+    <div v-else class="sidebar-section empty-state">
+      <h3 class="section-title">热门文章</h3>
+      <div class="empty-content">
+        <div class="empty-icon">🔥</div>
+        <p>暂无热门文章</p>
+      </div>
+    </div>
     
     <!-- 推广广告 -->
     <div class="sidebar-section">
@@ -51,6 +83,9 @@ const contentStore = useContentStore()
 
 // 定义事件，用于向父组件传递分类筛选请求
 const emit = defineEmits(['filter-category'])
+
+// 加载状态
+const loading = ref(false)
 
 // 分类列表 - 从实际文章数据动态生成
 const categories = ref([])
@@ -91,14 +126,23 @@ const hotArticles = computed(() => {
 
 
 // 组件挂载时加载数据并更新分类计数
-onMounted(() => {
-  // 如果还没有加载文章数据，则加载
-  if (contentStore.articles.length === 0) {
-    contentStore.fetchLatestArticles()
+onMounted(async () => {
+  loading.value = true
+  try {
+    // 如果还没有加载文章数据，则加载
+    if (contentStore.articles.length === 0) {
+      console.log('侧边栏：开始加载文章数据...')
+      await contentStore.fetchLatestArticles()
+      console.log('侧边栏：文章数据加载完成')
+    }
+    
+    // 更新分类计数
+    updateCategoryCounts()
+  } catch (error) {
+    console.error('侧边栏：加载数据失败:', error)
+  } finally {
+    loading.value = false
   }
-  
-  // 更新分类计数
-  updateCategoryCounts()
 })
 
 // 监听文章数据变化，更新分类计数
@@ -343,6 +387,62 @@ const buyNow = () => {
   color: #FFD700;
 }
 
+/* 加载状态样式 */
+.loading-state {
+  position: relative;
+  overflow: hidden;
+}
+
+.loading-content {
+  padding: 10px 0;
+}
+
+.skeleton-item {
+  height: 16px;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s infinite;
+  border-radius: 8px;
+  margin-bottom: 8px;
+}
+
+.skeleton-item.article-skeleton {
+  height: 20px;
+}
+
+@keyframes skeleton-loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* 空状态样式 */
+.empty-state {
+  text-align: center;
+  padding: 30px 15px;
+}
+
+.empty-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.empty-icon {
+  font-size: 32px;
+  opacity: 0.6;
+}
+
+.empty-state p {
+  color: var(--text-secondary);
+  font-size: 14px;
+  margin: 0;
+}
+
 /* 广告区域 */
 .advertisement {
   background: linear-gradient(135deg, #FFF5F8 0%, #F0F8FF 100%);
@@ -424,5 +524,4 @@ const buyNow = () => {
   .sidebar-section:last-child {
     margin-bottom: 0;
   }
-}
-</style>
+}</style>

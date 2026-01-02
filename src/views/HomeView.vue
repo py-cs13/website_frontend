@@ -73,6 +73,10 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import axios from 'axios'
+import { useContentStore } from '../stores'
+
+// 导入内容store
+const contentStore = useContentStore()
 
 // 推荐文章数据
 const recommendedArticles = ref([])
@@ -112,8 +116,22 @@ const fetchRecommendedArticles = async () => {
   }
 }
 
-onMounted(() => {
+onMounted(async () => {
+  // 获取推荐文章
   fetchRecommendedArticles()
+  
+  // 确保侧边栏有数据可用
+  if (contentStore.articles.length === 0) {
+    console.log('首页：侧边栏暂无数据，开始加载完整文章列表...')
+    try {
+      await contentStore.fetchLatestArticles()
+      console.log('首页：侧边栏数据加载完成')
+    } catch (error) {
+      console.error('首页：加载侧边栏数据失败:', error)
+    }
+  } else {
+    console.log('首页：侧边栏已有数据，无需重复加载')
+  }
 })
 </script>
 

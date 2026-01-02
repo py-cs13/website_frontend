@@ -104,7 +104,7 @@ const loading = ref(false)
 const error = ref('')
 const referralCode = ref('')
 
-// 组件挂载时重置表单数据和错误信息
+// 组件挂载时重置表单数据、错误信息，并滚动到页面顶部
 onMounted(() => {
   username.value = ''
   email.value = ''
@@ -118,6 +118,9 @@ onMounted(() => {
     referralCode.value = code
     console.log('获取到推广码:', code)
   }
+  
+  // 滚动到页面顶部
+  window.scrollTo({ top: 0, behavior: 'smooth' })
 })
 
 // 处理注册
