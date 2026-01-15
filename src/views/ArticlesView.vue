@@ -202,9 +202,14 @@ const updateCategories = () => {
 // 根据分类名称获取图标
 const getCategoryIcon = (categoryName) => {
   const iconMap = {
-    '孕期营养': '🍼',
-    '婴儿护理': '👶',
-    '产后恢复': '👩‍⚕️'
+    '孕期指南': '🤰',
+    '新生照顾': '👶',
+    '幼儿发展': '🌱',
+    '亲子互动': '👨‍👩‍👧',
+    '早期教育': '🎓',
+    '营养健康': '🍎',
+    '产后恢复': '🏥',
+    '育儿用品': '🛍️'
   }
   return iconMap[categoryName] || '📚'
 }

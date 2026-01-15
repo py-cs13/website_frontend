@@ -96,20 +96,17 @@ const updateCategoryCounts = () => {
   const articleCategories = contentStore.articles.map(a => a.category)
   const uniqueCategories = [...new Set(articleCategories)]
   
-  // 创建分类列表
-  categories.value = uniqueCategories.map((cat, index) => ({
-    id: index + 1,
-    name: cat,
-    count: 0
-  }))
-  
   // 统计每个分类的文章数量
-  contentStore.articles.forEach(article => {
-    const category = categories.value.find(c => c.name === article.category)
-    if (category) {
-      category.count++
+  const newCategories = uniqueCategories.map((cat, index) => {
+    const count = contentStore.articles.filter(a => a.category === cat).length
+    return {
+      id: index + 1,
+      name: cat,
+      count: count
     }
   })
+  
+  categories.value = newCategories
 }
 
 // 热门文章 - 从实际文章数据中获取前5篇

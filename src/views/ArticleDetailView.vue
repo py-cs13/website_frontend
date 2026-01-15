@@ -105,6 +105,7 @@ import { ref, onMounted } from 'vue'
 import { useRoute, useRouter, onBeforeRouteUpdate } from 'vue-router'
 import { useContentStore, useAuthStore } from '../stores'
 import axios from 'axios'
+import apiClient from '../utils/api'
 import Button from '../components/Button.vue'
 import { formatDate, formatNumber } from '../utils/formatters'
 import { marked } from 'marked'
@@ -146,15 +147,14 @@ const relatedArticles = ref([
 // 获取分类对应的图标
 const getCategoryIcon = (categoryName) => {
   const iconMap = {
-    '母婴育儿': '👶',
-    '育儿知识': '📚',
-    '营养辅食': '🍼',
-    '产后恢复': '🤰',
+    '孕期指南': '🤰',
+    '新生照顾': '👶',
+    '幼儿发展': '🌱',
     '亲子互动': '👨‍👩‍👧',
-    '成长发育': '🌱',
     '早期教育': '🎓',
-    '健康养生': '💊',
-    '母婴育儿': '👪'
+    '营养健康': '🍎',
+    '产后恢复': '🏥',
+    '育儿用品': '🛍️'
   }
   return iconMap[categoryName] || '📖'
 }
@@ -204,25 +204,11 @@ const loadArticleDetail = async (id) => {
     if (authStore.token) {
       try {
         // 获取收藏状态
-        const collectResponse = await axios.get(
-          `/api/content/${id}/collect/status`,
-          {
-            headers: {
-              'Authorization': `Bearer ${authStore.token}`
-            }
-          }
-        )
+        const collectResponse = await apiClient.get(`/content/${id}/collect/status`)
         article.value.collected = collectResponse.data.data.is_collected
         
         // 获取点赞状态
-        const likeResponse = await axios.get(
-          `/api/content/${id}/like/status`,
-          {
-            headers: {
-              'Authorization': `Bearer ${authStore.token}`
-            }
-          }
-        )
+        const likeResponse = await apiClient.get(`/content/${id}/like/status`)
         // 注意：点赞状态接口返回的数据没有包裹data字段
         article.value.liked = likeResponse.data.is_liked
         article.value.likes = likeResponse.data.like_count
@@ -283,20 +269,12 @@ const toggleLike = async () => {
   article.value.likes += wasLiked ? -1 : 1
   
   try {
-    const response = await axios.post(
-      `/api/content/${articleId.value}/like`,
-      {},
-      {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      }
-    )
+    const response = await apiClient.post(`/content/${articleId.value}/like`)
     
     // 使用后端返回的点赞状态和数量
-    if (response.data && response.data.data) {
-      article.value.liked = response.data.data.is_liked
-      article.value.likes = response.data.data.like_count
+    if (response.data) {
+      article.value.liked = response.data.is_liked
+      article.value.likes = response.data.like_count
     }
   } catch (error) {
     console.error('点赞失败:', error)
@@ -327,22 +305,18 @@ const toggleCollect = async () => {
   article.value.collected = !wasCollected
   
   try {
-    const response = await axios.post(
-      `/api/content/${articleId.value}/collect`,
-      {},
-      {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        }
-      }
-    )
+    const response = await apiClient.post(`/content/${articleId.value}/collect`)
     
     // 兼容两种响应格式：
     // 1. 收藏成功时：response.data 是 {id, user_id, content_id, created_at}
     // 2. 取消收藏时：response.data.data 是 {id, user_id, content_id, created_at}
-    // 通过判断 response.data.id 是否存在来确定响应格式
-    article.value.collected = response.data.id !== undefined ? !wasCollected : response.data.data.is_collected
+    if (response.data.status) {
+      // 取消收藏成功，返回的是status格式
+      article.value.collected = false
+    } else {
+      // 收藏成功，返回的是直接的favorite对象
+      article.value.collected = true
+    }
   } catch (error) {
     console.error('收藏失败:', error)
     // 回滚乐观更新

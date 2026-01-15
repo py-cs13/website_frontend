@@ -25,16 +25,8 @@ export default defineConfig({
       }
     }
   },
+  // 服务器配置：移除了代理设置，前端直接连接到生产环境API
   server: {
-    proxy: {
-      '/api': {
-        target: 'http://localhost:8000', // 后端实际运行在8000端口
-        changeOrigin: true
-      },
-      '/static': {
-        target: 'http://localhost:8000', // 后端静态资源代理
-        changeOrigin: true
-      }
-    }
+    port: 5173
   }
 })
