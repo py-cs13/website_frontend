@@ -58,18 +58,6 @@
         <p>暂无热门文章</p>
       </div>
     </div>
-    
-    <!-- 推广广告 -->
-    <div class="sidebar-section">
-      <h3 class="section-title">特别推荐</h3>
-      <div class="advertisement">
-        <div class="ad-content">
-          <h4>获取专业工具包</h4>
-          <p>9.9元即可获得价值99元的专业工具包</p>
-          <button class="ad-btn" @click="buyNow">立即购买</button>
-        </div>
-      </div>
-    </div>
   </aside>
 </template>
 
@@ -196,30 +184,6 @@ const navigateToArticle = (articleId) => {
   } catch (error) {
     console.error('navigateToArticle发生异常:', error)
   }
-}
-
-
-
-// 立即购买功能
-const buyNow = () => {
-  // 为广告创建一个模拟的商品对象
-  const mockToolkit = {
-    id: 999, // 模拟的工具包ID
-    title: '专业工具包',
-    type: 'toolkit',
-    price: 9.9
-  }
-  
-  // 跳转到支付页面，携带商品信息
-  router.push({
-    path: '/payment',
-    query: {
-      product_type: mockToolkit.type,
-      product_id: mockToolkit.id,
-      product_name: mockToolkit.title,
-      price: mockToolkit.price
-    }
-  })
 }
 </script>
 
@@ -438,47 +402,6 @@ const buyNow = () => {
   color: var(--text-secondary);
   font-size: 14px;
   margin: 0;
-}
-
-/* 广告区域 */
-.advertisement {
-  background: linear-gradient(135deg, #FFF5F8 0%, #F0F8FF 100%);
-  padding: 25px 20px;
-  border-radius: 12px;
-  text-align: center;
-  border: 2px dashed var(--primary-color);
-}
-
-.ad-content h4 {
-  font-size: 18px;
-  margin-bottom: 12px;
-  color: var(--primary-color);
-  font-weight: 600;
-}
-
-.ad-content p {
-  font-size: 14px;
-  margin-bottom: 18px;
-  color: var(--text-secondary);
-}
-
-.ad-btn {
-  background-color: var(--accent-color);
-  color: var(--text-primary);
-  border: none;
-  padding: 10px 25px;
-  border-radius: 25px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  font-size: 15px;
-  box-shadow: var(--shadow-light);
-}
-
-.ad-btn:hover {
-  background-color: #FFC107;
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-medium);
 }
 
 /* 响应式设计 */
