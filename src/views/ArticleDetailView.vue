@@ -642,6 +642,7 @@ const shareArticle = () => {
   border-radius: 16px;
   border: 1px solid #ffe4e1;
   box-shadow: 0 2px 10px rgba(255, 154, 158, 0.1);
+  list-style: none;
 }
 
 .article-content :deep(li) {
