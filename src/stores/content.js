@@ -269,6 +269,9 @@ export const useContentStore = defineStore('content', {
       if (index !== -1) {
         // 更新列表中的文章数据
         this.articles[index] = { ...this.articles[index], ...articleData }
+      } else {
+        // 如果文章不存在于列表中，添加到列表中
+        this.articles.push(articleData)
       }
     },
     

@@ -12,6 +12,7 @@
             <li><router-link to="/">首页</router-link></li>
             <li><router-link to="/articles">文章</router-link></li>
             <li><router-link to="/agents">智能体</router-link></li>
+            <li><router-link to="/products">精选好物</router-link></li>
             <li><router-link to="/about">关于我们</router-link></li>
           </ul>
         </nav>
@@ -105,6 +106,7 @@
             <li><router-link to="/" @click="showMobileMenu = false">首页</router-link></li>
             <li><router-link to="/articles" @click="showMobileMenu = false">文章</router-link></li>
             <li><router-link to="/agents" @click="showMobileMenu = false">智能体</router-link></li>
+            <li><router-link to="/products" @click="showMobileMenu = false">精选好物</router-link></li>
             <li><router-link to="/about" @click="showMobileMenu = false">关于我们</router-link></li>
             <li><a href="#" @click.prevent="showMobileMenu = false; showAffiliateAlert">联盟合作</a></li>
             <li v-if="userStore.isAuthenticated">

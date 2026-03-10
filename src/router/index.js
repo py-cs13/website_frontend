@@ -35,6 +35,16 @@ const routes = [
     component: () => import('../views/AboutView.vue')
   },
   {
+    path: '/privacy',
+    name: 'privacy',
+    component: () => import('../views/PrivacyView.vue')
+  },
+  {
+    path: '/terms',
+    name: 'terms',
+    component: () => import('../views/TermsView.vue')
+  },
+  {
     path: '/articles',
     name: 'articles',
     component: () => import('../views/ArticlesView.vue')
@@ -53,6 +63,11 @@ const routes = [
     path: '/agents',
     name: 'agents',
     component: () => import('../views/AgentsView.vue')
+  },
+  {
+    path: '/products',
+    name: 'products',
+    component: () => import('../views/ProductRecommendationView.vue')
   },
   {
     path: '/affiliate',

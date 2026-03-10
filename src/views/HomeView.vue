@@ -166,8 +166,7 @@ const fetchRecommendedArticles = async () => {
 }
 
 onMounted(async () => {
-  // 获取推荐文章
-  fetchRecommendedArticles()
+  await fetchRecommendedArticles()
   
   // 确保侧边栏有数据可用
   if (contentStore.articles.length === 0) {

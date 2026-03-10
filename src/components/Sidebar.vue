@@ -58,15 +58,25 @@
         <p>暂无热门文章</p>
       </div>
     </div>
+    
+    <!-- 商品推荐 -->
+    <ProductRecommendation 
+      :mode="recommendationMode"
+      :article-id="currentArticleId"
+      :category="currentCategory"
+      :limit="2"
+    />
   </aside>
 </template>
 
 <script setup>
 import { ref, computed, onMounted, watch } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 import { useContentStore } from '../stores/content'
+import ProductRecommendation from './ProductRecommendation.vue'
 
 const router = useRouter()
+const route = useRoute()
 const contentStore = useContentStore()
 
 // 定义事件，用于向父组件传递分类筛选请求
@@ -74,6 +84,43 @@ const emit = defineEmits(['filter-category'])
 
 // 加载状态
 const loading = ref(false)
+
+// 当前文章分类（用于显示相关商品推荐）
+const currentArticleCategory = computed(() => {
+  if (route.path.startsWith('/article/')) {
+    const articleId = route.params.id
+    const article = contentStore.articles.find(a => a.id === articleId)
+    return article?.category || null
+  }
+  return null
+})
+
+// 当前文章ID（用于AI推荐）
+const currentArticleId = computed(() => {
+  if (route.path.startsWith('/article/')) {
+    return parseInt(route.params.id)
+  }
+  return null
+})
+
+// 推荐模式：根据当前页面类型决定
+const recommendationMode = computed(() => {
+  if (route.path.startsWith('/article/')) {
+    return 'ai'
+  }
+  if (route.path === '/articles' && route.query.category) {
+    return 'category'
+  }
+  return 'history'
+})
+
+// 当前分类（用于分类推荐）
+const currentCategory = computed(() => {
+  if (route.path === '/articles' && route.query.category) {
+    return route.query.category
+  }
+  return null
+})
 
 // 分类列表 - 从实际文章数据动态生成
 const categories = ref([])

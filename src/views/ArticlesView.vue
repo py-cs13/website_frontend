@@ -288,6 +288,12 @@ const isSearchMode = computed(() => {
   return searchKeyword.value.trim() !== ''
 })
 
+// 获取当前分类名称
+const getCurrentCategoryName = () => {
+  const category = categories.value.find(c => c.id === activeCategory.value)
+  return category ? category.name : ''
+}
+
 // 清除搜索
 const clearSearch = () => {
   searchKeyword.value = ''
