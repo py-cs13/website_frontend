@@ -14,10 +14,15 @@
               type="text" 
               id="username" 
               v-model="username" 
-              placeholder="请输入您的用户名" 
+              @input="validateUsername"
+              placeholder="3-20个字符，支持中文、字母、数字、下划线" 
               required
               class="form-input"
+              :class="{ 'input-error': usernameError }"
             />
+            <div v-if="usernameError" class="error-text">
+              {{ usernameError }}
+            </div>
           </div>
           
           <div class="form-group">
@@ -38,14 +43,11 @@
               type="password" 
               id="password" 
               v-model="password" 
-              placeholder="请输入密码（至少8位，包含大小写字母、数字和特殊字符）" 
+              placeholder="至少8位，包含大小写字母、数字和特殊字符" 
               required
               minlength="8"
               class="form-input"
             />
-            <div class="password-requirements">
-              密码要求：至少8位，包含大小写字母、数字和特殊字符
-            </div>
           </div>
           
           <div class="form-group">
@@ -117,6 +119,49 @@ const loading = ref(false)
 const error = ref('')
 const referralCode = ref('')
 const agreedToTerms = ref(false)
+
+// 用户名验证相关
+const usernameError = ref('')
+const usernameLengthValid = ref(false)
+const usernameCharsValid = ref(false)
+
+// 用户名验证方法
+const validateUsername = () => {
+  const value = username.value
+  
+  // 重置验证状态
+  usernameError.value = ''
+  usernameLengthValid.value = false
+  usernameCharsValid.value = false
+  
+  // 如果为空，不显示错误
+  if (!value) return
+  
+  // 验证长度
+  if (value.length < 3) {
+    usernameError.value = '用户名至少需要3个字符'
+    usernameLengthValid.value = false
+  } else if (value.length > 20) {
+    usernameError.value = '用户名不能超过20个字符'
+    usernameLengthValid.value = false
+  } else {
+    usernameLengthValid.value = true
+  }
+  
+  // 验证字符类型
+  const usernameRegex = /^[a-zA-Z0-9_\u4e00-\u9fa5]+$/
+  if (!usernameRegex.test(value)) {
+    usernameError.value = usernameError.value || '用户名只能包含中文、字母、数字和下划线'
+    usernameCharsValid.value = false
+  } else {
+    usernameCharsValid.value = true
+  }
+  
+  // 如果两个验证都通过，清除错误
+  if (usernameLengthValid.value && usernameCharsValid.value) {
+    usernameError.value = ''
+  }
+}
 
 // 组件挂载时重置表单数据、错误信息，并滚动到页面顶部
 onMounted(() => {
@@ -313,6 +358,51 @@ const handleRegister = async () => {
   color: #FF6B6B;
   font-size: 14px;
   text-align: center;
+}
+
+/* 用户名验证样式 */
+.username-validation {
+  margin-top: 8px;
+}
+
+.validation-rules {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.validation-rules span {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.3s ease;
+}
+
+.validation-rules span.valid {
+  color: #10B981;
+}
+
+.validation-rules span:not(.valid) {
+  color: #6B7280;
+}
+
+.error-text {
+  color: #EF4444;
+  font-size: 12px;
+  margin-top: 4px;
+  font-weight: 500;
+}
+
+.input-error {
+  border-color: #EF4444 !important;
+  background-color: #FEF2F2 !important;
+}
+
+.input-error:focus {
+  border-color: #EF4444 !important;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1) !important;
 }
 
 /* 协议勾选样式 */
