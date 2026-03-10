@@ -1,6 +1,6 @@
 <template>
   <div class="products-view">
-    <div class="container">
+    <div v-if="showProductRecommendations" class="container">
       <div class="page-header">
         <h1 class="page-title">精选好物</h1>
         <p class="page-subtitle">为您推荐优质的母婴用品</p>
@@ -57,13 +57,27 @@
         </button>
       </div>
     </div>
+    
+    <!-- 当商品推荐被隐藏时显示提示信息 -->
+    <div v-else class="container">
+      <div class="disabled-state">
+        <div class="disabled-icon">🔒</div>
+        <h2>精选好物功能暂未开放</h2>
+        <p>我们正在优化商品推荐功能，敬请期待！</p>
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import apiClient from '../utils/api'
 import ProductCard from '../components/ProductCard.vue'
+
+// 是否显示商品推荐（根据环境变量控制）
+const showProductRecommendations = computed(() => {
+  return import.meta.env.VITE_SHOW_PRODUCT_RECOMMENDATIONS === 'true'
+})
 
 const categories = ref([
   '全部',
@@ -356,5 +370,32 @@ onMounted(() => {
     padding: 8px 16px;
     font-size: 13px;
   }
+}
+
+/* 商品推荐被隐藏时的样式 */
+.disabled-state {
+  text-align: center;
+  padding: 80px 20px;
+  background-color: var(--bg-secondary);
+  border-radius: 12px;
+  border: 2px dashed var(--border-color);
+  margin-top: 40px;
+}
+
+.disabled-icon {
+  font-size: 64px;
+  margin-bottom: 20px;
+}
+
+.disabled-state h2 {
+  font-size: 24px;
+  color: var(--text-primary);
+  margin-bottom: 10px;
+}
+
+.disabled-state p {
+  font-size: 16px;
+  color: var(--text-secondary);
+  line-height: 1.6;
 }
 </style>

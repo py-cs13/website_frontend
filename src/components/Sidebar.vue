@@ -61,6 +61,7 @@
     
     <!-- 商品推荐 -->
     <ProductRecommendation 
+      v-if="showProductRecommendations"
       :mode="recommendationMode"
       :article-id="currentArticleId"
       :category="currentCategory"
@@ -84,6 +85,11 @@ const emit = defineEmits(['filter-category'])
 
 // 加载状态
 const loading = ref(false)
+
+// 是否显示商品推荐（根据环境变量控制）
+const showProductRecommendations = computed(() => {
+  return import.meta.env.VITE_SHOW_PRODUCT_RECOMMENDATIONS === 'true'
+})
 
 // 当前文章分类（用于显示相关商品推荐）
 const currentArticleCategory = computed(() => {
