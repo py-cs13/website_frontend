@@ -29,11 +29,11 @@ export default defineConfig({
   server: {
     port: 5173,
     // 服务器配置：开发环境使用代理连接后端
-    proxy: {
-      '/api': {
-        target: 'http://127.0.0.1:8000',
-        changeOrigin: true
-      }
-    }
+    // proxy: {
+    //   '/api': {
+    //     target: 'http://127.0.0.1:8000',
+    //     changeOrigin: true
+    //   }
+    // }
   }
 })
