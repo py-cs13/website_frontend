@@ -126,7 +126,10 @@ const handleProductClick = async (productId) => {
 }
 
 onMounted(() => {
-  loadProducts()
+  // 使用setTimeout延迟加载，避免阻塞主线程
+  setTimeout(() => {
+    loadProducts()
+  }, 100)
 })
 
 watch(() => props.articleId, () => {
@@ -265,13 +268,18 @@ watch(() => props.category, (newCategory) => {
   width: 100%;
   height: 140px;
   overflow: hidden;
-  background-color: #fafafa;
+  background-color: white; /* 改为白色背景，填充空白区域 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .product-image img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain; /* 关键修改：保持图片完整显示 */
   transition: transform 0.3s ease;
 }
 

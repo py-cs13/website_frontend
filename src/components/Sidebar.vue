@@ -167,15 +167,25 @@ const hotArticles = computed(() => {
 onMounted(async () => {
   loading.value = true
   try {
-    // 如果还没有加载文章数据，则加载
+    // 并行加载数据，不等待文章数据
+    const promises = []
+    
+    // 如果还没有加载文章数据，则并行加载
     if (contentStore.articles.length === 0) {
-      console.log('侧边栏：开始加载文章数据...')
-      await contentStore.fetchLatestArticles()
-      console.log('侧边栏：文章数据加载完成')
+      console.log('侧边栏：并行加载文章数据...')
+      promises.push(contentStore.fetchLatestArticles())
     }
     
-    // 更新分类计数
+    // 立即更新分类计数（不等待文章加载完成）
     updateCategoryCounts()
+    
+    // 等待所有并行任务完成
+    if (promises.length > 0) {
+      await Promise.all(promises)
+      console.log('侧边栏：并行数据加载完成')
+      // 文章数据加载完成后再次更新分类计数
+      updateCategoryCounts()
+    }
   } catch (error) {
     console.error('侧边栏：加载数据失败:', error)
   } finally {

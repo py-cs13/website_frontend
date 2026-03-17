@@ -64,17 +64,6 @@ const routes = [
     name: 'agents',
     component: () => import('../views/AgentsView.vue')
   },
-  {
-    path: '/products',
-    name: 'products',
-    component: () => import('../views/ProductRecommendationView.vue')
-  },
-  {
-    path: '/affiliate',
-    name: 'affiliate',
-    component: () => import('../views/AffiliateView.vue'),
-    meta: { requiresAuth: true }
-  },
   // 管理后台路由
   {
     path: '/admin',
@@ -111,6 +100,23 @@ const routes = [
     name: 'admin-affiliate-stats',
     component: () => import('../views/Admin/AffiliateStatView.vue'),
     meta: { requiresAdmin: true }
+  },
+  {
+    path: '/admin/products/upload',
+    name: 'admin-products-upload',
+    component: () => import('../views/Admin/ProductUploadView.vue'),
+    meta: { requiresAdmin: true }
+  },
+  {
+    path: '/products',
+    name: 'products',
+    component: () => import('../views/ProductRecommendationView.vue')
+  },
+  {
+    path: '/affiliate',
+    name: 'affiliate',
+    component: () => import('../views/AffiliateView.vue'),
+    meta: { requiresAuth: true }
   }
 ]
 

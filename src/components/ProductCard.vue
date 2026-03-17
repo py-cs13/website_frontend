@@ -8,7 +8,18 @@
       @click="handleProductClick(product.id)"
     >
       <div class="product-image">
-        <img :src="product.image_url" :alt="product.name">
+        <img 
+          :src="product.image_url" 
+          :alt="product.name"
+          @error="handleImageError"
+          @load="handleImageLoad"
+        >
+        <div v-if="imageError" class="image-error">
+          <span>图片加载失败</span>
+        </div>
+        <div v-if="imageLoading" class="image-loading">
+          <span>加载中...</span>
+        </div>
       </div>
       <div class="product-info">
         <h4 class="product-name">{{ product.name }}</h4>
@@ -25,6 +36,7 @@
 </template>
 
 <script setup>
+import { ref } from 'vue'
 import apiClient from '../utils/api'
 
 const props = defineProps({
@@ -33,6 +45,20 @@ const props = defineProps({
     required: true
   }
 })
+
+const imageLoading = ref(true)
+const imageError = ref(false)
+
+const handleImageError = () => {
+  imageLoading.value = false
+  imageError.value = true
+  console.error('商品图片加载失败:', props.product.image_url)
+}
+
+const handleImageLoad = () => {
+  imageLoading.value = false
+  imageError.value = false
+}
 
 const handleProductClick = async (productId) => {
   try {
@@ -74,14 +100,40 @@ const handleProductClick = async (productId) => {
   width: 100%;
   height: 200px;
   overflow: hidden;
-  background-color: #fafafa;
+  background-color: white; /* 改为白色背景，填充空白区域 */
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .product-image img {
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain; /* 关键修改：保持图片完整显示 */
+  transition: transform 0.3s ease;
+}
+
+.image-error,
+.image-loading {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  transition: transform 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f5f5f5;
+  color: #999;
+  font-size: 14px;
+}
+
+.image-error {
+  background-color: #fff5f5;
+  color: #e74c3c;
 }
 
 .product-link:hover .product-image img {
