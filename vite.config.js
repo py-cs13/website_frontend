@@ -25,6 +25,7 @@ export default defineConfig({
       }
     }
   },
+  
   // 服务器配置：移除了代理设置，前端直接连接到生产环境API
   server: {
     port: 5173,
