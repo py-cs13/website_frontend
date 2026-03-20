@@ -9,11 +9,11 @@
         <!-- 桌面端导航 -->
         <nav class="nav-desktop">
           <ul>
-            <li><router-link to="/">首页</router-link></li>
-            <li><router-link to="/articles">文章</router-link></li>
-            <li><router-link to="/agents">智能体</router-link></li>
-            <li><router-link to="/products">精选好物</router-link></li>
-            <li><router-link to="/about">关于我们</router-link></li>
+            <li><router-link to="/" exact-active-class="active">首页</router-link></li>
+            <li><router-link to="/articles" active-class="active">文章</router-link></li>
+            <li><router-link to="/agents" active-class="active">智能体</router-link></li>
+            <li><router-link to="/products" active-class="active">精选好物</router-link></li>
+            <li><router-link to="/about" active-class="active">关于我们</router-link></li>
           </ul>
         </nav>
         
@@ -103,11 +103,11 @@
       <!-- 移动端导航菜单 -->
       <div class="nav-mobile" v-if="showMobileMenu">
         <ul>
-            <li><router-link to="/" @click="showMobileMenu = false">首页</router-link></li>
-            <li><router-link to="/articles" @click="showMobileMenu = false">文章</router-link></li>
-            <li><router-link to="/agents" @click="showMobileMenu = false">智能体</router-link></li>
-            <li><router-link to="/products" @click="showMobileMenu = false">精选好物</router-link></li>
-            <li><router-link to="/about" @click="showMobileMenu = false">关于我们</router-link></li>
+            <li><router-link to="/" exact-active-class="active" @click="showMobileMenu = false">首页</router-link></li>
+            <li><router-link to="/articles" active-class="active" @click="showMobileMenu = false">文章</router-link></li>
+            <li><router-link to="/agents" active-class="active" @click="showMobileMenu = false">智能体</router-link></li>
+            <li><router-link to="/products" active-class="active" @click="showMobileMenu = false">精选好物</router-link></li>
+            <li><router-link to="/about" active-class="active" @click="showMobileMenu = false">关于我们</router-link></li>
             <li><a href="#" @click.prevent="showMobileMenu = false; showAffiliateAlert">联盟合作</a></li>
             <li v-if="userStore.isAuthenticated">
               <router-link to="/user" @click="showMobileMenu = false" class="user-info">
@@ -269,6 +269,13 @@ const showContactAlert = () => {
   color: var(--primary-color);
   background-color: var(--bg-accent);
   transform: translateY(-1px);
+}
+
+.nav-desktop a.active {
+  color: var(--primary-color);
+  background-color: var(--bg-accent);
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .user-actions {
@@ -538,6 +545,13 @@ const showContactAlert = () => {
 .nav-mobile a:hover {
   color: var(--primary-color);
   background-color: var(--bg-accent);
+}
+
+.nav-mobile a.active {
+  color: var(--primary-color);
+  background-color: var(--bg-accent);
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 /* 响应式设计 */
