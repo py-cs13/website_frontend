@@ -123,6 +123,9 @@
             <span class="meta-item">
               <i class="icon">❤️</i> {{ article.likes || 0 }}
             </span>
+            <span class="meta-item">
+              <i class="icon">⭐</i> {{ article.collect_count || 0 }}
+            </span>
           </div>
           
           <div class="card-actions">
