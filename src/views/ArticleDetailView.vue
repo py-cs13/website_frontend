@@ -33,6 +33,9 @@
           <span class="meta-item">
             <i class="icon">❤️</i> {{ formatNumber(article.likes) }}
           </span>
+          <span class="meta-item">
+            <i class="icon">⭐</i> {{ formatNumber(article.collect_count) }}
+          </span>
         </div>
         <div class="article-summary">{{ article.summary }}</div>
       </div>
@@ -300,9 +303,13 @@ const toggleCollect = async () => {
     return
   }
   
-  // 乐观更新：先切换本地状态
+  // 乐观更新：先切换本地状态和收藏量
   const wasCollected = article.value.collected
+  const oldCollectCount = article.value.collect_count || 0
+  
   article.value.collected = !wasCollected
+  // 实时更新收藏量：收藏时+1，取消收藏时-1
+  article.value.collect_count = wasCollected ? oldCollectCount - 1 : oldCollectCount + 1
   
   try {
     const response = await apiClient.post(`/content/${articleId.value}/collect`)
@@ -321,6 +328,7 @@ const toggleCollect = async () => {
     console.error('收藏失败:', error)
     // 回滚乐观更新
     article.value.collected = wasCollected
+    article.value.collect_count = oldCollectCount
     
     if (error.response?.status === 401) {
       alert('请先登录后再收藏')
