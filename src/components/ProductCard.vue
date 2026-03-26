@@ -11,8 +11,8 @@
         <img 
           :src="product.image_url" 
           :alt="product.name"
-          @error="handleImageError"
-          @load="handleImageLoad"
+          @error="handleImageError($event)"
+          @load="handleImageLoad($event)"
         >
         <div v-if="imageError" class="image-error">
           <span>图片加载失败</span>
@@ -49,10 +49,19 @@ const props = defineProps({
 const imageLoading = ref(true)
 const imageError = ref(false)
 
-const handleImageError = () => {
+const handleImageError = (event) => {
   imageLoading.value = false
   imageError.value = true
-  console.error('商品图片加载失败:', props.product.image_url)
+  
+  // 智能判断图片是否真的加载失败
+  const img = event.target
+  if (img.naturalWidth === 0 && img.naturalHeight === 0) {
+    // 图片确实无法加载
+    console.error('商品图片加载失败:', props.product.image_url)
+  } else {
+    // 图片已加载，可能只是轻微延迟或显示问题
+    console.warn('商品图片加载可能延迟或显示异常:', props.product.image_url)
+  }
 }
 
 const handleImageLoad = () => {
