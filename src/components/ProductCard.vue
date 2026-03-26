@@ -48,25 +48,40 @@ const props = defineProps({
 
 const imageLoading = ref(true)
 const imageError = ref(false)
+const retryCount = ref(0)
+const maxRetries = 3
 
 const handleImageError = (event) => {
-  imageLoading.value = false
-  imageError.value = true
-  
-  // 智能判断图片是否真的加载失败
   const img = event.target
-  if (img.naturalWidth === 0 && img.naturalHeight === 0) {
-    // 图片确实无法加载
-    console.error('商品图片加载失败:', props.product.image_url)
+  
+  // 如果还有重试机会，尝试重新加载
+  if (retryCount.value < maxRetries) {
+    retryCount.value++
+    console.warn(`尝试重新加载图片 (${retryCount.value}/${maxRetries}):`, props.product.image_url)
+    
+    // 延迟1秒后重试
+    setTimeout(() => {
+      img.src = props.product.image_url + '?retry=' + retryCount.value
+    }, 1000)
   } else {
-    // 图片已加载，可能只是轻微延迟或显示问题
-    console.warn('商品图片加载可能延迟或显示异常:', props.product.image_url)
+    // 所有重试都失败，标记为错误
+    imageLoading.value = false
+    imageError.value = true
+    
+    // 最终判断是否真的加载失败
+    if (img.naturalWidth === 0 && img.naturalHeight === 0) {
+      console.error('商品图片最终加载失败:', props.product.image_url)
+    } else {
+      console.warn('商品图片加载异常，但图片已部分加载:', props.product.image_url)
+    }
   }
 }
 
 const handleImageLoad = () => {
   imageLoading.value = false
   imageError.value = false
+  retryCount.value = 0  // 重置重试计数器
+  console.log('商品图片加载成功:', props.product.image_url)
 }
 
 const handleProductClick = async (productId) => {
