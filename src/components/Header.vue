@@ -3,8 +3,11 @@
     <div class="container">
       <div class="header-content">
         <div class="logo">
-      <router-link to="/">母婴趣指南</router-link>
-    </div>
+          <router-link to="/" class="logo-link">
+            <img src="/logo.png" alt="母婴趣指南" class="logo-image">
+            <span class="logo-text">母婴趣指南</span>
+          </router-link>
+        </div>
         
         <!-- 桌面端导航 -->
         <nav class="nav-desktop">
@@ -235,17 +238,30 @@ const showContactAlert = () => {
   font-weight: 700;
 }
 
-.logo a {
+.logo-link {
   color: var(--primary-color);
   text-decoration: none;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 12px;
 }
 
-.logo a::before {
-  content: "👶";
-  font-size: 28px;
+.logo-image {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+  border-radius: 8px;
+  transition: transform 0.3s ease;
+}
+
+.logo-image:hover {
+  transform: scale(1.05);
+}
+
+.logo-text {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--primary-color);
 }
 
 /* 桌面端导航 */

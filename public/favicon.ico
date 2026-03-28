@@ -1,0 +1,13 @@
+# 建议您将logo.png转换为favicon.ico格式
+# favicon.ico是浏览器标签图标的标准格式
+# 您可以使用在线工具将logo.png转换为favicon.ico
+# 例如：https://favicon.io/favicon-converter/
+
+# 转换步骤：
+# 1. 访问 https://favicon.io/favicon-converter/
+# 2. 上传您的logo.png文件
+# 3. 下载生成的favicon.ico文件
+# 4. 将favicon.ico文件放在frontend/public/目录下
+
+# 或者，如果您希望继续使用PNG格式，可以创建一个优化版本
+# 建议尺寸：32x32像素或64x64像素

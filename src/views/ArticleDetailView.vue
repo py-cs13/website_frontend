@@ -60,14 +60,6 @@
         <Button 
           variant="secondary" 
           size="medium" 
-          @click="shareArticle"
-          class="share-btn"
-        >
-          <i class="icon">📤</i> 分享
-        </Button>
-        <Button 
-          variant="secondary" 
-          size="medium" 
           @click="toggleCollect"
           :class="{ 'active': article.collected, 'collect-btn': true }"
         >
@@ -336,12 +328,6 @@ const toggleCollect = async () => {
       alert(error.response?.data?.detail || '收藏失败，请稍后重试')
     }
   }
-}
-
-// 分享文章
-const shareArticle = () => {
-  // 实际项目中这里会调用分享API
-  alert('分享功能开发中...')
 }
 
 </script>
@@ -909,11 +895,6 @@ const shareArticle = () => {
 .like-btn:hover, .like-btn.active {
   border-color: var(--accent-color);
   color: var(--accent-color);
-}
-
-.share-btn:hover {
-  border-color: var(--primary-color);
-  color: var(--primary-color);
 }
 
 .collect-btn:hover, .collect-btn.active {

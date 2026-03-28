@@ -37,15 +37,15 @@
           </div>
           <div class="info-item">
             <span class="label">商品价格：</span>
-            <span class="value price">¥{{ orderInfo.price.toFixed(2) }}</span>
+            <span class="value price">{{ formatPrice(orderInfo.price) }}</span>
           </div>
           <div v-if="orderInfo.discount > 0" class="info-item">
             <span class="label">优惠金额：</span>
-            <span class="value discount">-¥{{ orderInfo.discount.toFixed(2) }}</span>
+            <span class="value discount">-{{ formatPrice(orderInfo.discount) }}</span>
           </div>
           <div class="info-item order-total">
             <span class="label">实付金额：</span>
-            <span class="value total-price">¥{{ (orderInfo.price - orderInfo.discount).toFixed(2) }}</span>
+            <span class="value total-price">{{ formatPrice(orderInfo.price - orderInfo.discount) }}</span>
           </div>
         </div>
 
@@ -64,7 +64,7 @@
         <div class="order-summary">
           <div class="summary-item">
             <span>商品：{{ orderInfo.title }}</span>
-            <span>¥{{ (orderInfo.price - orderInfo.discount).toFixed(2) }}</span>
+            <span>{{ formatPrice(orderInfo.price - orderInfo.discount) }}</span>
           </div>
         </div>
 
@@ -117,7 +117,7 @@
           </div>
           <div class="detail-item">
             <span class="label">支付金额：</span>
-            <span class="value price">¥{{ (orderInfo.price - orderInfo.discount).toFixed(2) }}</span>
+            <span class="value price">{{ formatPrice(orderInfo.price - orderInfo.discount) }}</span>
           </div>
           <div class="detail-item">
             <span class="label">支付时间：</span>
@@ -137,6 +137,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { useAuthStore } from '../stores'
 import axios from 'axios'
 import apiClient from '../utils/api.js'
+import { formatPrice } from '../utils/priceFormatter'
 import { createOrder, payOrder } from '../utils/api.js'
 import Swal from 'sweetalert2'
 

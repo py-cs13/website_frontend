@@ -38,7 +38,7 @@
               {{ product.description }}
             </p>
             <div class="product-footer">
-              <span class="product-price">¥{{ product.price }}</span>
+              <span class="product-price">{{ formatPrice(product.price) }}</span>
               <span class="product-action">立即购买 →</span>
             </div>
           </div>
@@ -52,6 +52,7 @@
 import { ref, onMounted, watch } from 'vue'
 import axios from 'axios'
 import apiClient from '../utils/api'
+import { formatPrice } from '../utils/priceFormatter'
 
 const props = defineProps({
   category: {

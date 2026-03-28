@@ -27,7 +27,7 @@
           {{ product.description }}
         </p>
         <div class="product-footer">
-          <span class="product-price">¥{{ product.price }}</span>
+          <span class="product-price">{{ formatPrice(product.price) }}</span>
           <span class="product-category">{{ product.category }}</span>
         </div>
       </div>
@@ -38,6 +38,7 @@
 <script setup>
 import { ref } from 'vue'
 import apiClient from '../utils/api'
+import { formatPrice } from '../utils/priceFormatter'
 
 const props = defineProps({
   product: {
