@@ -64,9 +64,9 @@
               </a>
             </li>
             <li class="nav-item">
-              <a href="#" @click.prevent="showAffiliateAlert">
-                <i class="icon">📣</i> 联盟推广
-              </a>
+              <router-link to="/products">
+                <i class="icon">🛍️</i> 精选好物
+              </router-link>
             </li>
             <!-- 账户设置标签 - 第一版隐藏 -->
             <li class="nav-item" :class="{ active: activeTab === 'settings' }" v-if="false">
@@ -627,16 +627,6 @@ const notificationSettings = ref({
 })
 
 
-
-// 显示联盟推广弹窗
-const showAffiliateAlert = () => {
-  Swal.fire({
-    title: '联盟推广',
-    text: '感谢您对我们的支持！目前联盟推广功能正在开发中，敬请期待。',
-    icon: 'info',
-    confirmButtonText: '确定'
-  })
-}
 
 // 处理头像上传
 const handleAvatarUpload = async (event) => {
