@@ -33,12 +33,25 @@ apiClient.interceptors.response.use(
   (error) => {
     // 处理401错误（未授权）
     if (error.response && error.response.status === 401) {
-      // 清除本地存储的认证信息
-      localStorage.removeItem('user')
-      localStorage.removeItem('token')
-      // 跳转到登录页面
-      window.location.href = '/login'
-      Swal.fire('登录已过期', '请重新登录', 'warning')
+      // 检查错误信息，确认是token过期而不是其他401错误
+      const errorMessage = error.response.data?.message || ''
+      const errorDetails = error.response.data?.error || ''
+      
+      // 如果是token过期相关的错误，才清除本地存储
+      if (errorMessage.includes('过期') || errorMessage.includes('expired') || 
+          errorDetails.includes('过期') || errorDetails.includes('expired') ||
+          errorMessage.includes('无法验证') || errorDetails.includes('无法验证')) {
+        // 真正的token过期，清除本地存储
+        localStorage.removeItem('user')
+        localStorage.removeItem('token')
+        // 跳转到登录页面
+        window.location.href = '/login'
+        Swal.fire('登录已过期', '请重新登录', 'warning')
+      } else {
+        // 其他401错误（如权限问题），不自动登出，只显示错误信息
+        console.warn('其他401错误，不自动登出:', errorMessage || errorDetails)
+        Swal.fire('认证错误', '请检查您的权限或重新登录', 'error')
+      }
     }
     // 处理403错误（权限不足）
     if (error.response && error.response.status === 403) {

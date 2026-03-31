@@ -1,87 +1,168 @@
 <template>
   <div class="agents-view">
-    <div class="overlay"></div>
-    <div class="not-available-container">
-      <div class="not-available-icon">🤖</div>
-      <h2 class="not-available-title">暂时还未使用</h2>
-      <p class="not-available-description">
-        智能体功能正在紧张开发中，敬请期待！
-      </p>
-      <router-link to="/" class="back-home-btn">返回首页</router-link>
+    <div class="agents-container">
+      <div class="agents-header">
+        <h1>智能体工具</h1>
+        <p>专业的育儿AI助手，帮助您解决育儿难题</p>
+      </div>
+      
+      <div class="agents-grid">
+        <AgentCard />
+      </div>
+      
+      <div class="coming-soon-section">
+        <h3>更多智能体即将上线</h3>
+        <p>我们正在积极开发更多专业的育儿AI助手，为您提供全方位的育儿支持</p>
+        
+        <div class="placeholder-grid">
+          <div class="placeholder-card">
+            <div class="placeholder-icon">📈</div>
+            <h4>成长发育监测</h4>
+            <p>实时跟踪宝宝生长发育指标</p>
+          </div>
+          
+          <div class="placeholder-card">
+            <div class="placeholder-icon">🎮</div>
+            <h4>早教游戏推荐</h4>
+            <p>适龄早教游戏与活动建议</p>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script setup>
-// 智能体功能暂未开放
+import AgentCard from '../components/AgentCard.vue'
 </script>
 
 <style scoped>
 .agents-view {
   min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 20px;
-  background-color: #f5f5f5;
-  position: relative;
+  padding: 40px 20px;
+  background-color: var(--bg-secondary);
 }
 
-.overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.25);
-  z-index: 1;
+.agents-container {
+  max-width: 1200px;
 }
 
-.not-available-container {
+.agents-header {
   text-align: center;
-  max-width: 500px;
-  background-color: white;
-  border-radius: 16px;
-  padding: 60px 40px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-  position: relative;
-  z-index: 2;
+  margin-bottom: 40px;
 }
 
-.not-available-icon {
-  font-size: 64px;
-  margin-bottom: 20px;
-  opacity: 0.8;
+.agents-header h1 {
+  font-size: 2.5em;
+  color: var(--text-primary);
+  margin-bottom: 10px;
 }
 
-.not-available-title {
-  font-size: 28px;
-  color: #333;
-  margin-bottom: 15px;
-}
-
-.not-available-description {
-  font-size: 16px;
-  color: #666;
-  margin-bottom: 30px;
+.agents-header p {
+  font-size: 1.1em;
+  color: var(--text-secondary);
+  max-width: 600px;
+  margin: 0 auto;
   line-height: 1.6;
 }
 
-.back-home-btn {
-  display: inline-block;
-  padding: 12px 30px;
-  background-color: var(--primary-color);
-  color: white;
-  border-radius: 25px;
-  font-size: 16px;
-  font-weight: 500;
-  transition: all 0.3s ease;
-  box-shadow: var(--shadow-medium);
+.agents-grid {
+  display: flex;
+  justify-content: flex-start;
+  gap: 30px;
 }
 
-.back-home-btn:hover {
-  background-color: #FF4785;
+.coming-soon-section {
+  margin-top: 60px;
+  padding-top: 40px;
+  border-top: 1px solid var(--border-color);
+}
+
+.coming-soon-section h3 {
+  font-size: 1.8em;
+  color: var(--text-primary);
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.coming-soon-section p {
+  color: var(--text-secondary);
+  text-align: center;
+  margin-bottom: 40px;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+  line-height: 1.6;
+}
+
+.placeholder-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 30px;
+  margin-top: 30px;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.placeholder-card {
+  background-color: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 30px 20px;
+  text-align: center;
+  transition: all 0.3s ease;
+  opacity: 0.7;
+}
+
+.placeholder-card:hover {
   transform: translateY(-2px);
-  box-shadow: var(--shadow-large);
+  box-shadow: var(--shadow-light);
+  opacity: 0.9;
+}
+
+.placeholder-icon {
+  font-size: 40px;
+  margin-bottom: 15px;
+}
+
+.placeholder-card h4 {
+  font-size: 1.2em;
+  color: var(--text-primary);
+  margin-bottom: 10px;
+}
+
+.placeholder-card p {
+  color: var(--text-secondary);
+  font-size: 0.9em;
+  line-height: 1.5;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .agents-view {
+    padding: 20px 15px;
+  }
+  
+  .agents-header h1 {
+    font-size: 2em;
+  }
+  
+  .agents-grid {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+  }
+  
+  .coming-soon-section {
+    margin-top: 40px;
+    padding-top: 30px;
+  }
+  
+  .placeholder-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+    max-width: 100%;
+  }
 }
 </style>

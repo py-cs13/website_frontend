@@ -910,7 +910,8 @@ const switchTab = (tab) => {
   background-color: var(--bg-primary);
   color: var(--text-primary);
   border-color: var(--border-color);
-  transform: translateX(5px);
+  transform: none;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .user-nav .nav-item.active a {
