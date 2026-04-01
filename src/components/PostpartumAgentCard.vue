@@ -1,19 +1,19 @@
 <template>
   <div class="agent-card">
-    <div class="agent-icon">🍼</div>
+    <div class="agent-icon">🏥</div>
     <div class="agent-content">
-      <h3 class="agent-name">婴幼儿健康饮食规划师</h3>
-      <p class="agent-description">专注婴幼儿健康饮食规划师，每日自动根据宝宝年龄、季节天气、本地习惯定制饮食方案</p>
+      <h3 class="agent-name">产后科学恢复规划师</h3>
+      <p class="agent-description">专业的产后恢复指导AI助手，为您提供科学的产后恢复方案、饮食建议和运动指导</p>
       <button class="use-btn" @click="openAgent">立即使用</button>
     </div>
   </div>
 </template>
 
 <script setup>
-// 智能体卡片组件
+// 产后科学恢复规划师智能体卡片（占位卡片，链接为空）
 const openAgent = () => {
-  // 直接在新标签页打开扣子智能体链接
-  window.open('https://www.coze.cn/store/agent/7618910253279002662?bot_id=true', '_blank')
+  // 占位卡片，暂时没有实际链接
+  console.log('产后科学恢复规划师智能体（占位卡片）')
 }
 </script>
 
@@ -58,8 +58,6 @@ const openAgent = () => {
   font-size: 0.95em;
 }
 
-
-
 .use-btn {
   background-color: var(--primary-color);
   color: white;
@@ -88,11 +86,6 @@ const openAgent = () => {
   
   .agent-name {
     font-size: 1.3em;
-  }
-  
-  .agent-meta {
-    flex-direction: column;
-    gap: 8px;
   }
 }
 </style>

@@ -8,6 +8,7 @@
       
       <div class="agents-grid">
         <AgentCard />
+        <PostpartumAgentCard />
       </div>
       
       <div class="coming-soon-section">
@@ -16,15 +17,27 @@
         
         <div class="placeholder-grid">
           <div class="placeholder-card">
-            <div class="placeholder-icon">📈</div>
-            <h4>成长发育监测</h4>
-            <p>实时跟踪宝宝生长发育指标</p>
+            <div class="placeholder-icon">🚑</div>
+            <h4>新生儿紧急护理</h4>
+            <p>新生儿常见紧急情况的专业处理指导</p>
           </div>
           
           <div class="placeholder-card">
-            <div class="placeholder-icon">🎮</div>
-            <h4>早教游戏推荐</h4>
-            <p>适龄早教游戏与活动建议</p>
+            <div class="placeholder-icon">📊</div>
+            <h4>宝宝发育监测与答疑</h4>
+            <p>实时监测宝宝发育情况，解答育儿疑问</p>
+          </div>
+          
+          <div class="placeholder-card">
+            <div class="placeholder-icon">🎓</div>
+            <h4>零基础家庭早教规划师</h4>
+            <p>为新手父母提供家庭早教方案规划</p>
+          </div>
+          
+          <div class="placeholder-card">
+            <div class="placeholder-icon">🛍️</div>
+            <h4>母婴用品避坑选购</h4>
+            <p>帮助您避开母婴用品选购的常见陷阱</p>
           </div>
         </div>
       </div>
@@ -34,6 +47,7 @@
 
 <script setup>
 import AgentCard from '../components/AgentCard.vue'
+import PostpartumAgentCard from '../components/PostpartumAgentCard.vue'
 </script>
 
 <style scoped>
@@ -67,9 +81,11 @@ import AgentCard from '../components/AgentCard.vue'
 }
 
 .agents-grid {
-  display: flex;
-  justify-content: flex-start;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
   gap: 30px;
+  max-width: 800px;
+  margin: 0 auto;
 }
 
 .coming-soon-section {
@@ -100,7 +116,7 @@ import AgentCard from '../components/AgentCard.vue'
   grid-template-columns: repeat(2, 1fr);
   gap: 30px;
   margin-top: 30px;
-  max-width: 600px;
+  max-width: 800px;
   margin-left: auto;
   margin-right: auto;
 }
