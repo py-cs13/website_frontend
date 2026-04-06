@@ -64,6 +64,11 @@ const routes = [
     name: 'agents',
     component: () => import('../views/AgentsView.vue')
   },
+  {
+    path: '/newborn-care-agent',
+    name: 'newborn-care-agent',
+    component: () => import('../views/NewbornCareAgentView.vue')
+  },
   // 管理后台路由
   {
     path: '/admin',

@@ -133,8 +133,11 @@ const categories = ref([])
 const updateCategoryCounts = () => {
   if (!contentStore.articles || contentStore.articles.length === 0) return
   
-  // 从文章数据中获取所有唯一分类
-  const articleCategories = contentStore.articles.map(a => a.category)
+  // 从文章数据中获取所有唯一分类，过滤空值和无效值
+  const articleCategories = contentStore.articles
+    .map(a => a.category)
+    .filter(cat => cat && cat.trim() !== '' && cat !== 'null' && cat !== 'undefined')
+  
   const uniqueCategories = [...new Set(articleCategories)]
   
   // 统计每个分类的文章数量

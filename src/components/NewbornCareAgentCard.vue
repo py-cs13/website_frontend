@@ -1,19 +1,21 @@
 <template>
   <div class="agent-card">
-    <div class="agent-icon">🍼</div>
+    <div class="agent-icon">🚑</div>
     <div class="agent-content">
-      <h3 class="agent-name">婴幼儿健康饮食规划师</h3>
-      <p class="agent-description">专注婴幼儿健康饮食规划师，每日自动根据宝宝年龄、季节天气、本地习惯定制饮食方案</p>
-      <button class="use-btn" @click="openAgent">立即使用</button>
+      <h3 class="agent-name">新生儿紧急护理助手</h3>
+      <p class="agent-description">新手父母的24小时贴身护理专家，提供秒级紧急响应、三级风险预警、个性化历史分析和多宝宝管理</p>
+      <button class="use-btn" @click="navigateToAgent">立即使用</button>
     </div>
   </div>
 </template>
 
 <script setup>
-// 智能体卡片组件
-const openAgent = () => {
-  // 直接在新标签页打开扣子智能体链接
-  window.open('https://www.coze.cn/store/agent/7618910253279002662?bot_id=true', '_blank')
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
+
+const navigateToAgent = () => {
+  router.push('/newborn-care-agent')
 }
 </script>
 
@@ -94,11 +96,6 @@ const openAgent = () => {
   
   .agent-name {
     font-size: 1.3em;
-  }
-  
-  .agent-meta {
-    flex-direction: column;
-    gap: 8px;
   }
 }
 </style>

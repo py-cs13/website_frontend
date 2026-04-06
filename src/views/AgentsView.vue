@@ -8,7 +8,7 @@
       
       <div class="agents-grid">
         <AgentCard />
-        <PostpartumAgentCard />
+        <NewbornCareAgentCard />
       </div>
       
       <div class="coming-soon-section">
@@ -17,9 +17,9 @@
         
         <div class="placeholder-grid">
           <div class="placeholder-card">
-            <div class="placeholder-icon">🚑</div>
-            <h4>新生儿紧急护理</h4>
-            <p>新生儿常见紧急情况的专业处理指导</p>
+            <div class="placeholder-icon">🏥</div>
+            <h4>产后科学恢复规划师</h4>
+            <p>专业的产后恢复指导AI助手，为您提供科学的产后恢复方案</p>
           </div>
           
           <div class="placeholder-card">
@@ -48,6 +48,7 @@
 <script setup>
 import AgentCard from '../components/AgentCard.vue'
 import PostpartumAgentCard from '../components/PostpartumAgentCard.vue'
+import NewbornCareAgentCard from '../components/NewbornCareAgentCard.vue'
 </script>
 
 <style scoped>
@@ -84,8 +85,10 @@ import PostpartumAgentCard from '../components/PostpartumAgentCard.vue'
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 30px;
+  margin-top: 30px;
   max-width: 800px;
-  margin: 0 auto;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .coming-soon-section {
