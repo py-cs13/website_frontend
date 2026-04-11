@@ -160,28 +160,83 @@ import NewbornCareAgentCard from '../components/NewbornCareAgentCard.vue'
 /* 响应式设计 */
 @media (max-width: 768px) {
   .agents-view {
-    padding: 20px 15px;
+    padding: 0.5rem;
+    max-width: 100%;
+    box-sizing: border-box;
   }
   
   .agents-header h1 {
-    font-size: 2em;
+    font-size: 1.5rem; /* 适中标题大小 */
+    line-height: 1.4;
+  }
+  
+  .agents-header p {
+    font-size: 0.875rem; /* 适中描述大小 */
+    line-height: 1.6;
   }
   
   .agents-grid {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 20px;
+    display: flex;
+    flex-direction: column; /* 一列布局 */
+    align-items: center; /* 居中对齐 */
+    gap: 0.75rem; /* 合适的间距 */
+    width: 100%;
+    max-width: 100%;
+    padding: 0 1rem;
+    box-sizing: border-box;
+    justify-content: center; /* 内容居中 */
+    margin: 0 auto; /* 容器居中 */
+  }
+  
+  .agents-grid > * {
+    width: 100%;
+    max-width: 18rem; /* 合适的最大宽度，与首页统一 */
+    min-height: 4.5rem; /* 合适的长方形高度，与首页统一 */
+    background: white;
+    border: 1px solid #f0f0f0;
+    border-radius: 0.75rem;
+    box-shadow: 0 0.125rem 0.5rem rgba(0, 0, 0, 0.08);
+    display: flex;
+    align-items: center; /* 垂直居中 */
+    justify-content: center; /* 水平居中 */
   }
   
   .coming-soon-section {
-    margin-top: 40px;
-    padding-top: 30px;
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+  }
+  
+  .coming-soon-section h3 {
+    font-size: 1.125rem; /* 适中标题大小 */
+    line-height: 1.4;
+  }
+  
+  .coming-soon-section p {
+    font-size: 0.8125rem; /* 适中描述大小 */
+    line-height: 1.6;
   }
   
   .placeholder-grid {
     grid-template-columns: 1fr;
-    gap: 20px;
+    gap: 1rem;
     max-width: 100%;
+  }
+  
+  .placeholder-card {
+    padding: 1.5rem 1rem;
+    min-height: 5rem;
+  }
+  
+  .placeholder-icon {
+    font-size: 2rem; /* 适中图标大小 */
+  }
+  
+  .placeholder-card h4 {
+    font-size: 1rem; /* 适中标题大小 */
+  }
+  
+  .placeholder-card p {
+    font-size: 0.8125rem; /* 适中描述大小 */
   }
 }
 </style>

@@ -18,7 +18,7 @@
         从孕期护理到产后恢复，从婴儿护理到早期教育，我们陪伴您和宝宝一起成长。
       </p>
       
-      <!-- 功能导航 -->
+      <!-- 功能导航 - 排成一排 -->
       <div class="feature-nav">
         <router-link to="/articles" class="feature-card">
           <div class="feature-icon">📚</div>
@@ -185,8 +185,8 @@ onMounted(async () => {
 
 <style scoped>
 .home-view {
-  padding: 20px;
-  max-width: 1200px;
+  padding: 1.25rem;
+  max-width: 75rem;
   margin: 0 auto;
 }
 
@@ -194,25 +194,25 @@ onMounted(async () => {
 .theme-decoration {
   display: flex;
   justify-content: center;
-  gap: 20px;
-  margin-bottom: 20px;
+  gap: 1.25rem;
+  margin-bottom: 1.25rem;
 }
 
 .decoration-icon {
-  font-size: 32px;
+  font-size: 2rem;
   opacity: 0.7;
 }
 
 /* 页面副标题 */
 .page-subtitle {
   text-align: center;
-  margin-bottom: 20px;
+  margin-bottom: 1.25rem;
   color: #666;
-  font-size: 16px;
+  font-size: 1rem;
 }
 
 .main-subtitle {
-  font-size: 18px;
+  font-size: 1.125rem;
   font-weight: 500;
   color: #333;
 }
@@ -220,175 +220,151 @@ onMounted(async () => {
 /* 欢迎区域 */
 .welcome-section {
   background: linear-gradient(135deg, #fff5f5 0%, #fff 100%);
-  border-radius: 20px;
-  padding: 60px 40px;
+  border-radius: 1.25rem;
+  padding: 3.75rem 2.5rem;
   text-align: center;
-  margin-top: 30px;
-  box-shadow: 0 4px 20px rgba(255, 107, 139, 0.1);
+  margin-top: 1.875rem;
+  box-shadow: 0 0.25rem 1.25rem rgba(255, 107, 139, 0.1);
 }
 
 .welcome-title {
-  font-size: 36px;
+  font-size: 2.25rem;
   color: #333;
-  margin-bottom: 20px;
+  margin-bottom: 1.25rem;
   font-weight: 700;
 }
 
 .welcome-text {
-  font-size: 18px;
+  font-size: 1.125rem;
   color: #666;
   line-height: 1.8;
-  max-width: 800px;
-  margin: 0 auto 40px;
+  max-width: 50rem;
+  margin: 0 auto 2.5rem;
 }
 
 /* 功能导航 */
 .feature-nav {
   display: flex;
   justify-content: center;
-  gap: 30px;
+  gap: 1.875rem;
   flex-wrap: wrap;
 }
 
 .feature-card {
   display: flex;
   align-items: center;
-  gap: 20px;
+  gap: 1.25rem;
   background: white;
-  padding: 30px 40px;
-  border-radius: 16px;
+  padding: 1.875rem 2.5rem;
+  border-radius: 1rem;
   text-decoration: none;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 0.25rem 0.9375rem rgba(0, 0, 0, 0.08);
   transition: all 0.3s ease;
-  border: 2px solid transparent;
+  border: 0.125rem solid transparent;
 }
 
 .feature-card:hover {
-  transform: translateY(-5px);
+  transform: translateY(-0.3125rem);
   border-color: #FF6B8B;
-  box-shadow: 0 8px 25px rgba(255, 107, 139, 0.2);
+  box-shadow: 0 0.5rem 1.5625rem rgba(255, 107, 139, 0.2);
 }
 
 .feature-icon {
-  font-size: 48px;
+  font-size: 3rem;
 }
 
 .feature-info h3 {
-  font-size: 20px;
+  font-size: 1.25rem;
   color: #333;
-  margin-bottom: 5px;
+  margin-bottom: 0.3125rem;
   font-weight: 600;
 }
 
 .feature-info p {
-  font-size: 14px;
+  font-size: 0.875rem;
   color: #666;
   margin: 0;
 }
 
-/* 响应式设计 */
-@media (max-width: 768px) {
-  .welcome-section {
-    padding: 40px 20px;
-  }
-  
-  .welcome-title {
-    font-size: 28px;
-  }
-  
-  .welcome-text {
-    font-size: 16px;
-  }
-  
-  .feature-nav {
-    flex-direction: column;
-    align-items: center;
-  }
-  
-  .feature-card {
-    width: 100%;
-    max-width: 300px;
-    justify-content: center;
-  }
-}
+
 
 /* 分隔装饰 */
 .section-divider {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 15px;
-  margin: 40px 0;
+  gap: 0.9375rem;
+  margin: 2.5rem 0;
 }
 
 .divider-line {
   flex: 1;
-  max-width: 200px;
-  height: 2px;
+  max-width: 12.5rem;
+  height: 0.125rem;
   background: linear-gradient(90deg, transparent, #FF6B8B, transparent);
 }
 
 .divider-icon {
-  font-size: 20px;
+  font-size: 1.25rem;
   color: #FF6B8B;
 }
 
 /* 推荐文章区域 */
 .recommended-section {
   background: linear-gradient(135deg, #fff5f5 0%, #fff 100%);
-  border-radius: 20px;
-  padding: 40px;
-  box-shadow: 0 4px 20px rgba(255, 107, 139, 0.1);
+  border-radius: 1.25rem;
+  padding: 2.5rem;
+  box-shadow: 0 0.25rem 1.25rem rgba(255, 107, 139, 0.1);
 }
 
 .recommended-title {
-  font-size: 24px;
+  font-size: 1.5rem;
   color: #333;
-  margin-bottom: 25px;
+  margin-bottom: 1.5625rem;
   text-align: center;
   font-weight: 600;
 }
 
 .recommended-cards {
   display: flex;
-  gap: 25px;
+  gap: 1.5625rem;
   justify-content: center;
   flex-wrap: wrap;
 }
 
 .recommended-card {
   flex: 1;
-  min-width: 280px;
-  max-width: 350px;
+  min-width: 17.5rem;
+  max-width: 21.875rem;
   background: white;
-  border-radius: 16px;
-  padding: 25px;
+  border-radius: 1rem;
+  padding: 1.5625rem;
   text-decoration: none;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 0.25rem 0.9375rem rgba(0, 0, 0, 0.08);
   transition: all 0.3s ease;
-  border: 2px solid transparent;
+  border: 0.125rem solid transparent;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 0.75rem;
 }
 
 .recommended-card:hover {
-  transform: translateY(-8px);
+  transform: translateY(-0.5rem);
   border-color: #FF6B8B;
-  box-shadow: 0 8px 30px rgba(255, 107, 139, 0.2);
+  box-shadow: 0 0.5rem 1.875rem rgba(255, 107, 139, 0.2);
 }
 
 .recommended-category {
   display: flex;
   align-items: center;
-  gap: 6px;
-  font-size: 13px;
+  gap: 0.375rem;
+  font-size: 0.8125rem;
   color: #FF6B8B;
   font-weight: 500;
 }
 
 .recommended-card-title {
-  font-size: 18px;
+  font-size: 1.125rem;
   font-weight: 600;
   color: #333;
   margin: 0;
@@ -401,7 +377,7 @@ onMounted(async () => {
 }
 
 .recommended-summary {
-  font-size: 14px;
+  font-size: 0.875rem;
   color: #666;
   line-height: 1.7;
   margin: 0;
@@ -414,7 +390,7 @@ onMounted(async () => {
 }
 
 .read-more-text {
-  font-size: 14px;
+  font-size: 0.875rem;
   color: #FF6B8B;
   font-weight: 500;
   margin-top: auto;
@@ -422,39 +398,140 @@ onMounted(async () => {
 }
 
 .recommended-card:hover .read-more-text {
-  transform: translateX(5px);
+  transform: translateX(0.3125rem);
 }
 
 .loading-recommended {
   text-align: center;
-  padding: 40px 0;
+  padding: 2.5rem 0;
   color: #666;
 }
 
-/* 响应式 - 推荐卡片 */
-@media (max-width: 992px) {
-  .recommended-cards {
-    flex-direction: column;
+/* 移动端优化 - 字体大小合适，卡片长方形布局 */
+@media (max-width: 768px) {
+  .home-view {
+    padding: 0.5rem;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+  
+  .page-subtitle {
+    font-size: 0.875rem; /* 适中副标题大小 */
+    line-height: 1.5;
+    margin-bottom: 0.75rem;
+  }
+  
+  .welcome-section {
+    padding: 1.5rem 1rem;
+    margin-top: 0.75rem;
+  }
+  
+  .welcome-title {
+    font-size: 1.25rem; /* 适中标题大小，避免老人机效果 */
+    line-height: 1.4;
+    margin-bottom: 0.75rem;
+    font-weight: 600;
+  }
+  
+  .welcome-text {
+    font-size: 0.8125rem; /* 适中正文大小 */
+    line-height: 1.5;
+    margin-bottom: 1.5rem;
+  }
+  
+  /* 功能导航卡片 - 长方形布局 */
+  .feature-nav {
+    display: flex;
+    flex-direction: column; /* 一列布局 */
+    gap: 0.75rem; /* 合适的间距 */
+    align-items: center; /* 居中对齐 */
+    width: 100%;
+    max-width: 100%;
+    margin: 0 auto;
+    justify-content: center; /* 确保容器内容居中 */
+  }
+  
+  .feature-card {
+    width: 100%;
+    max-width: 18rem; /* 合适的最大宽度 */
+    min-height: 4.5rem; /* 合适的长方形高度 */
+    padding: 0; /* 恢复合适的内边距 */
+    border-radius: 0.75rem;
+    justify-content: center; /* 内容居中 */
+    box-shadow: 0 0.125rem 0.5rem rgba(0, 0, 0, 0.08);
+    margin: 0 auto; /* 居中对齐 */
+    background: white;
+    border: 1px solid #f0f0f0;
+    display: flex;
     align-items: center;
   }
   
-  .recommended-card {
+  .feature-icon {
+    font-size: 1.75rem; /* 适中图标大小 */
+    flex-shrink: 0;
+  }
+  
+  .feature-info h3 {
+    font-size: 0.9375rem; /* 适中标题大小 */
+    margin-bottom: 0.25rem;
+    font-weight: 600;
+    color: #333;
+  }
+  
+  .feature-info p {
+    font-size: 0.75rem; /* 适中描述大小 */
+    line-height: 1.3;
+    color: #666;
+    margin: 0;
+  }
+  
+  /* 分隔装饰 */
+  .section-divider {
+    margin: 1.5rem 0;
+  }
+  
+  /* 推荐区域 - 保持PC端样式，只调整字体大小 */
+  .recommended-section {
+    padding: 0 1rem;
+  }
+  
+  .recommended-title {
+    font-size: 1rem; /* 适中标题大小 */
+    margin-bottom: 0.75rem;
+    font-weight: 600;
+  }
+  
+  .recommended-cards {
+    display: flex;
+    flex-direction: row; /* 保持PC端的三列布局 */
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: center; /* 居中对齐 */
     width: 100%;
-    max-width: 500px;
+    max-width: 100%;
+    margin: 0 auto;
+  }
+  
+  .recommended-card {
+    width: calc(33.333% - 0.666rem); /* 保持三列布局 */
+    min-height: auto; /* 恢复原高度 */
+    padding: 1.25rem;
+    border-radius: 0.75rem;
+    margin: 0; /* 恢复原边距 */
+    background: white;
+    border: 1px solid #f0f0f0;
+  }
+  
+  .recommended-card-title {
+    font-size: 0.9375rem; /* 适中标题大小 */
+    line-height: 1.3;
+    font-weight: 600;
+  }
+  
+  .recommended-summary {
+    font-size: 0.75rem; /* 适中描述大小 */
+    line-height: 1.3;
   }
 }
 
-@media (max-width: 768px) {
-  .section-divider {
-    margin: 30px 0;
-  }
-  
-  .divider-line {
-    max-width: 100px;
-  }
-  
-  .recommended-section {
-    padding: 30px 20px;
-  }
-}
 </style>

@@ -69,51 +69,51 @@
 .footer {
   background: linear-gradient(180deg, #FFF5F8 0%, #F8F9FA 100%);
   color: var(--text-primary);
-  padding: 40px 0 20px;
-  margin-top: 60px;
-  border-top: 3px solid var(--primary-color);
-  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.05);
+  padding: 2.5rem 0 1.25rem;
+  margin-top: 3.75rem;
+  border-top: 0.1875rem solid var(--primary-color);
+  box-shadow: 0 -0.25rem 1.25rem rgba(0, 0, 0, 0.05);
 }
 
 .container {
-  max-width: 1200px;
+  max-width: 75rem;
   margin: 0 auto;
-  padding: 0 20px;
+  padding: 0 1.25rem;
 }
 
 .footer-content {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 30px;
-  margin-bottom: 30px;
+  grid-template-columns: repeat(auto-fit, minmax(15.625rem, 1fr));
+  gap: 1.875rem;
+  margin-bottom: 1.875rem;
   align-items: start;
 }
 
 .footer-section {
   background-color: var(--bg-primary);
-  padding: 20px;
-  border-radius: 10px;
-  border: 1px solid var(--border-color);
+  padding: 1.25rem;
+  border-radius: 0.625rem;
+  border: 0.0625rem solid var(--border-color);
   box-shadow: var(--shadow-light);
 }
 
 .footer-section .footer-title {
-  font-size: 19px;
+  font-size: 1.1875rem;
   font-weight: 600;
-  margin-bottom: 20px;
+  margin-bottom: 1.25rem;
   color: var(--primary-color);
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 0.625rem;
 }
 
 .footer-section .footer-title::before {
   content: "🎀";
-  font-size: 18px;
+  font-size: 1.125rem;
 }
 
 .footer-text {
-  font-size: 14px;
+  font-size: 0.875rem;
   line-height: 1.8;
   color: var(--text-secondary);
   margin: 0;
@@ -126,34 +126,34 @@
 }
 
 .footer-links li {
-  margin-bottom: 12px;
+  margin-bottom: 0.75rem;
   position: relative;
-  padding-left: 22px;
+  padding-left: 1.375rem;
 }
 
 .footer-links li::before {
   content: "🌟";
   position: absolute;
-  left: 8px;
-  top: 10px;
-  font-size: 12px;
+  left: 0.5rem;
+  top: 0.625rem;
+  font-size: 0.75rem;
   color: var(--accent-color);
 }
 
 .footer-links a {
   color: var(--text-secondary);
   text-decoration: none;
-  font-size: 14px;
+  font-size: 0.875rem;
   transition: all 0.3s ease;
-  padding: 8px 12px;
-  border-radius: 8px;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.5rem;
   display: block;
 }
 
 .footer-links a:hover {
   color: var(--primary-color);
   background-color: var(--bg-accent);
-  transform: translateX(5px);
+  transform: translateX(0.3125rem);
 }
 
 .contact-info {
@@ -164,9 +164,9 @@
 .contact-info p {
   display: flex;
   align-items: center;
-  gap: 12px;
-  margin-bottom: 15px;
-  font-size: 14px;
+  gap: 0.75rem;
+  margin-bottom: 0.9375rem;
+  font-size: 0.875rem;
   color: var(--text-secondary);
 }
 
@@ -175,11 +175,11 @@
 }
 
 .contact-info p:hover {
-  transform: translateY(-2px);
+  transform: translateY(-0.125rem);
 }
 
 .icon {
-  font-size: 18px;
+  font-size: 1.125rem;
   color: var(--primary-color);
   flex-shrink: 0;
 }
@@ -191,9 +191,9 @@
 }
 
 .social-links li {
-  margin-bottom: 12px;
+  margin-bottom: 0.75rem;
   position: relative;
-  padding-left: 22px;
+  padding-left: 1.375rem;
 }
 
 .social-links li:last-child {
@@ -203,32 +203,32 @@
 .social-links li::before {
   content: "🌟";
   position: absolute;
-  left: 8px;
-  top: 10px;
-  font-size: 12px;
+  left: 0.5rem;
+  top: 0.625rem;
+  font-size: 0.75rem;
   color: var(--accent-color);
 }
 
 .social-text {
   color: var(--text-secondary);
-  font-size: 14px;
-  padding: 8px 12px;
-  border-radius: 8px;
+  font-size: 0.875rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.5rem;
   display: block;
 }
 
 .footer-bottom {
   text-align: center;
-  padding-top: 25px;
-  border-top: 2px solid var(--border-color);
+  padding-top: 1.5625rem;
+  border-top: 0.125rem solid var(--border-color);
   color: var(--text-light);
-  font-size: 14px;
+  font-size: 0.875rem;
 }
 
 .footer-bottom-content {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 0.625rem;
   align-items: center;
 }
 
@@ -238,7 +238,7 @@
 
 .filing-info {
   display: flex;
-  gap: 15px;
+  gap: 0.9375rem;
   align-items: center;
   justify-content: center;
   flex-wrap: wrap;
@@ -248,11 +248,11 @@
   color: var(--text-light);
   text-decoration: none;
   transition: all 0.3s ease;
-  padding: 5px 10px;
-  border-radius: 5px;
+  padding: 0.3125rem 0.625rem;
+  border-radius: 0.3125rem;
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 0.3125rem;
 }
 
 .filing-link:hover {
@@ -261,53 +261,10 @@
 }
 
 .beian-icon {
-  width: 16px;
-  height: 16px;
+  width: 1rem;
+  height: 1rem;
   vertical-align: middle;
 }
 
-/* 响应式设计 */
-@media (max-width: 768px) {
-  .footer {
-    padding: 30px 0 15px;
-    margin-top: 40px;
-  }
-  
-  .footer-content {
-    grid-template-columns: 1fr;
-    gap: 30px;
-  }
-  
-  .footer-section {
-    padding: 15px;
-  }
-  
-  .footer-section .footer-title {
-    font-size: 17px;
-  }
-  
-  .footer-section .footer-title::before {
-    font-size: 16px;
-  }
-  
-  .social-link {
-    font-size: 13px;
-    padding: 6px 10px;
-  }
-}
 
-@media (max-width: 480px) {
-  .footer-content {
-    gap: 25px;
-  }
-  
-  .footer-text {
-    font-size: 13px;
-    padding: 12px;
-  }
-  
-  .footer-links a {
-    font-size: 13px;
-  }
-}
 </style>

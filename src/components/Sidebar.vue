@@ -255,43 +255,43 @@ const navigateToArticle = (articleId) => {
 
 <style scoped>
 .sidebar {
-  width: 280px;
-  padding: 20px;
+  width: 17.5rem;
+  padding: 1.25rem;
   background-color: var(--bg-primary);
   box-shadow: var(--shadow-light);
-  border-radius: 12px;
-  border: 1px solid var(--border-color);
+  border-radius: 0.75rem;
+  border: 0.0625rem solid var(--border-color);
 }
 
 .sidebar-section {
-  margin-bottom: 25px;
+  margin-bottom: 1.5625rem;
   background-color: var(--bg-secondary);
-  padding: 15px;
-  border-radius: 10px;
+  padding: 0.9375rem;
+  border-radius: 0.625rem;
   transition: all 0.3s ease;
 }
 
 .sidebar-section:hover {
   box-shadow: var(--shadow-light);
-  transform: translateY(-2px);
+  transform: translateY(-0.125rem);
 }
 
 .section-title {
-  font-size: 18px;
+  font-size: 1.125rem;
   font-weight: 600;
-  margin-bottom: 15px;
+  margin-bottom: 0.9375rem;
   color: var(--primary-color);
-  padding-bottom: 10px;
-  border-bottom: 2px solid var(--bg-accent);
+  padding-bottom: 0.625rem;
+  border-bottom: 0.125rem solid var(--bg-accent);
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 0.5rem;
   padding-left: 0;
 }
 
 .section-title::before {
   content: "🌸";
-  font-size: 16px;
+  font-size: 1rem;
 }
 
 /* 分类列表 */
@@ -302,7 +302,7 @@ const navigateToArticle = (articleId) => {
 }
 
 .category-list li {
-  margin-bottom: 10px;
+  margin-bottom: 0.625rem;
   position: relative;
 }
 
@@ -313,9 +313,9 @@ const navigateToArticle = (articleId) => {
   color: var(--text-secondary);
   text-decoration: none;
   transition: all 0.3s ease;
-  padding: 10px 10px 10px 28px;
-  border-radius: 8px;
-  font-size: 14px;
+  padding: 0.625rem 0.625rem 0.625rem 1.75rem;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
   line-height: 1.5;
   width: 100%;
   box-sizing: border-box;
@@ -325,17 +325,17 @@ const navigateToArticle = (articleId) => {
 .category-list a::before {
   content: "✨";
   position: absolute;
-  left: 10px;
+  left: 0.625rem;
   top: 50%;
   transform: translateY(-50%);
-  font-size: 14px;
+  font-size: 0.875rem;
   transition: transform 0.3s ease;
 }
 
 .category-list a:hover {
   color: var(--primary-color);
   background-color: var(--bg-accent);
-  transform: translateX(3px);
+  transform: translateX(0.1875rem);
 }
 
 .category-list a:hover::before {
@@ -344,13 +344,13 @@ const navigateToArticle = (articleId) => {
 }
 
 .category-list .count {
-  font-size: 12px;
+  font-size: 0.75rem;
   color: var(--text-light);
   background-color: var(--bg-primary);
-  padding: 4px 10px;
-  border-radius: 12px;
-  border: 1px solid var(--border-color);
-  min-width: 35px;
+  padding: 0.25rem 0.625rem;
+  border-radius: 0.75rem;
+  border: 0.0625rem solid var(--border-color);
+  min-width: 2.1875rem;
   text-align: center;
   font-weight: 500;
 }
@@ -363,23 +363,23 @@ const navigateToArticle = (articleId) => {
 }
 
 .hot-list li {
-  margin-bottom: 15px;
-  padding-bottom: 15px;
-  border-bottom: 1px solid var(--border-color);
+  margin-bottom: 0.9375rem;
+  padding-bottom: 0.9375rem;
+  border-bottom: 0.0625rem solid var(--border-color);
   position: relative;
-  padding-left: 28px;
-  min-height: 24px;
+  padding-left: 1.75rem;
+  min-height: 1.5rem;
   margin-left: 0;
 }
 
 .hot-list li::before {
   content: "✨";
   position: absolute;
-  left: 8px;
-  top: 5px;
-  font-size: 14px;
-  width: 15px;
-  height: 15px;
+  left: 0.5rem;
+  top: 0.3125rem;
+  font-size: 0.875rem;
+  width: 0.9375rem;
+  height: 0.9375rem;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -395,18 +395,18 @@ const navigateToArticle = (articleId) => {
 .hot-list a {
   color: var(--text-secondary);
   text-decoration: none;
-  font-size: 14px;
+  font-size: 0.875rem;
   line-height: 1.5;
   transition: all 0.3s ease;
   display: block;
-  padding: 2px 0;
+  padding: 0.125rem 0;
   width: 100%;
   box-sizing: border-box;
 }
 
 .hot-list a:hover {
   color: var(--primary-color);
-  transform: translateX(3px);
+  transform: translateX(0.1875rem);
 }
 
 .hot-list li:hover::before {
@@ -421,20 +421,20 @@ const navigateToArticle = (articleId) => {
 }
 
 .loading-content {
-  padding: 10px 0;
+  padding: 0.625rem 0;
 }
 
 .skeleton-item {
-  height: 16px;
+  height: 1rem;
   background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
   background-size: 200% 100%;
   animation: skeleton-loading 1.5s infinite;
-  border-radius: 8px;
-  margin-bottom: 8px;
+  border-radius: 0.5rem;
+  margin-bottom: 0.5rem;
 }
 
 .skeleton-item.article-skeleton {
-  height: 20px;
+  height: 1.25rem;
 }
 
 @keyframes skeleton-loading {
@@ -449,65 +449,75 @@ const navigateToArticle = (articleId) => {
 /* 空状态样式 */
 .empty-state {
   text-align: center;
-  padding: 30px 15px;
+  padding: 1.875rem 0.9375rem;
 }
 
 .empty-content {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 10px;
+  gap: 0.625rem;
 }
 
 .empty-icon {
-  font-size: 32px;
+  font-size: 2rem;
   opacity: 0.6;
 }
 
 .empty-state p {
   color: var(--text-secondary);
-  font-size: 14px;
+  font-size: 0.875rem;
   margin: 0;
 }
 
 /* 响应式设计 */
 @media (max-width: 992px) {
   .sidebar {
-    width: 240px;
-    padding: 15px;
+    width: 15rem;
+    padding: 0.9375rem;
   }
   
   .sidebar-section {
-    padding: 15px;
-    margin-bottom: 20px;
+    padding: 0.9375rem;
+    margin-bottom: 1.25rem;
   }
   
   .section-title {
-    font-size: 16px;
+    font-size: 1rem;
   }
   
   .section-title::before {
-    font-size: 14px;
+    font-size: 0.875rem;
   }
   
   .hot-list a {
-    font-size: 13px;
+    font-size: 0.8125rem;
   }
 }
 
 @media (max-width: 768px) {
   .sidebar {
     width: 100%;
-    margin-top: 20px;
-    padding: 15px;
+    max-width: 95%;
+    margin: 1.25rem auto 0;
+    padding: 0.9375rem;
+    box-sizing: border-box;
   }
   
   .sidebar-section {
-    margin-bottom: 20px;
-    padding: 15px;
+    margin-bottom: 1.25rem;
+    padding: 0.9375rem;
+    box-sizing: border-box;
   }
   
   .sidebar-section:last-child {
     margin-bottom: 0;
+  }
+  
+  /* 确保侧边栏内容不超出屏幕 */
+  .category-list a,
+  .hot-list a {
+    width: 100%;
+    box-sizing: border-box;
   }
 }</style>

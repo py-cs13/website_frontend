@@ -9,15 +9,7 @@
       </div>
     </div>
 
-    <!-- 紧急模式提示 -->
-    <div v-if="isEmergencyMode" class="emergency-mode-alert">
-      <div class="emergency-header">
-        <span class="emergency-icon">🆘</span>
-        <h3>紧急护理模式</h3>
-        <button class="exit-emergency-btn" @click="exitEmergencyMode">退出紧急模式</button>
-      </div>
-      <p class="emergency-tip">请保持冷静，按照步骤操作。如有需要，立即拨打120。</p>
-    </div>
+
 
     <!-- 主界面 -->
     <div class="agent-container" :class="{ 'emergency-active': isEmergencyMode }">
@@ -478,20 +470,7 @@ const addMessage = (type, content, analysisResult = {}) => {
   })
 }
 
-// 检查是否需要进入紧急模式
-const checkEmergencyMode = (message) => {
-  const emergencyKeywords = ['呼吸困难', '面色发紫', '抽搐', '意识不清', '立即就医']
-  const hasEmergency = emergencyKeywords.some(keyword => message.includes(keyword))
-  
-  if (hasEmergency) {
-    isEmergencyMode.value = true
-  }
-}
 
-// 退出紧急模式
-const exitEmergencyMode = () => {
-  isEmergencyMode.value = false
-}
 
 // 格式化加粗文本
 const formatBoldText = (text) => {
@@ -604,53 +583,7 @@ onUnmounted(() => {
   font-size: 14px;
 }
 
-/* 紧急模式样式 */
-.emergency-mode-alert {
-  background: linear-gradient(45deg, #ff6b6b, #ff8e8e);
-  color: white;
-  padding: 12px 16px;
-  animation: pulse 2s infinite;
-  flex-shrink: 0;
-}
 
-.emergency-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 4px;
-}
-
-.emergency-icon {
-  font-size: 20px;
-  margin-right: 8px;
-}
-
-.emergency-header h3 {
-  margin: 0;
-  flex: 1;
-  font-size: 16px;
-}
-
-.exit-emergency-btn {
-  background: rgba(255, 255, 255, 0.2);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  color: white;
-  padding: 4px 10px;
-  border-radius: 20px;
-  cursor: pointer;
-  font-size: 12px;
-}
-
-.emergency-tip {
-  margin: 0;
-  font-size: 13px;
-  opacity: 0.9;
-}
-
-@keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.8; }
-}
 
 /* 主容器 */
 .agent-container {

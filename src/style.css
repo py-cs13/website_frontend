@@ -44,6 +44,21 @@ a:hover {
   color: #FF4785;
 }
 
+/* 全局默认光标样式 */
+* {
+  cursor: default !important;
+}
+
+/* 1. 只有输入框区域 - 使用竖线光标（用于选择文字） */
+input, textarea, [contenteditable] {
+  cursor: text !important;
+}
+
+/* 2. 链接和按钮 - 使用小手光标 */
+button, a, [role="button"] {
+  cursor: pointer !important;
+}
+
 body {
   margin: 0;
   min-width: 320px;
@@ -143,6 +158,16 @@ button.accent:hover {
 
 /* 响应式设计 */
 @media (max-width: 768px) {
+  body {
+    max-width: 100vw;
+    overflow-x: hidden;
+  }
+  
+  #app {
+    max-width: 100%;
+    margin: 0;
+  }
+  
   h1 {
     font-size: 2em;
   }

@@ -109,6 +109,19 @@ const handleCategoryFilter = (categoryName) => {
 </template>
 
 <style scoped>
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
 .app-container {
   min-height: 100vh;
   display: flex;
@@ -119,19 +132,19 @@ const handleCategoryFilter = (categoryName) => {
 
 .main-content {
   flex: 1;
-  padding: 30px 0;
+  padding: 1.875rem 0;
   position: relative;
 }
 
 .container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 20px;
+  padding: 0 1.25rem;
 }
 
 .content-wrapper {
   display: flex;
-  gap: 30px;
+  gap: 1.875rem;
   align-items: flex-start;
   position: relative;
   width: 100%;
@@ -152,7 +165,7 @@ const handleCategoryFilter = (categoryName) => {
   
   /* 调整整体容器，确保左右留白对称 */
   .container {
-    max-width: calc(1200px + 40px); /* 包含左右各20px的边距 */
+    max-width: calc(75rem + 2.5rem); /* 包含左右各20px的边距 */
     padding: 0;
   }
 }
@@ -160,8 +173,8 @@ const handleCategoryFilter = (categoryName) => {
 .content-view {
   flex: 1;
   background-color: var(--bg-primary);
-  border-radius: 16px;
-  padding: 30px;
+  border-radius: 1rem;
+  padding: 1.875rem;
   box-shadow: var(--shadow-medium);
   transition: all 0.3s ease;
   box-sizing: border-box;
@@ -180,12 +193,12 @@ const handleCategoryFilter = (categoryName) => {
 
 .fade-enter-from {
   opacity: 0;
-  transform: translateY(20px);
+  transform: translateY(1.25rem);
 }
 
 .fade-leave-to {
   opacity: 0;
-  transform: translateY(-20px);
+  transform: translateY(-1.25rem);
 }
 
 /* 响应式设计 */
@@ -195,51 +208,63 @@ const handleCategoryFilter = (categoryName) => {
   }
   
   .main-content {
-    padding: 25px 0;
+    padding: 1.5625rem 0;
   }
 }
 
 @media (max-width: 992px) {
   .main-content {
-    padding: 20px 0;
+    padding: 1.25rem 0;
   }
   
   .content-wrapper {
-    gap: 20px;
+    gap: 1.25rem;
   }
   
   .content-view {
-    padding: 25px;
+    padding: 1.5625rem;
   }
   
   /* 在平板设备上优化侧边栏 */
   .content-wrapper:has(.sidebar) {
-    gap: 15px;
+    gap: 0.9375rem;
   }
 }
 
 @media (max-width: 768px) {
   .main-content {
-    padding: 15px 0;
+    padding: 0.9375rem 0;
   }
   
   .container {
-    padding: 0 15px;
+    padding: 0 0.9375rem;
+    max-width: 100%;
   }
   
   .content-wrapper {
     flex-direction: column;
-    gap: 20px;
+    gap: 1.25rem;
+    width: 100%;
+    margin: 0 auto;
   }
   
   .content-view {
-    padding: 20px;
-    border-radius: 12px;
+    padding: 1.25rem;
+    border-radius: 0.75rem;
+    width: 100%;
+    box-sizing: border-box;
+    order: 1; /* 主内容区域在前 */
+  }
+  
+  .sidebar {
+    order: 2; /* 侧边栏内容在后 */
+    width: 100%;
+    margin-top: 1.25rem;
   }
   
   /* 在移动设备上优化内容显示 */
   .content-view {
-    min-height: calc(100vh - 200px);
+    min-height: auto;
   }
   
   /* 为移动设备添加更好的触摸反馈 */
@@ -250,16 +275,16 @@ const handleCategoryFilter = (categoryName) => {
 
 @media (max-width: 480px) {
   .main-content {
-    padding: 10px 0;
+    padding: 0.625rem 0;
   }
   
   .container {
-    padding: 0 12px;
+    padding: 0 0.75rem;
   }
   
   .content-view {
-    padding: 16px;
-    border-radius: 10px;
+    padding: 1rem;
+    border-radius: 0.625rem;
   }
 }
 </style>

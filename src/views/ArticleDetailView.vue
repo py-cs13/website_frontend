@@ -27,9 +27,7 @@
           <span class="meta-item">
             <i class="icon">📅</i> {{ formatDate(article.created_at) }}
           </span>
-          <span class="meta-item">
-            <i class="icon">👁️</i> {{ formatNumber(article.view_count) }}
-          </span>
+
           <span class="meta-item">
             <i class="icon">❤️</i> {{ formatNumber(article.likes) }}
           </span>

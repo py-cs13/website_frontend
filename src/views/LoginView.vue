@@ -114,32 +114,32 @@ const forgotPassword = () => {
   justify-content: center;
   align-items: center;
   background: linear-gradient(135deg, #FFF5F8 0%, #F0F8FF 100%);
-  padding: 20px;
+  padding: 1.25rem;
 }
 
 .auth-container {
   background-color: white;
-  border-radius: 12px;
-  padding: 40px;
+  border-radius: 0.75rem;
+  padding: 2.5rem;
   box-shadow: var(--shadow-medium);
-  max-width: 400px;
+  max-width: 25rem;
   width: 100%;
 }
 
 .auth-header {
   text-align: center;
-  margin-bottom: 30px;
+  margin-bottom: 1.875rem;
 }
 
 .auth-header h1 {
-  font-size: 28px;
+  font-size: 1.75rem;
   font-weight: 700;
   color: var(--primary-color);
-  margin-bottom: 10px;
+  margin-bottom: 0.625rem;
 }
 
 .auth-header p {
-  font-size: 14px;
+  font-size: 0.875rem;
   color: var(--text-secondary);
 }
 
@@ -148,23 +148,23 @@ const forgotPassword = () => {
 }
 
 .form-group {
-  margin-bottom: 20px;
+  margin-bottom: 1.25rem;
 }
 
 .form-group label {
   display: block;
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 500;
   color: var(--text-primary);
-  margin-bottom: 8px;
+  margin-bottom: 0.5rem;
 }
 
 .form-input {
   width: 100%;
-  padding: 12px;
-  border: 2px solid var(--border-color);
-  border-radius: 8px;
-  font-size: 15px;
+  padding: 0.75rem;
+  border: 0.125rem solid var(--border-color);
+  border-radius: 0.5rem;
+  font-size: 0.9375rem;
   transition: all 0.3s ease;
   background-color: var(--bg-secondary);
 }
@@ -173,19 +173,19 @@ const forgotPassword = () => {
   outline: none;
   border-color: var(--primary-color);
   background-color: white;
-  box-shadow: 0 0 0 3px rgba(255, 105, 180, 0.1);
+  box-shadow: 0 0 0 0.1875rem rgba(255, 105, 180, 0.1);
 }
 
 .form-actions {
-  margin-top: 30px;
+  margin-top: 1.875rem;
 }
 
 .btn {
   width: 100%;
-  padding: 14px;
+  padding: 0.875rem;
   border: none;
-  border-radius: 25px;
-  font-size: 16px;
+  border-radius: 1.5625rem;
+  font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -198,7 +198,7 @@ const forgotPassword = () => {
 
 .btn-primary:hover {
   background-color: #FF4785;
-  transform: translateY(-2px);
+  transform: translateY(-0.125rem);
   box-shadow: var(--shadow-medium);
 }
 
@@ -209,13 +209,13 @@ const forgotPassword = () => {
 }
 
 .form-footer {
-  margin-top: 20px;
+  margin-top: 1.25rem;
   text-align: center;
-  font-size: 14px;
+  font-size: 0.875rem;
 }
 
 .form-footer p {
-  margin-bottom: 10px;
+  margin-bottom: 0.625rem;
   color: var(--text-secondary);
 }
 
@@ -230,29 +230,15 @@ const forgotPassword = () => {
 }
 
 .error-message {
-  margin-top: 20px;
-  padding: 12px;
+  margin-top: 1.25rem;
+  padding: 0.75rem;
   background-color: #FFF0F0;
-  border: 1px solid #FFB3B3;
-  border-radius: 8px;
+  border: 0.0625rem solid #FFB3B3;
+  border-radius: 0.5rem;
   color: #FF6B6B;
-  font-size: 14px;
+  font-size: 0.875rem;
   text-align: center;
 }
 
-/* 响应式设计 */
-@media (max-width: 576px) {
-  .auth-container {
-    padding: 30px 20px;
-  }
-  
-  .auth-header h1 {
-    font-size: 24px;
-  }
-  
-  .btn {
-    padding: 12px;
-    font-size: 15px;
-  }
-}
+
 </style>

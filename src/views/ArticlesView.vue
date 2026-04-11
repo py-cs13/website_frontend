@@ -39,18 +39,7 @@
           </button>
         </div>
     
-    <!-- 搜索结果提示 -->
-    <div v-if="isSearchMode" class="search-result-header">
-      <div class="search-result-info">
-        <span class="search-icon">🔍</span>
-        <span class="search-text">搜索关键词：</span>
-        <span class="search-keyword">"{{ searchKeyword }}"</span>
-        <span class="search-count">，找到 {{ filteredArticles.length }} 篇相关文章</span>
-      </div>
-      <button class="clear-search-btn" @click="clearSearch">
-        <span>✕</span> 清除搜索
-      </button>
-    </div>
+
       </div>
     </div>
     
@@ -117,9 +106,7 @@
             <span class="meta-item">
               <i class="icon">📅</i> {{ formatDate(article.created_at || '2024-06-03') }}
             </span>
-            <span class="meta-item">
-              <i class="icon">👁️‍🗨️</i> {{ article.view_count || 0 }}
-            </span>
+
             <span class="meta-item">
               <i class="icon">❤️</i> {{ article.likes || 0 }}
             </span>
@@ -391,72 +378,7 @@ a {
   z-index: 50;
 }
 
-/* 搜索结果提示样式 */
-.search-result-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 16px 20px;
-  background: linear-gradient(135deg, #FFF5F5 0%, #FFF0F0 100%);
-  border-radius: 12px;
-  border: 2px solid #FFB4B4;
-  margin-bottom: 20px;
-  box-shadow: 0 4px 12px rgba(255, 107, 139, 0.15);
-}
 
-.search-result-info {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
-.search-icon {
-  font-size: 20px;
-}
-
-.search-text {
-  color: #666;
-  font-size: 14px;
-}
-
-.search-keyword {
-  color: #FF6B8B;
-  font-weight: 600;
-  font-size: 16px;
-  background: rgba(255, 107, 139, 0.1);
-  padding: 4px 12px;
-  border-radius: 20px;
-}
-
-.search-count {
-  color: #999;
-  font-size: 14px;
-}
-
-.clear-search-btn {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 8px 16px;
-  background: white;
-  border: 2px solid #ddd;
-  border-radius: 20px;
-  cursor: pointer;
-  font-size: 14px;
-  color: #666;
-  transition: all 0.3s ease;
-}
-
-.clear-search-btn:hover {
-  background: #FF6B8B;
-  border-color: #FF6B8B;
-  color: white;
-}
-
-.clear-search-btn span {
-  font-size: 12px;
-}
 
 .category-tabs-simple {
   display: flex;

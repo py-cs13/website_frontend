@@ -217,24 +217,24 @@ const showContactAlert = () => {
   position: sticky;
   top: 0;
   z-index: 12000; /* 高于分类标签的z-index */
-  border-bottom: 2px solid var(--primary-color);
+  border-bottom: 0.125rem solid var(--primary-color);
 }
 
 .container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 20px;
+  padding: 0 1.25rem;
 }
 
 .header-content {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  height: 75px;
+  height: 4.6875rem;
 }
 
 .logo {
-  font-size: 26px;
+  font-size: 1.625rem;
   font-weight: 700;
 }
 
@@ -243,14 +243,14 @@ const showContactAlert = () => {
   text-decoration: none;
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 0.75rem;
 }
 
 .logo-image {
-  width: 48px;
-  height: 48px;
+  width: 3rem;
+  height: 3rem;
   object-fit: contain;
-  border-radius: 8px;
+  border-radius: 0.5rem;
   transition: transform 0.3s ease;
 }
 
@@ -259,7 +259,7 @@ const showContactAlert = () => {
 }
 
 .logo-text {
-  font-size: 22px;
+  font-size: 1.375rem;
   font-weight: 700;
   color: var(--primary-color);
 }
@@ -268,7 +268,18 @@ const showContactAlert = () => {
 .nav-desktop ul {
   display: flex;
   list-style: none;
-  gap: 35px;
+  gap: 1.5rem;
+  flex-wrap: nowrap;
+  min-width: 0;
+  flex: 1;
+  justify-content: center;
+}
+
+.nav-desktop a {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 80px;
 }
 
 .nav-desktop a {
@@ -276,28 +287,28 @@ const showContactAlert = () => {
   text-decoration: none;
   font-weight: 500;
   transition: all 0.3s ease;
-  padding: 8px 12px;
-  border-radius: 20px;
-  font-size: 16px;
+  padding: 0.5rem 0.75rem;
+  border-radius: 1.25rem;
+  font-size: 1rem;
 }
 
 .nav-desktop a:hover {
   color: var(--primary-color);
   background-color: var(--bg-accent);
-  transform: translateY(-1px);
+  transform: translateY(-0.0625rem);
 }
 
 .nav-desktop a.active {
   color: var(--primary-color);
   background-color: var(--bg-accent);
   font-weight: 600;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 0.125rem 0.5rem rgba(0, 0, 0, 0.1);
 }
 
 .user-actions {
   display: flex;
   align-items: center;
-  gap: 15px;
+  gap: 0.9375rem;
 }
 
 /* 菜单按钮容器 */
@@ -310,29 +321,29 @@ const showContactAlert = () => {
   position: absolute;
   top: 100%;
   right: 0;
-  margin-top: 10px;
+  margin-top: 0.625rem;
   background-color: var(--bg-primary);
   box-shadow: var(--shadow-medium);
-  border-radius: 12px;
-  border: 1px solid var(--border-color);
-  min-width: 180px;
+  border-radius: 0.75rem;
+  border: 0.0625rem solid var(--border-color);
+  min-width: 11.25rem;
   z-index: 13000;
 }
 
 .desktop-menu ul {
   list-style: none;
-  padding: 8px 0;
+  padding: 0.5rem 0;
 }
 
 .desktop-menu a {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 12px 16px;
+  gap: 0.625rem;
+  padding: 0.75rem 1rem;
   color: var(--text-primary);
   text-decoration: none;
   transition: all 0.3s ease;
-  font-size: 15px;
+  font-size: 0.9375rem;
 }
 
 .desktop-menu a:hover {
@@ -347,32 +358,36 @@ const showContactAlert = () => {
 .search-btn, .menu-btn {
   background: none;
   border: none;
-  font-size: 20px;
+  font-size: 1.25rem;
   cursor: pointer;
   color: var(--text-secondary);
-  padding: 10px;
+  padding: 0.625rem;
   border-radius: 50%;
   transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .search-container {
   position: relative;
   display: flex;
   align-items: center;
-  background-color: var(--bg-secondary);
-  border-radius: 25px;
+  background-color: transparent;
+  border-radius: 1.5625rem;
   transition: all 0.3s ease-in-out;
   overflow: hidden;
-  height: 40px;
-  width: 40px;
-  min-width: 40px;
-  max-width: 280px;
+  height: 2.5rem;
+  width: 2.5rem;
+  min-width: 2.5rem;
+  max-width: 17.5rem;
 }
 
 .search-container.expanded {
-  width: 280px;
-  padding: 0 15px;
-  border: 1px solid var(--border-color);
+  width: 17.5rem;
+  padding: 0 0.9375rem;
+  background-color: var(--bg-secondary);
+  border: 0.0625rem solid var(--border-color);
   box-shadow: var(--shadow-light);
 }
 
@@ -382,7 +397,7 @@ const showContactAlert = () => {
   outline: none;
   background: transparent;
   padding: 0;
-  font-size: 15px;
+  font-size: 0.9375rem;
   color: var(--text-primary);
   opacity: 0;
   width: 0;
@@ -393,7 +408,7 @@ const showContactAlert = () => {
 
 .search-container.expanded .search-input {
   opacity: 1;
-  width: 160px;
+  width: 10rem;
 }
 
 .search-input::placeholder {
@@ -404,19 +419,19 @@ const showContactAlert = () => {
 .search-submit-btn {
   background-color: transparent;
   border: none;
-  border-radius: 20px;
-  padding: 6px 12px;
+  border-radius: 1.25rem;
+  padding: 0.375rem 0.75rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 4px;
+  gap: 0.25rem;
   cursor: pointer;
   color: var(--text-secondary);
   opacity: 0;
   visibility: hidden;
   transform: scale(0.9);
   transition: all 0.3s ease-in-out 0.2s;
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 500;
   white-space: nowrap;
   position: relative;
@@ -433,17 +448,17 @@ const showContactAlert = () => {
 .search-close-btn {
   background: none;
   border: none;
-  font-size: 16px;
+  font-size: 1rem;
   cursor: pointer;
   color: var(--text-secondary);
-  padding: 8px;
+  padding: 0.5rem;
   border-radius: 50%;
   opacity: 0;
   visibility: hidden;
   transform: scale(0.9);
   transition: all 0.3s ease-in-out 0.2s;
-  width: 32px;
-  height: 32px;
+  width: 2rem;
+  height: 2rem;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -471,27 +486,27 @@ const showContactAlert = () => {
 .search-btn:hover, .menu-btn:hover {
   background-color: var(--bg-accent);
   color: var(--primary-color);
-  transform: translateY(-2px);
+  transform: translateY(-0.125rem);
 }
 
 .login-btn, .register-btn {
-  padding: 10px 20px;
-  border-radius: 25px;
+  padding: 0.625rem 1.25rem;
+  border-radius: 1.5625rem;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.3s ease;
-  font-size: 15px;
+  font-size: 0.9375rem;
 }
 
 .login-btn {
   background-color: transparent;
-  border: 2px solid var(--primary-color);
+  border: 0.125rem solid var(--primary-color);
   color: var(--primary-color);
 }
 
 .login-btn:hover {
   background-color: var(--bg-accent);
-  transform: translateY(-2px);
+  transform: translateY(-0.125rem);
 }
 
 .register-btn {
@@ -503,30 +518,30 @@ const showContactAlert = () => {
 
 .register-btn:hover {
   background-color: #FF4785;
-  transform: translateY(-2px);
+  transform: translateY(-0.125rem);
   box-shadow: var(--shadow-medium);
 }
 
 .user-profile {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 0.625rem;
   color: var(--text-primary);
   font-weight: 500;
-  padding: 8px 16px;
-  border-radius: 25px;
+  padding: 0.5rem 1rem;
+  border-radius: 1.5625rem;
   background-color: var(--bg-secondary);
 }
 
 .user-name {
   color: var(--primary-color);
   font-weight: 700;
-  font-size: 16px;
-  padding: 4px 8px;
+  font-size: 1rem;
+  padding: 0.25rem 0.5rem;
   background-color: var(--bg-accent);
-  border-radius: 12px;
+  border-radius: 0.75rem;
   /* 新增：用户名长度限制 */
-  max-width: 85px;
+  max-width: 5.3125rem;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -536,8 +551,8 @@ const showContactAlert = () => {
 /* 移动端导航 */
 .nav-mobile {
   display: none;
-  padding: 20px 0;
-  border-top: 1px solid var(--border-color);
+  padding: 1.25rem 0;
+  border-top: 0.0625rem solid var(--border-color);
   background-color: var(--bg-primary);
 }
 
@@ -545,7 +560,7 @@ const showContactAlert = () => {
   list-style: none;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 0.75rem;
 }
 
 .nav-mobile a {
@@ -553,8 +568,8 @@ const showContactAlert = () => {
   text-decoration: none;
   font-weight: 500;
   transition: all 0.3s ease;
-  padding: 12px 16px;
-  border-radius: 25px;
+  padding: 0.75rem 1rem;
+  border-radius: 1.5625rem;
   display: block;
 }
 
@@ -567,7 +582,7 @@ const showContactAlert = () => {
   color: var(--primary-color);
   background-color: var(--bg-accent);
   font-weight: 600;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 0.125rem 0.5rem rgba(0, 0, 0, 0.1);
 }
 
 /* 响应式设计 */
@@ -580,68 +595,86 @@ const showContactAlert = () => {
     display: block;
   }
   
+  /* 移动端隐藏登录和注册按钮 */
+  .login-btn, .register-btn {
+    display: none;
+  }
+  
   .logo {
-    font-size: 22px;
+    font-size: 1.375rem;
   }
   
   .logo a::before {
-    font-size: 24px;
+    font-size: 1.5rem;
+  }
+  
+  .logo-text {
+    font-size: 1.125rem;
+  }
+  
+  .logo-image {
+    width: 2.5rem;
+    height: 2.5rem;
   }
   
   .user-actions {
-    gap: 8px;
-  }
-  
-  .login-btn, .register-btn {
-    padding: 8px 16px;
-    font-size: 14px;
+    gap: 0.5rem;
   }
   
   .search-btn, .menu-btn {
-    padding: 8px;
-    font-size: 18px;
+    padding: 0.5rem;
+    font-size: 1.125rem;
   }
   
   .search-container.expanded {
-    width: 250px;
+    width: 15.625rem;
   }
   
   .search-container.expanded .search-input {
-    width: 170px;
+    width: 10.625rem;
   }
   
   /* 移动端用户名长度限制 */
   .user-name {
-    max-width: 70px;
-    font-size: 14px;
+    max-width: 4.375rem;
+    font-size: 0.875rem;
   }
 }
 
 @media (max-width: 480px) {
   .logo {
-    font-size: 20px;
+    font-size: 1.125rem;
   }
   
   .logo a::before {
-    font-size: 22px;
+    font-size: 1.25rem;
+  }
+  
+  .logo-text {
+    font-size: 1rem;
+  }
+  
+  .logo-image {
+    width: 2.25rem;
+    height: 2.25rem;
   }
   
   .user-actions {
-    gap: 5px;
+    gap: 0.3125rem;
   }
   
-  .login-btn, .register-btn {
-    padding: 6px 12px;
-    font-size: 13px;
+  .search-btn, .menu-btn {
+    padding: 0.375rem;
+    font-size: 1rem;
   }
   
   .search-container.expanded {
-    width: 220px;
+    width: 13.75rem;
   }
   
   .search-container.expanded .search-input {
-    width: 140px;
-    font-size: 14px;
+    width: 8.75rem;
+    font-size: 0.875rem;
   }
 }
 

@@ -26,21 +26,7 @@
     <div class="agent-main">
       <!-- 左侧信息栏 -->
       <div class="sidebar">
-        <div class="sidebar-section">
-          <h3>紧急情况处理</h3>
-          <div class="emergency-list">
-            <div 
-              v-for="guide in emergencyGuides" 
-              :key="guide.guide_name"
-              :class="['emergency-item', guide.risk_level]"
-              @click="selectEmergencyGuide(guide)"
-            >
-              <span class="risk-icon">{{ getRiskIcon(guide.risk_level) }}</span>
-              <span class="guide-name">{{ guide.guide_name }}</span>
-              <span class="response-time">{{ guide.response_time_target }}s</span>
-            </div>
-          </div>
-        </div>
+
         
         <div class="sidebar-section">
             <div class="section-header">
@@ -157,7 +143,6 @@ const router = useRouter()
 
 // 响应式数据
 const currentBaby = ref(null)
-const emergencyGuides = ref([])
 const babies = ref([])
 const showAddBabyModal = ref(false)
 const editingBaby = ref(null)
@@ -178,75 +163,7 @@ const goBack = () => {
   router.push('/agents')
 }
 
-// 选择紧急处理指南
-const selectEmergencyGuide = (guide) => {
-  // 获取新生儿护理组件实例
-  const newbornCareComponent = document.querySelector('newborn-care-agent')
-  
-  if (newbornCareComponent && newbornCareComponent.__vue_app__) {
-    // 通过事件总线或直接调用组件方法
-    window.dispatchEvent(new CustomEvent('emergency-guide-selected', {
-      detail: {
-        guide: guide,
-        symptom: guide.guide_name.replace('新生儿', '宝宝').replace('处理', '')
-      }
-    }))
-  }
-  
-  // 显示指南详情弹窗
-  showGuideDetail(guide)
-}
 
-// 显示指南详情
-const showGuideDetail = (guide) => {
-  const detailContent = `
-    <div style="padding: 20px;">
-      <h3 style="color: ${getRiskColor(guide.risk_level)}; margin-bottom: 15px;">${guide.guide_name}</h3>
-      <div style="margin-bottom: 15px;">
-        <strong>风险等级：</strong>
-        <span style="color: ${getRiskColor(guide.risk_level)}; font-weight: bold;">${guide.risk_level}</span>
-      </div>
-      <div style="margin-bottom: 15px;">
-        <strong>立即行动：</strong>
-        <ol style="margin: 10px 0; padding-left: 20px;">
-          ${guide.immediate_actions.map(action => `<li>${action}</li>`).join('')}
-        </ol>
-      </div>
-      ${guide.when_to_seek_help && guide.when_to_seek_help.length ? `
-        <div style="margin-bottom: 15px;">
-          <strong>就医时机：</strong>
-          <ul style="margin: 10px 0; padding-left: 20px;">
-            ${guide.when_to_seek_help.map(condition => `<li>${condition}</li>`).join('')}
-          </ul>
-        </div>
-      ` : ''}
-      <button onclick="this.parentElement.parentElement.close()" style="
-        background: #007bff; color: white; border: none; padding: 8px 16px; 
-        border-radius: 4px; cursor: pointer; margin-top: 10px;
-      ">关闭</button>
-    </div>
-  `
-  
-  // 创建模态框
-  const modal = document.createElement('dialog')
-  modal.innerHTML = detailContent
-  modal.style.border = 'none'
-  modal.style.borderRadius = '8px'
-  modal.style.boxShadow = '0 4px 20px rgba(0,0,0,0.15)'
-  modal.style.maxWidth = '500px'
-  modal.style.width = '90%'
-  
-  document.body.appendChild(modal)
-  modal.showModal()
-  
-  // 点击背景关闭
-  modal.addEventListener('click', (e) => {
-    if (e.target === modal) {
-      modal.close()
-      document.body.removeChild(modal)
-    }
-  })
-}
 
 // 获取风险等级对应的颜色
 const getRiskColor = (level) => {
@@ -405,64 +322,8 @@ const loadData = async () => {
     // 从后端API加载宝宝数据
     await loadBabiesFromAPI()
     
-    // 加载紧急处理指南
-    const guidesResponse = await api.get('/newborn-care/emergency-guides')
-    emergencyGuides.value = guidesResponse.data
-    
   } catch (error) {
     console.error('加载数据失败:', error)
-    
-    // 使用模拟数据作为降级方案
-    emergencyGuides.value = [
-      {
-        guide_name: '新生儿呛奶紧急处理',
-        risk_level: '红色',
-        immediate_actions: [
-          '立即将宝宝面朝下放在前臂上',
-          '头部略低于胸部，支撑好头部',
-          '用手掌根部在肩胛骨间快速拍打5次',
-          '如无效，立即拨打120'
-        ],
-        when_to_seek_help: [
-          '宝宝面色发紫或无声',
-          '拍打后仍无法呼吸',
-          '意识不清或抽搐'
-        ],
-        response_time_target: 0.5
-      },
-      {
-        guide_name: '新生儿发热处理',
-        risk_level: '黄色',
-        immediate_actions: [
-          '测量体温确认发热程度',
-          '解开过多衣物帮助散热',
-          '温水擦浴物理降温',
-          '保持室内通风'
-        ],
-        when_to_seek_help: [
-          '体温超过38.5℃且物理降温无效',
-          '出现抽搐或意识模糊',
-          '发热持续超过24小时'
-        ],
-        response_time_target: 1.0
-      },
-      {
-        guide_name: '新生儿皮肤红疹处理',
-        risk_level: '绿色',
-        immediate_actions: [
-          '保持皮肤清洁干燥',
-          '使用婴儿专用保湿霜',
-          '避免使用刺激性产品',
-          '穿着宽松棉质衣物'
-        ],
-        when_to_seek_help: [
-          '红疹面积迅速扩大',
-          '伴有发热或其他症状',
-          '宝宝明显不适哭闹'
-        ],
-        response_time_target: 2.0
-      }
-    ]
   }
 }
 
@@ -600,61 +461,7 @@ onMounted(() => {
   padding-left: 12px;
 }
 
-/* 紧急情况列表 */
-.emergency-list {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
 
-.emergency-item {
-  display: flex;
-  align-items: center;
-  padding: 12px;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.2s;
-  border: 1px solid transparent;
-}
-
-.emergency-item:hover {
-  background: #f8f9fa;
-  transform: translateX(4px);
-}
-
-.emergency-item.红色 {
-  border-color: #ff6b6b;
-  background: rgba(255, 107, 107, 0.05);
-}
-
-.emergency-item.黄色 {
-  border-color: #ffd93d;
-  background: rgba(255, 217, 61, 0.05);
-}
-
-.emergency-item.绿色 {
-  border-color: #51cf66;
-  background: rgba(81, 207, 102, 0.05);
-}
-
-.risk-icon {
-  font-size: 16px;
-  margin-right: 12px;
-}
-
-.guide-name {
-  flex: 1;
-  font-size: 14px;
-  font-weight: 500;
-}
-
-.response-time {
-  font-size: 12px;
-  color: #666;
-  background: #f8f9fa;
-  padding: 2px 6px;
-  border-radius: 4px;
-}
 
 /* 宝宝列表 */
 .baby-list {
@@ -723,27 +530,46 @@ onMounted(() => {
 /* 宝宝管理相关样式 */
 .section-header {
   display: flex;
-  align-items: center;
+  align-items: flex-start; /* 改为顶部对齐 */
   justify-content: space-between;
   margin-bottom: 12px;
 }
 
+.section-header h3 {
+  margin: 0;
+  line-height: 28px; /* 与按钮高度保持一致 */
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+}
+
 .add-baby-btn {
-  background: #ff69b4;
+  background: linear-gradient(135deg, #ff69b4, #ff1493);
   color: white;
   border: none;
-  border-radius: 50%;
-  width: 24px;
-  height: 24px;
+  border-radius: 6px;
+  padding: 6px 12px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 16px;
+  font-size: 12px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 6px rgba(255, 105, 180, 0.3);
+  line-height: 1;
+  height: 28px;
 }
 
 .add-baby-btn:hover {
-  background: #ff1493;
+  background: linear-gradient(135deg, #ff1493, #c71585);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(255, 105, 180, 0.4);
+}
+
+.add-baby-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 1px 3px rgba(255, 105, 180, 0.3);
 }
 
 .baby-actions {

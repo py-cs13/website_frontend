@@ -266,60 +266,60 @@ onMounted(() => {
 <style scoped>
 .products-view {
   min-height: 100vh;
-  padding: 40px 0;
+  padding: 2.5rem 0;
   background-color: var(--bg-primary);
 }
 
 .container {
-  max-width: 1200px;
+  max-width: 75rem;
   margin: 0 auto;
-  padding: 0 20px;
+  padding: 0 1.25rem;
 }
 
 .page-header {
   text-align: center;
-  margin-bottom: 40px;
+  margin-bottom: 2.5rem;
 }
 
 .page-title {
-  font-size: 32px;
+  font-size: 2rem;
   font-weight: 700;
   color: var(--text-primary);
-  margin: 0 0 10px 0;
+  margin: 0 0 0.625rem 0;
 }
 
 .page-subtitle {
-  font-size: 16px;
+  font-size: 1rem;
   color: var(--text-secondary);
   margin: 0;
 }
 
 .filter-section {
-  margin-bottom: 30px;
-  padding: 20px;
+  margin-bottom: 1.875rem;
+  padding: 1.25rem;
   background-color: var(--bg-secondary);
-  border-radius: 12px;
-  border: 1px solid var(--border-color);
+  border-radius: 0.75rem;
+  border: 0.0625rem solid var(--border-color);
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 1.25rem;
   position: relative;
   z-index: 10; /* 确保筛选框在下拉菜单时层级合适 */
 }
 
 .category-filter {
   display: flex;
-  gap: 10px;
+  gap: 0.625rem;
   flex-wrap: wrap;
 }
 
 .filter-btn {
-  padding: 10px 20px;
-  border: 2px solid var(--border-color);
+  padding: 0.625rem 1.25rem;
+  border: 0.125rem solid var(--border-color);
   background-color: var(--bg-primary);
-  border-radius: 20px;
+  border-radius: 1.25rem;
   cursor: pointer;
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 500;
   transition: all 0.3s ease;
   color: var(--text-secondary);
@@ -346,15 +346,15 @@ onMounted(() => {
 .custom-select-wrapper {
   position: relative;
   display: inline-block;
-  width: 180px;
+  width: 11.25rem;
 }
 
 .custom-select {
-  padding: 10px 30px 10px 16px;
-  border: 2px solid var(--border-color);
+  padding: 0.625rem 1.875rem 0.625rem 1rem;
+  border: 0.125rem solid var(--border-color);
   background-color: var(--bg-primary);
-  border-radius: 8px;
-  font-size: 14px;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
   cursor: pointer;
   color: var(--text-secondary);
   transition: all 0.3s ease;
@@ -375,7 +375,7 @@ onMounted(() => {
   background-color: white;
   border-bottom-left-radius: 0;
   border-bottom-right-radius: 0;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 0.125rem 0.5rem rgba(0, 0, 0, 0.1);
 }
 
 .custom-select-value {
@@ -383,7 +383,7 @@ onMounted(() => {
 }
 
 .custom-select-arrow {
-  font-size: 12px;
+  font-size: 0.75rem;
   transition: transform 0.3s ease;
   color: #666;
 }
@@ -400,12 +400,12 @@ onMounted(() => {
   left: 0;
   right: 0;
   background-color: white;
-  border: 2px solid var(--primary-color);
+  border: 0.125rem solid var(--primary-color);
   border-top: none;
-  border-radius: 0 0 8px 8px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  border-radius: 0 0 0.5rem 0.5rem;
+  box-shadow: 0 0.25rem 1rem rgba(0, 0, 0, 0.12);
   z-index: 5;
-  margin-top: -2px;
+  margin-top: -0.125rem;
   animation: dropdownFadeIn 0.2s ease-out;
   overflow: hidden;
 }
@@ -413,7 +413,7 @@ onMounted(() => {
 @keyframes dropdownFadeIn {
   from {
     opacity: 0;
-    transform: translateY(-5px);
+    transform: translateY(-0.3125rem);
   }
   to {
     opacity: 1;
@@ -422,12 +422,12 @@ onMounted(() => {
 }
 
 .custom-select-option {
-  padding: 12px 16px;
-  font-size: 14px;
+  padding: 0.75rem 1rem;
+  font-size: 0.875rem;
   cursor: pointer;
   color: var(--text-primary);
   transition: all 0.2s ease;
-  border-bottom: 1px solid #f5f5f5;
+  border-bottom: 0.0625rem solid #f5f5f5;
   position: relative;
 }
 
@@ -437,7 +437,7 @@ onMounted(() => {
 
 .custom-select-option:hover {
   background-color: #f8f9fa;
-  transform: translateX(2px);
+  transform: translateX(0.125rem);
 }
 
 .custom-select-option-active {
@@ -461,15 +461,15 @@ onMounted(() => {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 60px 20px;
-  gap: 10px;
+  padding: 3.75rem 1.25rem;
+  gap: 0.625rem;
 }
 
 .loading-spinner {
-  width: 40px;
-  height: 40px;
-  border: 4px solid var(--bg-accent);
-  border-top: 4px solid var(--primary-color);
+  width: 2.5rem;
+  height: 2.5rem;
+  border: 0.25rem solid var(--bg-accent);
+  border-top: 0.25rem solid var(--primary-color);
   border-radius: 50%;
   animation: spin 1s linear infinite;
 }
@@ -480,47 +480,47 @@ onMounted(() => {
 }
 
 .loading-container p {
-  font-size: 14px;
+  font-size: 0.875rem;
   color: var(--text-secondary);
   margin: 0;
 }
 
 .empty-state {
   text-align: center;
-  padding: 80px 20px;
+  padding: 5rem 1.25rem;
   color: var(--text-secondary);
 }
 
 .empty-icon {
-  font-size: 64px;
-  margin-bottom: 20px;
+  font-size: 4rem;
+  margin-bottom: 1.25rem;
   opacity: 0.5;
 }
 
 .empty-state p {
-  font-size: 16px;
+  font-size: 1rem;
   margin: 0;
 }
 
 .products-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 20px;
-  margin-bottom: 30px;
+  grid-template-columns: repeat(auto-fill, minmax(17.5rem, 1fr));
+  gap: 1.25rem;
+  margin-bottom: 1.875rem;
 }
 
 .load-more-container {
   text-align: center;
-  margin-top: 30px;
+  margin-top: 1.875rem;
 }
 
 .load-more-btn {
-  padding: 12px 32px;
+  padding: 0.75rem 2rem;
   background-color: var(--primary-color);
   color: white;
   border: none;
-  border-radius: 25px;
-  font-size: 16px;
+  border-radius: 1.5625rem;
+  font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -528,7 +528,7 @@ onMounted(() => {
 
 .load-more-btn:hover:not(:disabled) {
   background-color: var(--accent-color);
-  transform: translateY(-2px);
+  transform: translateY(-0.125rem);
   box-shadow: var(--shadow-medium);
 }
 
@@ -537,66 +537,31 @@ onMounted(() => {
   cursor: not-allowed;
 }
 
-@media (max-width: 992px) {
-  .products-grid {
-    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-    gap: 16px;
-  }
-  
-  .filter-section {
-    flex-direction: column;
-    gap: 16px;
-  }
-  
-  .category-filter {
-    width: 100%;
-    justify-content: center;
-  }
-}
 
-@media (max-width: 768px) {
-  .products-grid {
-    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-    gap: 12px;
-  }
-  
-  .page-title {
-    font-size: 24px;
-  }
-  
-  .page-subtitle {
-    font-size: 14px;
-  }
-  
-  .filter-btn {
-    padding: 8px 16px;
-    font-size: 13px;
-  }
-}
 
 /* 商品推荐被隐藏时的样式 */
 .disabled-state {
   text-align: center;
-  padding: 80px 20px;
+  padding: 5rem 1.25rem;
   background-color: var(--bg-secondary);
-  border-radius: 12px;
-  border: 2px dashed var(--border-color);
-  margin-top: 40px;
+  border-radius: 0.75rem;
+  border: 0.125rem dashed var(--border-color);
+  margin-top: 2.5rem;
 }
 
 .disabled-icon {
-  font-size: 64px;
-  margin-bottom: 20px;
+  font-size: 4rem;
+  margin-bottom: 1.25rem;
 }
 
 .disabled-state h2 {
-  font-size: 24px;
+  font-size: 1.5rem;
   color: var(--text-primary);
-  margin-bottom: 10px;
+  margin-bottom: 0.625rem;
 }
 
 .disabled-state p {
-  font-size: 16px;
+  font-size: 1rem;
   color: var(--text-secondary);
   line-height: 1.6;
 }
@@ -613,7 +578,7 @@ onMounted(() => {
 .category-tabs-grid {
   display: grid;
   grid-template-columns: repeat(5, auto); /* 5列网格，对应第一行的5个元素 */
-  gap: 10px;
+  gap: 0.625rem;
   width: fit-content;
   max-width: 100%;
 }
@@ -634,7 +599,7 @@ onMounted(() => {
 
 /* 占位符标签，用于对齐第一行的"全部"按钮 */
 .placeholder-tab {
-  width: 100px; /* 与"全部"按钮宽度一致 */
+  width: 6.25rem; /* 与"全部"按钮宽度一致 */
   height: 0;
   visibility: hidden;
 }
@@ -642,19 +607,19 @@ onMounted(() => {
 /* 确保标签按钮样式一致 */
 .tab-btn-simple {
   flex-shrink: 0;
-  padding: 12px 24px;
-  border: 3px solid #e0e0e0;
+  padding: 0.75rem 1.5rem;
+  border: 0.1875rem solid #e0e0e0;
   background-color: white;
-  border-radius: 25px;
+  border-radius: 1.5625rem;
   cursor: pointer;
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 500;
   transition: all 0.3s ease;
   color: #666;
   display: flex;
   align-items: center;
-  gap: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  gap: 0.5rem;
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.05);
   min-width: fit-content;
   white-space: nowrap;
   position: relative;
@@ -666,7 +631,7 @@ onMounted(() => {
 .tab-btn-simple:hover {
   border-color: #FF6B8B;
   color: #FF6B8B;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.1);
   background-color: rgba(255, 255, 255, 0.95);
 }
 
@@ -674,11 +639,83 @@ onMounted(() => {
   background-color: #FF6B8B;
   color: white;
   border-color: #FF6B8B;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.1);
 }
 
 /* "全部"按钮样式 */
 .all-btn {
   z-index: 102;
+}
+
+/* 移动端优化 - 分类标签横向一列布局 */
+@media (max-width: 768px) {
+  .category-tabs-grid {
+    display: flex;
+    flex-direction: column; /* 一列布局 */
+    gap: 0.75rem; /* 合适的间距 */
+    width: 100%;
+    max-width: 100%;
+    align-items: center; /* 居中对齐 */
+    justify-content: center; /* 内容居中 */
+  }
+  
+  .category-row {
+    display: flex;
+    flex-direction: column; /* 一列布局 */
+    gap: 0.75rem; /* 合适的间距 */
+    width: 100%;
+    align-items: center; /* 居中对齐 */
+    justify-content: center; /* 内容居中 */
+  }
+  
+  .category-row.first-row,
+  .category-row.second-row {
+    display: flex;
+    flex-direction: column; /* 一列布局 */
+    gap: 0.75rem; /* 合适的间距 */
+    width: 100%;
+    align-items: center; /* 居中对齐 */
+    justify-content: center; /* 内容居中 */
+  }
+  
+  .placeholder-tab {
+    display: none; /* 移动端不需要占位符 */
+  }
+  
+  .tab-btn-simple {
+    width: 100%; /* 宽度100% */
+    max-width: 18rem; /* 合适的最大宽度，与首页统一 */
+    min-height: 3.5rem; /* 合适的长方形高度 */
+    padding: 1rem; /* 合适的内边距 */
+    border-radius: 0.75rem; /* 圆角统一 */
+    font-size: 0.875rem; /* 适中字体大小 */
+    justify-content: center; /* 内容居中 */
+    text-align: center; /* 文字居中 */
+    margin: 0 auto; /* 居中对齐 */
+    display: flex;
+    align-items: center; /* 垂直居中 */
+  }
+  
+  .tab-icon {
+    font-size: 1.25rem; /* 适中图标大小 */
+    margin-right: 0.5rem; /* 图标与文字间距 */
+  }
+  
+  /* 筛选区域优化 */
+  .filter-section {
+    padding: 1rem; /* 合适的内边距 */
+    gap: 1rem; /* 合适的间距 */
+  }
+  
+  /* 页面标题优化 */
+  .page-title {
+    font-size: 1.5rem; /* 适中标题大小 */
+    line-height: 1.4;
+  }
+  
+  .page-subtitle {
+    font-size: 0.875rem; /* 适中描述大小 */
+    line-height: 1.6;
+  }
 }
 </style>
