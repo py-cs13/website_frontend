@@ -256,9 +256,6 @@ const sendMessage = async () => {
   // 添加用户消息
   addMessage('user', userMessage)
   
-  // 检查是否需要进入紧急模式
-  checkEmergencyMode(userMessage)
-  
   // 发送到后端分析（使用流式API）
   isLoading.value = true
   currentThinking.value = ''
@@ -283,6 +280,49 @@ const sendMessage = async () => {
 const sendMessageStream = async (userMessage) => {
   const babyId = props.currentBaby ? props.currentBaby.id : 1
   
+  // 构建对话历史（修复格式错误，确保每个轮次包含完整的用户和AI消息）
+  const conversationHistory = []
+  
+  // 遍历消息，将相邻的用户消息和AI消息配对
+  for (let i = 0; i < messages.length; i++) {
+    const currentMsg = messages[i]
+    
+    if (currentMsg.type === 'user') {
+      // 找到用户消息，查找下一个AI消息
+      const aiMsg = messages.slice(i + 1).find(msg => msg.type === 'ai')
+      
+      if (aiMsg) {
+        // 提取AI回复内容
+        const aiContent = aiMsg.personalizedAdvice || aiMsg.content || ''
+        
+        conversationHistory.push({
+          user: currentMsg.content || '',
+          assistant: aiContent
+        })
+        
+        // 跳过已配对的AI消息
+        i = messages.findIndex(msg => msg === aiMsg)
+      } else {
+        // 如果没有对应的AI回复，只添加用户消息
+        conversationHistory.push({
+          user: currentMsg.content || '',
+          assistant: ''
+        })
+      }
+    }
+  }
+  
+  // 只保留最近5轮对话
+  const recentHistory = conversationHistory.slice(-5)
+  
+  // 调试日志：打印对话历史信息
+  console.log('🔍 多轮对话调试信息:')
+  console.log('当前消息数量:', messages ? messages.length : 0)
+  console.log('过滤后的对话历史数量:', recentHistory.length)
+  console.log('对话历史内容:', recentHistory)
+  console.log('当前用户消息:', userMessage)
+  console.log('---')
+  
   try {
     // 使用fetch API发送POST请求（使用相对路径，通过Vite代理）
     const response = await fetch('/api/newborn-care/analyze-stream', {
@@ -293,7 +333,8 @@ const sendMessageStream = async (userMessage) => {
       credentials: 'include',
       body: JSON.stringify({
         baby_id: babyId,
-        symptom_description: userMessage
+        symptom_description: userMessage,
+        conversation_history: conversationHistory
       })
     })
     
@@ -414,9 +455,53 @@ const fallbackToTraditionalAPI = async (userMessage) => {
     // 设置分析状态
     analysisStatus.value = '正在使用备用分析方式...'
     
+    // 构建对话历史（修复格式错误，确保每个轮次包含完整的用户和AI消息）
+    const conversationHistory = []
+    
+    // 遍历消息，将相邻的用户消息和AI消息配对
+    for (let i = 0; i < messages.length; i++) {
+      const currentMsg = messages[i]
+      
+      if (currentMsg.type === 'user') {
+        // 找到用户消息，查找下一个AI消息
+        const aiMsg = messages.slice(i + 1).find(msg => msg.type === 'ai')
+        
+        if (aiMsg) {
+          // 提取AI回复内容
+          const aiContent = aiMsg.personalizedAdvice || aiMsg.content || ''
+          
+          conversationHistory.push({
+            user: currentMsg.content || '',
+            assistant: aiContent
+          })
+          
+          // 跳过已配对的AI消息
+          i = messages.findIndex(msg => msg === aiMsg)
+        } else {
+          // 如果没有对应的AI回复，只添加用户消息
+          conversationHistory.push({
+            user: currentMsg.content || '',
+            assistant: ''
+          })
+        }
+      }
+    }
+    
+    // 只保留最近5轮对话
+    const recentHistory = conversationHistory.slice(-5)
+    
+    // 调试日志：打印传统API的对话历史信息
+    console.log('🔍 传统API多轮对话调试信息:')
+    console.log('当前消息数量:', messages ? messages.length : 0)
+    console.log('过滤后的对话历史数量:', recentHistory.length)
+    console.log('对话历史内容:', recentHistory)
+    console.log('当前用户消息:', userMessage)
+    console.log('---')
+    
     const response = await api.post('/newborn-care/analyze', {
       baby_id: props.currentBaby ? props.currentBaby.id : 1,
-      symptom_description: userMessage
+      symptom_description: userMessage,
+      conversation_history: recentHistory
     })
     
     // 转换后端返回的数据格式为前端期望的格式
