@@ -53,46 +53,100 @@
                     </div>
                   </div>
 
-                  <!-- 风险等级标识 -->
-                  <div v-if="message.riskLevel" :class="['risk-badge', message.riskLevel]">
-                    <span class="risk-icon">{{ getRiskIcon(message.riskLevel) }}</span>
-                    <span class="risk-text">{{ getRiskText(message.riskLevel) }}</span>
+                  <!-- 问候语回复 - 简洁友好 -->
+                  <div v-if="message.isGreeting" class="greeting-message">
+                    <div class="greeting-content">
+                      <p v-html="formatBoldText(message.personalizedAdvice)"></p>
+                    </div>
                   </div>
 
-                  <!-- 立即行动步骤 -->
-                  <div v-if="message.immediateActions && message.immediateActions.length" class="action-steps">
-                    <h5>立即行动：</h5>
-                    <ol>
-                      <li v-for="(action, actionIndex) in message.immediateActions" :key="actionIndex">
-                        {{ action }}
-                      </li>
-                    </ol>
+                  <!-- 紧急情况回复 - 突出安全处理 -->
+                  <div v-else-if="message.isEmergency" class="emergency-message">
+                    <!-- 风险等级标识 -->
+                    <div v-if="message.riskLevel" :class="['risk-badge', message.riskLevel]">
+                      <span class="risk-icon">{{ getRiskIcon(message.riskLevel) }}</span>
+                      <span class="risk-text">{{ getRiskText(message.riskLevel) }}</span>
+                    </div>
+
+                    <!-- 立即行动步骤 -->
+                    <div v-if="message.immediateActions && message.immediateActions.length" class="action-steps">
+                      <h5>立即行动：</h5>
+                      <ol>
+                        <li v-for="(action, actionIndex) in message.immediateActions" :key="actionIndex">
+                          {{ action }}
+                        </li>
+                      </ol>
+                    </div>
+
+                    <!-- 个性化建议 -->
+                    <div v-if="message.personalizedAdvice" class="personalized-advice">
+                      <h5>专业建议：</h5>
+                      <p v-html="formatBoldText(message.personalizedAdvice)"></p>
+                    </div>
+
+                    <!-- 就医时机 -->
+                    <div v-if="message.whenToSeekHelp && message.whenToSeekHelp.length" class="seek-help">
+                      <h5>何时需要就医：</h5>
+                      <ul>
+                        <li v-for="(condition, helpIndex) in message.whenToSeekHelp" :key="helpIndex">
+                          {{ condition }}
+                        </li>
+                      </ul>
+                    </div>
                   </div>
 
-                  <!-- 个性化建议 -->
-                  <div v-if="message.personalizedAdvice" class="personalized-advice">
-                    <h5>专业建议：</h5>
-                    <p v-html="formatBoldText(message.personalizedAdvice)"></p>
+                  <!-- 一般育儿问题回复 - 专业详细 -->
+                  <div v-else-if="message.isGeneralQuestion" class="general-question-message">
+                    <!-- 个性化建议 -->
+                    <div v-if="message.personalizedAdvice" class="personalized-advice">
+                      <h5>专业建议：</h5>
+                      <p v-html="formatBoldText(message.personalizedAdvice)"></p>
+                    </div>
+
+                    <!-- 就医时机（仅在必要时显示） -->
+                    <div v-if="message.whenToSeekHelp && message.whenToSeekHelp.length" class="seek-help">
+                      <h5>何时需要就医：</h5>
+                      <ul>
+                        <li v-for="(condition, helpIndex) in message.whenToSeekHelp" :key="helpIndex">
+                          {{ condition }}
+                        </li>
+                      </ul>
+                    </div>
                   </div>
 
-                  <!-- 历史上下文 -->
-                  <div v-if="message.historicalContext" class="historical-context">
-                    <p class="context-tip">📊 {{ message.historicalContext }}</p>
-                  </div>
+                  <!-- 症状咨询回复 - 全面分析 -->
+                  <div v-else class="symptom-consultation-message">
+                    <!-- 风险等级标识 -->
+                    <div v-if="message.riskLevel" :class="['risk-badge', message.riskLevel]">
+                      <span class="risk-icon">{{ getRiskIcon(message.riskLevel) }}</span>
+                      <span class="risk-text">{{ getRiskText(message.riskLevel) }}</span>
+                    </div>
 
-                  <!-- 安全警告 -->
-                  <div v-if="message.safetyWarning" class="safety-warning">
-                    <p>{{ message.safetyWarning }}</p>
-                  </div>
+                    <!-- 个性化建议 -->
+                    <div v-if="message.personalizedAdvice" class="personalized-advice">
+                      <h5>专业建议：</h5>
+                      <p v-html="formatBoldText(message.personalizedAdvice)"></p>
+                    </div>
 
-                  <!-- 就医时机 -->
-                  <div v-if="message.whenToSeekHelp && message.whenToSeekHelp.length" class="seek-help">
-                    <h5>何时需要就医：</h5>
-                    <ul>
-                      <li v-for="(condition, helpIndex) in message.whenToSeekHelp" :key="helpIndex">
-                        {{ condition }}
-                      </li>
-                    </ul>
+                    <!-- 历史上下文 -->
+                    <div v-if="message.historicalContext" class="historical-context">
+                      <p class="context-tip">📊 {{ message.historicalContext }}</p>
+                    </div>
+
+                    <!-- 安全警告 -->
+                    <div v-if="message.safetyWarning" class="safety-warning">
+                      <p>{{ message.safetyWarning }}</p>
+                    </div>
+
+                    <!-- 就医时机（仅在必要时显示） -->
+                    <div v-if="message.whenToSeekHelp && message.whenToSeekHelp.length" class="seek-help">
+                      <h5>何时需要就医：</h5>
+                      <ul>
+                        <li v-for="(condition, helpIndex) in message.whenToSeekHelp" :key="helpIndex">
+                          {{ condition }}
+                        </li>
+                      </ul>
+                    </div>
                   </div>
                 </template>
 
@@ -237,6 +291,31 @@ const getRiskText = (level) => {
     '绿色': '正常现象' 
   }
   return texts[level] || '待评估'
+}
+
+// 智能识别用户意图
+const isGreetingMessage = (message) => {
+  const greetingKeywords = ['你好', '您好', 'hello', 'hi', '在吗', '请问', '医生好', 
+                          '大夫好', '老师好', '早上好', '下午好', '晚上好']
+  return greetingKeywords.some(keyword => message.includes(keyword))
+}
+
+const isEmergencyMessage = (message) => {
+  const emergencyKeywords = ['发烧', '高烧', '抽搐', '惊厥', '呼吸困难', '窒息', '昏迷', 
+                           '严重呕吐', '便血', '吐血', '严重腹泻', '脱水', '过敏', 
+                           '休克', '外伤', '烫伤', '中毒', '误食']
+  return emergencyKeywords.some(keyword => message.includes(keyword))
+}
+
+const isGeneralQuestionMessage = (message) => {
+  const generalKeywords = ['怎么办', '怎么处理', '如何', '什么原因', '为什么', '正常吗', 
+                         '好不好', '可以吗', '需要吗', '建议', '推荐', '指导']
+  const emergencyKeywords = ['发烧', '高烧', '抽搐', '惊厥', '呼吸困难']
+  
+  const hasGeneral = generalKeywords.some(keyword => message.includes(keyword))
+  const hasEmergency = emergencyKeywords.some(keyword => message.includes(keyword))
+  
+  return hasGeneral && !hasEmergency
 }
 
 // 切换思考过程显示/隐藏
@@ -384,17 +463,49 @@ const sendMessageStream = async (userMessage) => {
                 }
               })
             } else if (data.type === 'result') {
-              // 保存最终结果
+              // 智能解析AI回复内容
+              const aiContent = data.data.personalized_advice || ''
+              
+              // 使用后端返回的风险等级作为主要依据
+              const riskLevel = data.data.risk_level || '绿色'
+              
+              // 前端意图识别（与后端保持一致）
+              const isEmergency = isEmergencyMessage(userMessage)
+              const isGeneralQuestion = isGeneralQuestionMessage(userMessage)
+              const isGreeting = isGreetingMessage(userMessage)
+              
+              // 优先级处理：紧急情况 > 一般问题 > 问候语（与后端保持一致）
+              let finalIsEmergency = isEmergency
+              let finalIsGeneralQuestion = isGeneralQuestion
+              let finalIsGreeting = isGreeting
+              
+              if (isEmergency) {
+                // 紧急情况优先级最高
+                finalIsGreeting = false
+                finalIsGeneralQuestion = false
+                console.log('🚨 前端检测到紧急情况，优先级最高')
+              } else if (isGeneralQuestion) {
+                // 一般问题优先级中等
+                finalIsGreeting = false
+                console.log('📝 前端检测到一般问题，忽略问候语')
+              }
+              
+              console.log(`🎯 前端意图识别结果 - 紧急: ${finalIsEmergency}, 一般问题: ${finalIsGeneralQuestion}, 问候语: ${finalIsGreeting}`)
+              
+              // 根据用户意图智能构建回复结构
               finalResult = {
-                riskLevel: data.data.risk_level || '绿色',
-                immediateActions: data.data.immediate_actions || [],
-                personalizedAdvice: data.data.personalized_advice || '',
-                whenToSeekHelp: data.data.when_to_seek_help || [],
+                riskLevel: riskLevel,
+                immediateActions: finalIsEmergency ? (data.data.immediate_actions || []) : [],
+                personalizedAdvice: aiContent,
+                whenToSeekHelp: finalIsEmergency || finalIsGeneralQuestion ? (data.data.when_to_seek_help || []) : [],
                 historicalContext: data.data.historical_context || '',
                 safetyWarning: data.data.safety_warning || '',
                 responseTime: data.data.response_time || 0,
                 thinkingProcess: thinkingProcess,
-                showThinking: true  // 默认展开思考过程
+                showThinking: false,  // 默认收起思考过程，避免干扰
+                isGreeting: finalIsGreeting,
+                isEmergency: finalIsEmergency,
+                isGeneralQuestion: finalIsGeneralQuestion
               }
               
               // 添加AI回复
@@ -731,6 +842,11 @@ onUnmounted(() => {
   background: white;
   border: 1px solid #e9ecef;
   border-bottom-left-radius: 4px;
+  /* 优化字体和间距 */
+  font-size: 15px;
+  line-height: 1.6;
+  letter-spacing: 0.2px;
+  color: #2d3748;
 }
 
 .ai-avatar {
@@ -854,70 +970,144 @@ onUnmounted(() => {
   margin-right: 4px;
 }
 
-/* 内容区块样式 */
+/* 内容区块样式 - 优化为更自然、舒适的显示效果 */
 .action-steps,
 .personalized-advice,
 .historical-context,
 .safety-warning,
 .seek-help {
-  margin: 10px 0;
+  margin: 12px 0;
 }
 
-.action-steps h5,
-.personalized-advice h5,
+/* 问候语回复样式 */
+.greeting-message {
+  margin: 12px 0;
+}
+
+.greeting-content {
+  background: #f0f9ff;
+  border-left: 4px solid #3b82f6;
+  border-radius: 8px;
+  padding: 12px 16px;
+}
+
+.greeting-content p {
+  margin: 0;
+  line-height: 1.6;
+  font-size: 14px;
+  color: #2d3748;
+  letter-spacing: 0.2px;
+}
+
+/* 紧急情况回复样式 */
+.emergency-message {
+  margin: 12px 0;
+}
+
+/* 一般育儿问题回复样式 */
+.general-question-message {
+  margin: 12px 0;
+}
+
+/* 症状咨询回复样式 */
+.symptom-consultation-message {
+  margin: 12px 0;
+}
+
+/* 立即行动 - 突出显示 */
+.action-steps {
+  background: #fff8f8;
+  border-left: 4px solid #ff4d4f;
+  border-radius: 8px;
+  padding: 12px 16px;
+}
+
+.action-steps h5 {
+  margin: 0 0 8px 0;
+  color: #d63031;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+/* 专业建议 - 自然流畅 */
+.personalized-advice {
+  background: #f8f9fa;
+  border-radius: 8px;
+  padding: 12px 16px;
+}
+
+.personalized-advice h5 {
+  margin: 0 0 8px 0;
+  color: #2d3748;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+/* 就医时机 - 仅在必要时显示 */
+.seek-help {
+  background: #fff3cd;
+  border-left: 4px solid #f39c12;
+  border-radius: 8px;
+  padding: 12px 16px;
+}
+
 .seek-help h5 {
-  margin: 0 0 6px 0;
-  color: #495057;
-  font-size: 13px;
+  margin: 0 0 8px 0;
+  color: #e67e22;
+  font-size: 15px;
   font-weight: 600;
 }
 
 .action-steps ol,
 .seek-help ul {
   margin: 0;
-  padding-left: 18px;
+  padding-left: 20px;
 }
 
 .action-steps li,
 .seek-help li {
-  margin-bottom: 3px;
-  font-size: 13px;
-  line-height: 1.4;
-  font-weight: 600;
+  margin-bottom: 6px;
+  font-size: 14px;
+  line-height: 1.5;
+  color: #2d3748;
 }
 
 .personalized-advice p {
   margin: 0;
-  line-height: 1.5;
-  font-size: 13px;
+  line-height: 1.6;
+  font-size: 14px;
   white-space: pre-wrap;
+  color: #2d3748;
+  letter-spacing: 0.2px;
 }
 
 .personalized-advice p strong {
-  font-weight: 700;
-  color: #333;
+  font-weight: 600;
+  color: #1a1a1a;
 }
 
 .context-tip {
-  font-size: 12px;
+  font-size: 13px;
   color: #6c757d;
   font-style: italic;
   margin: 0;
+  line-height: 1.5;
 }
 
 .safety-warning {
   background: #fff3cd;
   border: 1px solid #ffeaa7;
   border-radius: 8px;
-  padding: 8px 12px;
-  margin: 10px 0;
+  padding: 12px 16px;
+  margin: 12px 0;
 }
 
 .safety-warning p {
   margin: 0;
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 600;
   color: #856404;
+  line-height: 1.5;
 }
 
 .message-time {
