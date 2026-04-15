@@ -55,8 +55,7 @@
           <div class="menu-wrapper">
             <button class="menu-btn" @click="toggleMenu">
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path v-if="!showMobileMenu && !showDesktopMenu" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-                <path v-else stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
               </svg>
             </button>
             
@@ -85,13 +84,7 @@
                   </svg>
                   关于我们
                 </router-link></li>
-                <li><a href="#" @click.prevent="showDesktopMenu = false; showAffiliateAlert">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="menu-icon">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
-                  </svg>
-                  联盟合作
-                </a></li>
-                <li><a href="#" @click.prevent="showDesktopMenu = false; showContactAlert">
+                <li><a href="#contact-section" @click.prevent="showDesktopMenu = false; scrollToContact()">
                   <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="menu-icon">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
                   </svg>
@@ -111,7 +104,7 @@
             <li><router-link to="/agents" active-class="active" @click="showMobileMenu = false">智能体</router-link></li>
             <li><router-link to="/products" active-class="active" @click="showMobileMenu = false">精选好物</router-link></li>
             <li><router-link to="/about" active-class="active" @click="showMobileMenu = false">关于我们</router-link></li>
-            <li><a href="#" @click.prevent="showMobileMenu = false; showAffiliateAlert">联盟合作</a></li>
+            <li><a href="#contact-section" @click.prevent="showMobileMenu = false; scrollToContact()">联系我们</a></li>
             <li v-if="userStore.isAuthenticated">
               <router-link to="/user" @click="showMobileMenu = false" class="user-info">
                 <span class="user-name" :title="userStore.user?.username">{{ truncatedUsername }}</span>
@@ -131,7 +124,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useAuthStore } from '../stores'
 import Swal from 'sweetalert2'
 import { useRouter } from 'vue-router'
@@ -143,13 +136,13 @@ const showSearch = ref(false)
 const searchQuery = ref('')
 const router = useRouter()
 
-// 计算属性：截断用户名显示（最多5个字符）
+// 计算属性：截断用户名显示（最多10个字符）
 const truncatedUsername = computed(() => {
   const username = userStore.user?.username || '用户'
-  if (username.length <= 5) {
+  if (username.length <= 10) {
     return username
   }
-  return username.substring(0, 5) + '...'
+  return username.substring(0, 10) + '...'
 })
 
 // 切换菜单（根据屏幕尺寸判断显示哪个菜单）
@@ -199,15 +192,54 @@ const showAffiliateAlert = () => {
   })
 }
 
-// 显示联系我们弹窗
-const showContactAlert = () => {
-  Swal.fire({
-    title: '联系我们',
-    html: '<p>邮箱：cl06221227@gmail.com</p><p>微信：muyingquzhinan</p>',
-    icon: 'info',
-    confirmButtonText: '确定'
+// 滚动到页面底部联系区域
+const scrollToContact = () => {
+  // 关闭移动端菜单
+  showMobileMenu.value = false
+  showDesktopMenu.value = false
+  
+  // 直接滚动到页面底部
+  window.scrollTo({
+    top: document.body.scrollHeight,
+    behavior: 'smooth'
   })
 }
+
+// 点击菜单外区域关闭菜单
+const handleClickOutside = (event) => {
+  // 使用refs来获取菜单元素，确保准确性
+  const menuBtn = document.querySelector('.menu-btn')
+  const menuWrapper = document.querySelector('.menu-wrapper')
+  const desktopMenu = document.querySelector('.desktop-menu')
+  const mobileMenu = document.querySelector('.nav-mobile')
+  
+  // 检查点击的是否是菜单按钮本身
+  const isMenuButton = menuBtn && menuBtn.contains(event.target)
+  
+  // 检查点击的是否是菜单区域
+  const isMenuArea = (menuWrapper && menuWrapper.contains(event.target)) ||
+                    (desktopMenu && desktopMenu.contains(event.target)) ||
+                    (mobileMenu && mobileMenu.contains(event.target))
+  
+  // 如果点击的不是菜单按钮也不是菜单区域，则关闭菜单
+  if (!isMenuButton && !isMenuArea) {
+    showDesktopMenu.value = false
+    showMobileMenu.value = false
+  }
+}
+
+// 组件挂载时添加点击事件监听
+onMounted(() => {
+  // 延迟添加事件监听，确保DOM已经渲染完成
+  setTimeout(() => {
+    document.addEventListener('click', handleClickOutside)
+  }, 100)
+})
+
+// 组件卸载时移除点击事件监听
+onUnmounted(() => {
+  document.removeEventListener('click', handleClickOutside)
+})
 </script>
 
 <style scoped>
@@ -361,12 +393,13 @@ const showContactAlert = () => {
   font-size: 1.25rem;
   cursor: pointer;
   color: var(--text-secondary);
-  padding: 0.625rem;
+  padding: 0.5rem;
   border-radius: 50%;
-  transition: all 0.3s ease;
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
 }
 
 .search-container {
@@ -480,13 +513,24 @@ const showContactAlert = () => {
 .search-submit-btn:hover {
   background-color: var(--bg-accent);
   color: var(--primary-color);
-  transform: scale(1.05);
 }
 
-.search-btn:hover, .menu-btn:hover {
-  background-color: var(--bg-accent);
-  color: var(--primary-color);
-  transform: translateY(-0.125rem);
+/* 彻底移除汉堡菜单的所有效果 */
+.search-btn, .menu-btn {
+  transition: none !important;
+  outline: none !important;
+}
+
+.search-btn:hover, .menu-btn:hover,
+.search-btn:active, .menu-btn:active,
+.search-btn:focus, .menu-btn:focus {
+  /* 彻底移除所有效果 */
+  background-color: transparent !important;
+  color: var(--text-secondary) !important;
+  transform: none !important;
+  box-shadow: none !important;
+  border: none !important;
+  outline: none !important;
 }
 
 .login-btn, .register-btn {
@@ -525,27 +569,27 @@ const showContactAlert = () => {
 .user-profile {
   display: flex;
   align-items: center;
-  gap: 0.625rem;
+  justify-content: center;
   color: var(--text-primary);
   font-weight: 500;
-  padding: 0.5rem 1rem;
+  padding: 0.25rem 0.5rem;
   border-radius: 1.5625rem;
   background-color: var(--bg-secondary);
+  width: 7rem; /* 固定宽度，支持10个英文字符 */
+  height: 2.2rem;
+  box-sizing: border-box;
 }
 
 .user-name {
   color: var(--primary-color);
   font-weight: 700;
-  font-size: 1rem;
-  padding: 0.25rem 0.5rem;
-  background-color: var(--bg-accent);
-  border-radius: 0.75rem;
-  /* 新增：用户名长度限制 */
-  max-width: 5.3125rem;
+  font-size: 0.9rem;
+  background-color: transparent;
+  width: 100%;
+  text-align: center;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  cursor: default;
 }
 
 /* 移动端导航 */
@@ -622,7 +666,7 @@ const showContactAlert = () => {
   }
   
   .search-btn, .menu-btn {
-    padding: 0.5rem;
+    padding: 0;
     font-size: 1.125rem;
   }
   
@@ -635,9 +679,14 @@ const showContactAlert = () => {
   }
   
   /* 移动端用户名长度限制 */
+  .user-profile {
+    padding: 0.2rem 0.4rem;
+    width: 5.5rem; /* 移动端固定宽度 */
+    height: 2rem;
+  }
+  
   .user-name {
-    max-width: 4.375rem;
-    font-size: 0.875rem;
+    font-size: 0.8rem;
   }
 }
 
@@ -664,7 +713,7 @@ const showContactAlert = () => {
   }
   
   .search-btn, .menu-btn {
-    padding: 0.375rem;
+    padding: 0;
     font-size: 1rem;
   }
   

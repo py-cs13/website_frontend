@@ -29,6 +29,9 @@
           </span>
 
           <span class="meta-item">
+            <i class="icon">👁️</i> {{ formatNumber(article.view_count) }}
+          </span>
+          <span class="meta-item">
             <i class="icon">❤️</i> {{ formatNumber(article.likes) }}
           </span>
           <span class="meta-item">

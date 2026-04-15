@@ -28,7 +28,7 @@
 
     
     <!-- 联系我们 -->
-    <section class="about-section">
+    <section class="about-section" id="contact-section">
       <h2 class="section-title">联系我们</h2>
       <div class="contact-info">
         <div class="contact-item">

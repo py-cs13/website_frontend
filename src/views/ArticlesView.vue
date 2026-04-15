@@ -108,6 +108,9 @@
             </span>
 
             <span class="meta-item">
+              <i class="icon">👁️</i> {{ article.view_count || 0 }}
+            </span>
+            <span class="meta-item">
               <i class="icon">❤️</i> {{ article.likes || 0 }}
             </span>
             <span class="meta-item">

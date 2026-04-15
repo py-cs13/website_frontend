@@ -69,6 +69,13 @@ const routes = [
     name: 'newborn-care-agent',
     component: () => import('../views/NewbornCareAgentView.vue')
   },
+  // 数据可视化管理后台
+  {
+    path: '/analytics',
+    name: 'analytics-dashboard',
+    component: () => import('../views/AnalyticsDashboard.vue'),
+    meta: { requiresAdmin: true }
+  },
   // 管理后台路由
   {
     path: '/admin',
