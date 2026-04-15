@@ -132,7 +132,7 @@ export default {
     const fetchDashboardData = async () => {
       try {
         console.log('🔄 开始调用仪表盘API...')
-        const response = await fetch('http://localhost:8000/api/analytics/dashboard', {
+        const response = await fetch('/api/analytics/dashboard', {
           headers: {
             'Authorization': `Bearer ${authStore.token}`,
             'Content-Type': 'application/json'
@@ -167,7 +167,7 @@ export default {
     const fetchUserGrowth = async () => {
       try {
         console.log('🔄 开始调用用户增长API...')
-        const response = await fetch('http://localhost:8000/api/analytics/user-growth?days=7', {
+        const response = await fetch('/api/analytics/user-growth?days=7', {
           headers: {
             'Authorization': `Bearer ${authStore.token}`,
             'Content-Type': 'application/json'
@@ -198,7 +198,7 @@ export default {
     // 获取内容表现数据
     const fetchContentPerformance = async () => {
       try {
-        const response = await fetch('http://localhost:8000/api/analytics/content-performance?limit=10&sort_by=views', {
+        const response = await fetch('/api/analytics/content-performance?limit=10&sort_by=views', {
           headers: {
             'Authorization': `Bearer ${authStore.token}`,
             'Content-Type': 'application/json'
@@ -217,7 +217,7 @@ export default {
     // 获取用户行为数据
     const fetchUserBehavior = async () => {
       try {
-        const response = await fetch('http://localhost:8000/api/analytics/user-behavior', {
+        const response = await fetch('/api/analytics/user-behavior', {
           headers: {
             'Authorization': `Bearer ${authStore.token}`,
             'Content-Type': 'application/json'
