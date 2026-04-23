@@ -747,8 +747,17 @@ onUnmounted(() => {
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 40px);
-  max-height: 950px;
+  flex: 1;
+  min-height: 600px;
+}
+
+/* 输入区域 - 固定在底部 */
+.input-container {
+  border-top: 1px solid #e9ecef;
+  padding: 12px 16px;
+  background: white;
+  flex-shrink: 0;
+  padding-bottom: env(safe-area-inset-bottom, 16px);
 }
 
 /* 当前宝宝信息样式 */
@@ -1161,6 +1170,7 @@ onUnmounted(() => {
   padding: 12px 16px;
   background: white;
   flex-shrink: 0;
+  padding-bottom: max(16px, env(safe-area-inset-bottom, 16px));
 }
 
 .quick-symptoms {
@@ -1179,9 +1189,26 @@ onUnmounted(() => {
 
 .quick-symptoms-tags {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   gap: 8px;
   justify-content: flex-start;
+  overflow-x: auto;
+  padding-bottom: 4px;
+  scrollbar-width: thin;
+}
+
+.quick-symptoms-tags::-webkit-scrollbar {
+  height: 4px;
+}
+
+.quick-symptoms-tags::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 2px;
+}
+
+.quick-symptoms-tags::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 2px;
 }
 
 .quick-symptom-btn {
@@ -1196,6 +1223,7 @@ onUnmounted(() => {
   transition: all 0.2s;
   box-shadow: 0 1px 3px rgba(0,0,0,0.1);
   white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .quick-symptom-btn:hover {
@@ -1256,18 +1284,50 @@ onUnmounted(() => {
     height: 100vh;
     max-height: none;
     margin: 0;
+    min-height: 600px;
   }
   
   .message-bubble {
     max-width: 85%;
   }
   
+  .quick-symptoms {
+    gap: 4px;
+    margin-bottom: 6px;
+  }
+  
+  .quick-label {
+    font-size: 12px;
+  }
+  
+  .quick-symptoms-tags {
+    gap: 4px;
+  }
+  
+  .quick-symptom-btn {
+    padding: 4px 8px;
+    font-size: 10px;
+  }
+  
   .input-group {
     flex-direction: column;
   }
   
+  .input-group textarea {
+    padding: 8px 10px;
+    min-height: 40px;
+    font-size: 13px;
+  }
+  
   .send-btn {
     width: 100%;
+    padding: 8px 16px;
+    font-size: 13px;
+  }
+  
+  .input-container {
+    padding: 8px 12px;
+    padding-bottom: max(16px, env(safe-area-inset-bottom, 16px));
   }
 }
 </style>

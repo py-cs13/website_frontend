@@ -595,7 +595,7 @@ onMounted(() => {
 
 <style scoped>
 .newborn-care-agent-view {
-  min-height: 100vh;
+  flex: 1;
   background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
   display: flex;
   flex-direction: column;
@@ -706,7 +706,7 @@ onMounted(() => {
   border-right: 1px solid #e9ecef;
   padding: 24px;
   overflow-y: auto;
-  height: calc(100vh - 120px);
+  min-height: 500px;
 }
 
 .sidebar-section {
@@ -777,8 +777,10 @@ onMounted(() => {
 .chat-area {
   background: #f8f9fa;
   padding: 0;
-  height: calc(100vh - 120px);
+  min-height: 500px;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
 /* 安全提示 */
@@ -1349,7 +1351,7 @@ onMounted(() => {
   }
   
   .chat-area {
-    height: calc(100vh - 200px);
+    min-height: 400px;
   }
   
   .safety-content {

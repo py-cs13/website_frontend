@@ -179,6 +179,9 @@ html, body {
   transition: all 0.3s ease;
   box-sizing: border-box;
   /* 移除可能影响侧边栏点击的溢出设置 */
+  min-height: 1200px;
+  display: flex;
+  flex-direction: column;
 }
 
 .content-view:hover {
