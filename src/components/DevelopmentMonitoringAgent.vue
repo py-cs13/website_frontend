@@ -2651,11 +2651,49 @@ const addMessage = (type, content, analysisResult = {}) => {
   })
 }
 
-// 格式化加粗文本
+// 格式化文本，处理Markdown格式
 const formatBoldText = (text) => {
   if (!text) return ''
-  // 将 **内容** 转换为 <strong>内容</strong>
-  return text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+  
+  let html = text
+  
+  // 处理标题：### 标题 -> <h3>标题</h3>
+  html = html.replace(/^###\s+(.*$)/gm, '<h3 class="md-title">$1</h3>')
+  
+  // 处理二级标题：## 标题 -> <h2>标题</h2>
+  html = html.replace(/^##\s+(.*$)/gm, '<h2 class="md-title">$2</h2>')
+  
+  // 处理加粗：**内容** -> <strong>内容</strong>
+  html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+  
+  // 处理列表项：- 项 -> <li>项</li>
+  html = html.replace(/^-\s+(.*$)/gm, '<li>$1</li>')
+  
+  // 将连续的<li>标签包裹在<ul>中
+  html = html.replace(/(<li>.*?<\/li>)+/gs, '<ul class="md-list">$&</ul>')
+  
+  // 处理段落：智能识别段落边界
+  // 先处理空行分隔的段落
+  let parts = html.split(/\n\n+/)
+  
+  // 如果只有一个大块，尝试按其他规则分割
+  if (parts.length === 1 && html.length > 100) {
+    // 尝试按句号+换行分割（中文段落常见模式）
+    const withLineBreaks = html.replace(/([。！？])\n/g, '$1\n\n')
+    parts = withLineBreaks.split(/\n\n+/)
+  }
+  
+  const processedParts = parts.map(part => {
+    const trimmed = part.trim()
+    // 如果已经是标题、列表或已有标签，保持原样
+    if (trimmed.match(/^<(h[1-6]|ul|li)/)) {
+      return trimmed
+    }
+    // 否则包裹在<p>标签中
+    return `<p>${trimmed}</p>`
+  })
+  
+  return processedParts.join('\n')
 }
 
 // 选择快速问题
@@ -4084,6 +4122,53 @@ onUnmounted(() => {
   margin: 0;
   color: #337ab7;
   font-size: 13px;
+}
+
+/* Markdown样式 */
+.md-title {
+  font-size: 1.1em;
+  font-weight: 600;
+  color: #333;
+  margin: 16px 0 12px 0;
+  padding-bottom: 8px;
+  border-bottom: 2px solid #FFE4EC;
+}
+
+.md-list {
+  margin: 12px 0;
+  padding-left: 20px;
+  list-style: none;
+}
+
+.md-list li {
+  position: relative;
+  padding-left: 20px;
+  margin-bottom: 8px;
+  line-height: 1.6;
+  color: #444;
+}
+
+.md-list li::before {
+  content: '•';
+  position: absolute;
+  left: 0;
+  color: #FF6B9D;
+  font-weight: bold;
+}
+
+.message-bubble p {
+  margin: 0 0 12px 0;
+  line-height: 1.7;
+  color: #444;
+}
+
+.message-bubble p:last-child {
+  margin-bottom: 0;
+}
+
+.message-bubble strong {
+  color: #FF6B9D;
+  font-weight: 600;
 }
 
 .risk-indicator {
