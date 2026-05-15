@@ -67,7 +67,7 @@
           :key="content.content_id"
           class="ranking-item"
         >
-          <div class="rank">#{{ index + 1 }}</div>
+          <div class="rank">#{{ (currentPage - 1) * pageSize + index + 1 }}</div>
           <div class="content-info">
             <div class="content-title">{{ content.title }}</div>
             <div class="content-stats">
@@ -77,6 +77,20 @@
             </div>
           </div>
         </div>
+      </div>
+      
+      <!-- 分页组件 -->
+      <div v-if="total > pageSize" class="pagination">
+        <button @click="prevPage" :disabled="currentPage === 1" class="page-btn">
+          ← 上一页
+        </button>
+        <div class="page-info">
+          <span>第 {{ currentPage }} / {{ totalPages }} 页</span>
+          <span class="total-count">共 {{ total }} 条</span>
+        </div>
+        <button @click="nextPage" :disabled="currentPage >= totalPages" class="page-btn">
+          下一页 →
+        </button>
       </div>
     </div>
 
@@ -195,10 +209,16 @@ export default {
       }
     }
 
+    // 分页相关状态
+    const currentPage = ref(1)
+    const pageSize = ref(5)
+    const total = ref(0)
+    const totalPages = ref(0)
+
     // 获取内容表现数据
-    const fetchContentPerformance = async () => {
+    const fetchContentPerformance = async (page = 1) => {
       try {
-        const response = await fetch('/api/analytics/content-performance?limit=10&sort_by=views', {
+        const response = await fetch(`/api/analytics/content-performance?page=${page}&page_size=${pageSize.value}&sort_by=views`, {
           headers: {
             'Authorization': `Bearer ${authStore.token}`,
             'Content-Type': 'application/json'
@@ -208,9 +228,33 @@ export default {
         if (response.ok) {
           const data = await response.json()
           contentPerformance.value = data.data?.content_performance || []
+          total.value = data.data?.total || 0
+          totalPages.value = data.data?.total_pages || 0
+          currentPage.value = page
         }
       } catch (error) {
         console.error('获取内容表现数据失败:', error)
+      }
+    }
+
+    // 上一页
+    const prevPage = () => {
+      if (currentPage.value > 1) {
+        fetchContentPerformance(currentPage.value - 1)
+      }
+    }
+
+    // 下一页
+    const nextPage = () => {
+      if (currentPage.value < totalPages.value) {
+        fetchContentPerformance(currentPage.value + 1)
+      }
+    }
+
+    // 跳转到指定页
+    const goToPage = (page) => {
+      if (page >= 1 && page <= totalPages.value) {
+        fetchContentPerformance(page)
       }
     }
 
@@ -289,7 +333,15 @@ export default {
       refreshData,
       getEventTypeLabel,
       maxGrowthValue: computedMaxGrowthValue,
-      maxBehaviorValue: computedMaxBehaviorValue
+      maxBehaviorValue: computedMaxBehaviorValue,
+      // 分页相关
+      currentPage,
+      pageSize,
+      total,
+      totalPages,
+      prevPage,
+      nextPage,
+      goToPage
     }
   }
 }
@@ -441,11 +493,54 @@ export default {
 }
 
 .stat {
-  font-size: 12px;
-  color: #7f8c8d;
-}
+    font-size: 12px;
+    color: #7f8c8d;
+  }
 
-.user-behavior {
+  .pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid #eee;
+  }
+
+  .page-btn {
+    background: #3498db;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.3s ease;
+  }
+
+  .page-btn:hover:not(:disabled) {
+    background: #2980b9;
+  }
+
+  .page-btn:disabled {
+    background: #bdc3c7;
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+
+  .page-info {
+    display: flex;
+    gap: 15px;
+    font-size: 14px;
+    color: #7f8c8d;
+  }
+
+  .total-count {
+    color: #2c3e50;
+    font-weight: bold;
+  }
+
+  .user-behavior {
   background: white;
   padding: 20px;
   border-radius: 10px;

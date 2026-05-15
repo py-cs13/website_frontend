@@ -23,14 +23,14 @@
             padding: 10px 20px;
             margin: 10px 5px;
             cursor: pointer;
-            background-color: #4CAF50;
+            background-color: #FF6B9D;
             color: white;
             border: none;
             border-radius: 4px;
             font-size: 16px;
         }
         button:hover {
-            background-color: #45a049;
+            background-color: #ff4081;
         }
         .result {
             margin-top: 15px;
@@ -44,6 +44,84 @@
         }
         .success {
             color: green;
+        }
+        
+        /* Toast样式 */
+        .toast-container {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 9999;
+        }
+        
+        .toast {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px 24px;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 500;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+            min-width: 240px;
+            max-width: 400px;
+            opacity: 0;
+            transform: scale(0.9);
+            animation: toastFadeIn 0.3s ease forwards;
+        }
+        
+        .toast-icon {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+        
+        .toast-message {
+            flex: 1;
+            line-height: 1.5;
+        }
+        
+        .toast-success {
+            background: linear-gradient(135deg, #4CAF50 0%, #66BB6A 100%);
+            color: white;
+        }
+        
+        .toast-success .toast-icon {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .toast-error {
+            background: linear-gradient(135deg, #F44336 0%, #EF5350 100%);
+            color: white;
+        }
+        
+        .toast-error .toast-icon {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .toast-info {
+            background: linear-gradient(135deg, #FF6B9D 0%, #FF8FA3 100%);
+            color: white;
+        }
+        
+        .toast-info .toast-icon {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        @keyframes toastFadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
         }
     </style>
 </head>
@@ -70,6 +148,61 @@
     </div>
 
     <script>
+        // Toast服务
+        const Toast = {
+            success(message) {
+                this.show(message, 'success');
+            },
+            error(message) {
+                this.show(message, 'error');
+            },
+            info(message) {
+                this.show(message, 'info');
+            },
+            show(message, type = 'info') {
+                // 移除之前的Toast
+                const existingToast = document.querySelector('.toast-container');
+                if (existingToast) {
+                    existingToast.remove();
+                }
+                
+                // 创建Toast容器
+                const container = document.createElement('div');
+                container.className = 'toast-container';
+                
+                // 创建Toast元素
+                const toast = document.createElement('div');
+                toast.className = `toast toast-${type}`;
+                
+                // 创建图标
+                const icon = document.createElement('div');
+                icon.className = 'toast-icon';
+                const iconText = document.createElement('span');
+                if (type === 'success') iconText.textContent = '✓';
+                else if (type === 'error') iconText.textContent = '✕';
+                else iconText.textContent = 'ℹ';
+                icon.appendChild(iconText);
+                
+                // 创建消息
+                const messageEl = document.createElement('div');
+                messageEl.className = 'toast-message';
+                messageEl.textContent = message;
+                
+                // 组装Toast
+                toast.appendChild(icon);
+                toast.appendChild(messageEl);
+                container.appendChild(toast);
+                document.body.appendChild(container);
+                
+                // 3秒后自动移除
+                setTimeout(() => {
+                    if (container.parentNode) {
+                        container.parentNode.removeChild(container);
+                    }
+                }, 3000);
+            }
+        };
+        
         // 创建axios实例
         const apiClient = axios.create({
             baseURL: 'http://localhost:5174/api',
@@ -144,14 +277,14 @@
             const toolkitId = document.getElementById('toolkitId').value;
             
             if (!toolkitId) {
-                alert('请输入工具包ID');
+                Toast.info('请输入工具包ID');
                 return;
             }
             
             try {
                 const token = localStorage.getItem('token');
                 if (!token) {
-                    alert('请先登录');
+                    Toast.info('请先登录');
                     return;
                 }
                 
@@ -177,10 +310,10 @@
                 window.URL.revokeObjectURL(url);
                 document.body.removeChild(link);
                 
-                alert('下载成功');
+                Toast.success('下载成功');
                 
             } catch (error) {
-                alert(`下载失败: ${error.response?.status || 500} - ${error.message}`);
+                Toast.error(`下载失败: ${error.response?.status || 500} - ${error.message}`);
                 console.error('下载错误:', error);
             }
         }

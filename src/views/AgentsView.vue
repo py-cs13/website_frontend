@@ -9,6 +9,7 @@
       <div class="agents-grid">
         <AgentCard />
         <NewbornCareAgentCard />
+        <DevelopmentMonitoringAgentCard />
       </div>
       
       <div class="coming-soon-section">
@@ -22,11 +23,7 @@
             <p>专业的产后恢复指导AI助手，为您提供科学的产后恢复方案</p>
           </div>
           
-          <div class="placeholder-card">
-            <div class="placeholder-icon">📊</div>
-            <h4>宝宝发育监测与答疑</h4>
-            <p>实时监测宝宝发育情况，解答育儿疑问</p>
-          </div>
+
           
           <div class="placeholder-card">
             <div class="placeholder-icon">🎓</div>
@@ -49,6 +46,7 @@
 import AgentCard from '../components/AgentCard.vue'
 import PostpartumAgentCard from '../components/PostpartumAgentCard.vue'
 import NewbornCareAgentCard from '../components/NewbornCareAgentCard.vue'
+import DevelopmentMonitoringAgentCard from '../components/DevelopmentMonitoringAgentCard.vue'
 </script>
 
 <style scoped>

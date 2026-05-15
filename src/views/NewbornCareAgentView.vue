@@ -247,6 +247,7 @@ import { ref, onMounted, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import NewbornCareAgent from '../components/NewbornCareAgent.vue'
 import { apiClient as api } from '../utils/api'
+import toast from '../utils/toast.js'
 
 const router = useRouter()
 
@@ -337,7 +338,7 @@ const deleteBaby = async (baby) => {
       }
     } catch (error) {
       console.error('删除宝宝失败:', error)
-      alert('删除宝宝失败，请重试')
+      toast.error('删除宝宝失败，请重试')
     }
   }
 }
@@ -345,7 +346,7 @@ const deleteBaby = async (baby) => {
 // 添加或更新宝宝
 const saveBaby = async () => {
   if (!newBaby.value.name.trim()) {
-    alert('请输入宝宝姓名')
+    toast.info('请输入宝宝姓名')
     return
   }
   
@@ -369,7 +370,7 @@ const saveBaby = async () => {
     showAddBabyModal.value = false
   } catch (error) {
     console.error('保存宝宝失败:', error)
-    alert('保存宝宝失败，请重试')
+    toast.error('保存宝宝失败，请重试')
   }
 }
 

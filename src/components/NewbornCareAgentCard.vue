@@ -22,15 +22,15 @@ const navigateToAgent = () => {
 <style scoped>
 .agent-card {
   background-color: var(--bg-primary);
-  border: 2px solid var(--border-color);
-  border-radius: 16px;
-  padding: 24px;
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 24px 20px;
   box-shadow: var(--shadow-light);
   transition: all 0.3s ease;
-  max-width: 320px;
   display: flex;
   flex-direction: column;
-  min-height: 300px;
+  min-height: 240px;
+  text-align: center;
 }
 
 .agent-card:hover {
@@ -40,9 +40,9 @@ const navigateToAgent = () => {
 }
 
 .agent-icon {
-  font-size: 48px;
+  font-size: 40px;
   text-align: center;
-  margin-bottom: 16px;
+  margin-bottom: 14px;
 }
 
 .agent-content {
@@ -53,17 +53,17 @@ const navigateToAgent = () => {
 }
 
 .agent-name {
-  font-size: 1.5em;
+  font-size: 1.3em;
   font-weight: 600;
   color: var(--text-primary);
-  margin-bottom: 8px;
+  margin-bottom: 10px;
 }
 
 .agent-description {
   color: var(--text-secondary);
   line-height: 1.5;
-  margin-bottom: 16px;
-  font-size: 0.95em;
+  margin-bottom: 14px;
+  font-size: 0.9em;
   flex: 1;
 }
 
@@ -71,9 +71,9 @@ const navigateToAgent = () => {
   background-color: var(--primary-color);
   color: white;
   border: none;
-  border-radius: 24px;
-  padding: 12px 24px;
-  font-size: 1em;
+  border-radius: 22px;
+  padding: 10px 20px;
+  font-size: 0.95em;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.3s ease;

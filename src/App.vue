@@ -180,8 +180,10 @@ html, body {
   box-sizing: border-box;
   /* 移除可能影响侧边栏点击的溢出设置 */
   min-height: 1200px;
+  height: 100%;
   display: flex;
   flex-direction: column;
+  align-items: stretch;
 }
 
 .content-view:hover {

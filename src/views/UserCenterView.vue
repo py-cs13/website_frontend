@@ -343,10 +343,6 @@
         </div>
       </main>
     </div>
-    <!-- Toast提示组件 -->
-    <Toast v-if="showToast" :type="toastType">
-      {{ toastMessage }}
-    </Toast>
   </div>
 </template>
 
@@ -359,9 +355,9 @@ import apiClient from '../utils/api.js'
 import Button from '../components/Button.vue'
 import FormInput from '../components/FormInput.vue'
 import FormTextarea from '../components/FormTextarea.vue'
-import Toast from '../components/Toast.vue'
 import { formatDate } from '../utils/formatters'
 import Swal from 'sweetalert2'
+import toast from '../utils/toast.js'
 
 const router = useRouter()
 const userStore = useAuthStore()
@@ -390,25 +386,6 @@ const user = ref({
 
 // 标记是否正在保存，用于控制是否重新加载用户数据
 const isSaving = ref(false)
-
-// Toast提示状态
-const showToast = ref(false)
-const toastMessage = ref('')
-const toastType = ref('success')
-
-// 显示Toast提示
-function showToastMessage(message, type = 'success') {
-  toastMessage.value = message
-  toastType.value = type
-  showToast.value = true
-  
-  // 3秒后自动隐藏
-  setTimeout(() => {
-    showToast.value = false
-  }, 3000)
-}
-
-
 
 // 从API获取最新的用户数据
 async function loadUserData() {
@@ -451,13 +428,13 @@ async function loadUserData() {
     // 如果加载失败，检查是否是认证错误
     if (err.response && err.response.status === 401) {
       // 认证失败，清除本地存储并要求用户重新登录
-      showToastMessage('登录已过期，请重新登录', 'error')
+      toast.error('登录已过期，请重新登录')
       userStore.logout()
       // 跳转到登录页面
       router.push('/login')
     } else {
       // 其他错误，显示错误信息
-      showToastMessage('加载用户数据失败，请稍后重试', 'error')
+      toast.error('加载用户数据失败，请稍后重试')
     }
   }
 }
@@ -502,7 +479,7 @@ async function saveUserInfo() {
     
     if (success) {
       // 保存成功，显示提示
-      showToastMessage('用户信息更新成功！')
+      toast.success('用户信息更新成功！')
       
       // 直接从API获取最新数据，确保显示的是数据库中的最新状态
       await loadUserData()
@@ -538,7 +515,7 @@ async function saveBabyInfo() {
     
     if (success) {
       // 保存成功，显示提示
-      showToastMessage('宝宝信息更新成功！')
+      toast.success('宝宝信息更新成功！')
       
       // 直接从API获取最新数据，确保显示的是数据库中的最新状态
       await loadUserData()
@@ -604,7 +581,7 @@ async function loadFavorites() {
 // 取消收藏
 const removeFavorite = async (contentId, index) => {
   if (!userStore.token) {
-    alert('请先登录')
+    toast.info('请先登录')
     return
   }
   
@@ -615,7 +592,7 @@ const removeFavorite = async (contentId, index) => {
     favorites.value.splice(index, 1)
   } catch (error) {
     console.error('取消收藏失败:', error)
-    alert(error.response?.data?.detail || '取消收藏失败，请稍后重试')
+    toast.error(error.response?.data?.detail || '取消收藏失败，请稍后重试')
   }
 }
 
@@ -669,7 +646,7 @@ const handleAvatarUpload = async (event) => {
     
     // 显示成功信息
     setTimeout(() => {
-      alert('头像上传成功')
+      toast.success('头像上传成功')
     }, 1000)
   } catch (error) {
     console.error('上传头像失败:', error)

@@ -57,6 +57,7 @@
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '../stores'
+import toast from '../utils/toast.js'
 
 const router = useRouter()
 const userStore = useAuthStore()
@@ -103,7 +104,7 @@ onMounted(() => {
 // 忘记密码
 const forgotPassword = () => {
   // 这里可以实现忘记密码逻辑
-  alert('忘记密码功能将在后续版本中实现')
+  toast.info('忘记密码功能将在后续版本中实现')
 }
 </script>
 

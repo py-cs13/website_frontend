@@ -105,6 +105,7 @@ import apiClient from '../utils/api'
 import Button from '../components/Button.vue'
 import { formatDate, formatNumber } from '../utils/formatters'
 import { marked } from 'marked'
+import toast from '../utils/toast.js'
 
 const route = useRoute()
 const router = useRouter()
@@ -251,7 +252,7 @@ onMounted(async () => {
 const toggleLike = async () => {
   const token = authStore.token
   if (!token) {
-    alert('请先登录再点赞')
+    toast.info('请先登录再点赞')
     return
   }
   
@@ -279,9 +280,9 @@ const toggleLike = async () => {
     article.value.likes += wasLiked ? 1 : -1
     
     if (error.response?.status === 401) {
-      alert('请先登录后再点赞')
+      toast.info('请先登录后再点赞')
     } else {
-      alert(error.response?.data?.detail || '点赞失败，请稍后重试')
+      toast.error(error.response?.data?.detail || '点赞失败，请稍后重试')
     }
   } finally {
     isLiking.value = false
@@ -292,7 +293,7 @@ const toggleLike = async () => {
 const toggleCollect = async () => {
   const token = authStore.token
   if (!token) {
-    alert('请先登录再收藏')
+    toast.info('请先登录再收藏')
     return
   }
   
@@ -324,9 +325,9 @@ const toggleCollect = async () => {
     article.value.collect_count = oldCollectCount
     
     if (error.response?.status === 401) {
-      alert('请先登录后再收藏')
+      toast.info('请先登录后再收藏')
     } else {
-      alert(error.response?.data?.detail || '收藏失败，请稍后重试')
+      toast.error(error.response?.data?.detail || '收藏失败，请稍后重试')
     }
   }
 }
